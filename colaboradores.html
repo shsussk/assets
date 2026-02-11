@@ -34,11 +34,17 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .header h1 {
-      font-size: 2rem;
-      color: var(--color-primary);
+    .header h1 { font-size: 2rem; color: var(--color-primary); }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -48,19 +54,19 @@
       padding: 10px 18px;
       border-radius: 999px;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
     }
 
     .btn-secondary { background: #6c757d; }
     .btn-danger { background: #f44336; }
-
     .btn:hover { opacity: 0.92; }
 
-    /* Filtros */
     .filters {
       margin-bottom: 16px;
       display: flex;
@@ -90,7 +96,6 @@
       min-width: 140px;
     }
 
-    /* Grid colaboradores */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -122,15 +127,8 @@
       background: #e5e7eb;
     }
 
-    .card-name {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .card-role {
-      font-size: 0.85rem;
-      color: #666;
-    }
+    .card-name { font-weight: 700; font-size: 1rem; }
+    .card-role { font-size: 0.85rem; color: #666; }
 
     .badge-tipo {
       font-size: 0.75rem;
@@ -170,12 +168,8 @@
       margin-top: 6px;
     }
 
-    .card-footer small {
-      font-size: 0.8rem;
-      color: #666;
-    }
+    .card-footer small { font-size: 0.8rem; color: #666; }
 
-    /* Matching panel */
     .matching-panel {
       background: var(--color-card);
       border-radius: var(--radius);
@@ -187,10 +181,7 @@
       height: fit-content;
     }
 
-    .matching-panel h2 {
-      font-size: 1.1rem;
-      margin-bottom: 4px;
-    }
+    .matching-panel h2 { font-size: 1.1rem; margin-bottom: 4px; }
 
     .matching-panel textarea {
       width: 100%;
@@ -231,7 +222,6 @@
     .matching-item strong { font-size: 0.9rem; }
     .matching-score { font-weight: 700; color: #4caf50; }
 
-    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -274,9 +264,7 @@
       gap: 14px;
     }
 
-    .form-group {
-      margin-bottom: 14px;
-    }
+    .form-group { margin-bottom: 14px; }
 
     .form-group label {
       display: block;
@@ -295,10 +283,7 @@
       font-size: 0.9rem;
     }
 
-    .form-group textarea {
-      min-height: 70px;
-      resize: vertical;
-    }
+    .form-group textarea { min-height: 70px; resize: vertical; }
 
     .tags-input {
       display: flex;
@@ -346,9 +331,7 @@
     }
 
     @media (max-width: 960px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
+      .page { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 640px) {
@@ -361,13 +344,15 @@
   <div class="page">
     <header class="header">
       <h1>🤝 Red de Colaboradores</h1>
-      <div>
+      <div class="header-buttons">
+        <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
+        <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
         <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
         <button class="btn" onclick="abrirModalColaborador()">+ Agregar colaborador</button>
+        <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
 
-    <!-- Columna izquierda: filtros + grid -->
     <section>
       <div class="filters">
         <div class="filter-group">
@@ -408,7 +393,6 @@
       <div id="gridColaboradores" class="grid"></div>
     </section>
 
-    <!-- Columna derecha: matching -->
     <aside class="matching-panel">
       <h2>Encontrar colaboradores para un proyecto</h2>
       <div class="form-group">
@@ -431,12 +415,10 @@
         <input type="text" id="matchKeywords" placeholder="suelos, biocontrol, sensores...">
       </div>
       <button class="btn" onclick="buscarMatching()">Buscar colaboradores</button>
-
       <div class="matching-results" id="matchingResults"></div>
     </aside>
   </div>
 
-  <!-- Modal crear / editar colaborador -->
   <div class="modal" id="modalColaborador">
     <div class="modal-content">
       <div class="modal-header">
@@ -520,7 +502,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="cerrarModalColaborador()">Cancelar</button>
-          <button type="button" class="btn-danger" id="btnEliminar" style="display:none" onclick="eliminarColaborador()">Eliminar</button>
+          <button type="button" class="btn btn-danger" id="btnEliminar" style="display:none" onclick="eliminarColaborador()">Eliminar</button>
           <button type="submit" class="btn">Guardar</button>
         </div>
       </form>
@@ -528,20 +510,18 @@
   </div>
 
   <script>
-    let colaboradores = [];
-    let areasFuertesTemp = [];
-    let interesesTemp = [];
-    let colaboradorEditandoId = null;
+    var colaboradores = [];
+    var areasFuertesTemp = [];
+    var interesesTemp = [];
+    var colaboradorEditandoId = null;
 
     function loadColaboradores() {
-      const raw = localStorage.getItem('colaboradores');
+      var raw = localStorage.getItem('colaboradores');
       colaboradores = raw ? JSON.parse(raw) : [];
     }
 
     function saveColaboradores() {
       localStorage.setItem('colaboradores', JSON.stringify(colaboradores));
-      // aquí podrías notificar al dashboard
-      window.parent.postMessage({ tipo: 'actualizarDashboard' }, '*');
     }
 
     function init() {
@@ -552,42 +532,42 @@
     }
 
     function initTagsInputs() {
-      const areasInput = document.getElementById('areasFuertesInput');
-      const interesesInput = document.getElementById('interesesInput');
+      var areasInput = document.getElementById('areasFuertesInput');
+      var interesesInput = document.getElementById('interesesInput');
 
-      areasInput.addEventListener('keydown', e => {
+      areasInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
-          const val = areasInput.value.trim();
-          if (val && !areasFuertesTemp.includes(val)) {
+          var val = areasInput.value.trim();
+          if (val && areasFuertesTemp.indexOf(val) === -1) {
             areasFuertesTemp.push(val);
             areasInput.value = '';
-            renderTags('areasFuertesContainer', areasFuertesTemp, 'areas');
+            renderTagsList('areasFuertesContainer', areasFuertesTemp, 'areas');
           }
         }
       });
 
-      interesesInput.addEventListener('keydown', e => {
+      interesesInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
-          const val = interesesInput.value.trim();
-          if (val && !interesesTemp.includes(val)) {
+          var val = interesesInput.value.trim();
+          if (val && interesesTemp.indexOf(val) === -1) {
             interesesTemp.push(val);
             interesesInput.value = '';
-            renderTags('interesesContainer', interesesTemp, 'intereses');
+            renderTagsList('interesesContainer', interesesTemp, 'intereses');
           }
         }
       });
     }
 
-    function renderTags(containerId, items, tipo) {
-      const container = document.getElementById(containerId);
-      const input = container.querySelector('input');
+    function renderTagsList(containerId, items, tipo) {
+      var container = document.getElementById(containerId);
+      var input = container.querySelector('input');
       container.innerHTML = '';
-      items.forEach((item, index) => {
-        const pill = document.createElement('span');
+      items.forEach(function(item, index) {
+        var pill = document.createElement('span');
         pill.className = 'tag-pill';
-        pill.innerHTML = `${item}<button type="button" onclick="removeTag('${tipo}', ${index})">×</button>`;
+        pill.innerHTML = item + '<button type="button" onclick="removeTag(\'' + tipo + '\', ' + index + ')">×</button>';
         container.appendChild(pill);
       });
       container.appendChild(input);
@@ -596,31 +576,37 @@
     function removeTag(tipo, index) {
       if (tipo === 'areas') {
         areasFuertesTemp.splice(index, 1);
-        renderTags('areasFuertesContainer', areasFuertesTemp, 'areas');
+        renderTagsList('areasFuertesContainer', areasFuertesTemp, 'areas');
       } else {
         interesesTemp.splice(index, 1);
-        renderTags('interesesContainer', interesesTemp, 'intereses');
+        renderTagsList('interesesContainer', interesesTemp, 'intereses');
       }
     }
 
     function actualizarSelectsFiltro() {
-      const especialidades = [...new Set(colaboradores.map(c => c.especialidad_principal).filter(Boolean))];
-      const areas = [...new Set(colaboradores.flatMap(c => c.areas_fuertes || []))];
+      var especialidades = [];
+      var areas = [];
+      colaboradores.forEach(function(c) {
+        if (c.especialidad_principal && especialidades.indexOf(c.especialidad_principal) === -1) especialidades.push(c.especialidad_principal);
+        (c.areas_fuertes || []).forEach(function(a) {
+          if (areas.indexOf(a) === -1) areas.push(a);
+        });
+      });
 
-      const espSel = document.getElementById('filtroEspecialidad');
-      const areaSel = document.getElementById('filtroAreaFuerte');
+      var espSel = document.getElementById('filtroEspecialidad');
+      var areaSel = document.getElementById('filtroAreaFuerte');
       espSel.innerHTML = '<option value="">Todas</option>';
       areaSel.innerHTML = '<option value="">Todas</option>';
 
-      especialidades.forEach(e => {
-        const opt = document.createElement('option');
+      especialidades.forEach(function(e) {
+        var opt = document.createElement('option');
         opt.value = e;
         opt.textContent = e;
         espSel.appendChild(opt);
       });
 
-      areas.forEach(a => {
-        const opt = document.createElement('option');
+      areas.forEach(function(a) {
+        var opt = document.createElement('option');
         opt.value = a;
         opt.textContent = a;
         areaSel.appendChild(opt);
@@ -628,24 +614,22 @@
     }
 
     function renderColaboradores() {
-      const grid = document.getElementById('gridColaboradores');
+      var grid = document.getElementById('gridColaboradores');
       grid.innerHTML = '';
 
-      const nombreFiltro = document.getElementById('filtroNombre').value.toLowerCase();
-      const espFiltro = document.getElementById('filtroEspecialidad').value;
-      const areaFiltro = document.getElementById('filtroAreaFuerte').value;
-      const tipoFiltro = document.getElementById('filtroTipo').value;
-      const expFiltro = document.getElementById('filtroExperiencia').value;
+      var nombreFiltro = document.getElementById('filtroNombre').value.toLowerCase();
+      var espFiltro = document.getElementById('filtroEspecialidad').value;
+      var areaFiltro = document.getElementById('filtroAreaFuerte').value;
+      var tipoFiltro = document.getElementById('filtroTipo').value;
+      var expFiltro = document.getElementById('filtroExperiencia').value;
 
-      let lista = colaboradores.slice();
-
-      lista = lista.filter(c => {
-        if (nombreFiltro && !c.nombre.toLowerCase().includes(nombreFiltro)) return false;
+      var lista = colaboradores.filter(function(c) {
+        if (nombreFiltro && c.nombre.toLowerCase().indexOf(nombreFiltro) === -1) return false;
         if (espFiltro && c.especialidad_principal !== espFiltro) return false;
-        if (areaFiltro && !(c.areas_fuertes || []).includes(areaFiltro)) return false;
+        if (areaFiltro && (c.areas_fuertes || []).indexOf(areaFiltro) === -1) return false;
         if (tipoFiltro && c.tipo_colaborador !== tipoFiltro) return false;
         if (expFiltro) {
-          const ae = c.anios_experiencia || 0;
+          var ae = c.anios_experiencia || 0;
           if (expFiltro === '0-5' && ae > 5) return false;
           if (expFiltro === '6-10' && (ae < 6 || ae > 10)) return false;
           if (expFiltro === '10+' && ae < 10) return false;
@@ -658,30 +642,30 @@
         return;
       }
 
-      lista.forEach(c => {
-        const card = document.createElement('article');
+      lista.forEach(function(c) {
+        var card = document.createElement('article');
         card.className = 'card';
 
-        const header = document.createElement('div');
+        var header = document.createElement('div');
         header.className = 'card-header';
 
-        const img = document.createElement('img');
+        var img = document.createElement('img');
         img.className = 'avatar';
         img.src = c.foto_url || 'https://via.placeholder.com/80x80?text=Foto';
         img.alt = c.nombre;
 
-        const text = document.createElement('div');
-        const nameEl = document.createElement('div');
+        var text = document.createElement('div');
+        var nameEl = document.createElement('div');
         nameEl.className = 'card-name';
         nameEl.textContent = c.nombre;
-        const roleEl = document.createElement('div');
+        var roleEl = document.createElement('div');
         roleEl.className = 'card-role';
         roleEl.textContent = c.cargo + (c.especialidad_principal ? ' · ' + c.especialidad_principal : '');
 
         text.appendChild(nameEl);
         text.appendChild(roleEl);
 
-        const tipo = document.createElement('span');
+        var tipo = document.createElement('span');
         tipo.className = 'badge-tipo';
         tipo.textContent = c.tipo_colaborador === 'externo' ? 'Externo' : 'Interno';
 
@@ -689,31 +673,31 @@
         header.appendChild(text);
         header.appendChild(tipo);
 
-        const meta = document.createElement('div');
+        var meta = document.createElement('div');
         meta.className = 'meta-row';
-        meta.innerHTML = `<span>${c.anios_experiencia || 0} años exp.</span>
-                          <span>🧩 ${c.aportes || 0} aportes</span>
-                          <span>✅ ${c.ensayos_exitosos || 0} éxitos</span>`;
+        meta.innerHTML = '<span>' + (c.anios_experiencia || 0) + ' años exp.</span>' +
+                         '<span>🧩 ' + (c.aportes || 0) + ' aportes</span>' +
+                         '<span>✅ ' + (c.ensayos_exitosos || 0) + ' éxitos</span>';
 
-        const chips = document.createElement('div');
+        var chips = document.createElement('div');
         chips.className = 'chips';
-        (c.areas_fuertes || []).forEach(a => {
-          const chip = document.createElement('span');
+        (c.areas_fuertes || []).forEach(function(a) {
+          var chip = document.createElement('span');
           chip.className = 'chip';
           chip.textContent = a;
           chips.appendChild(chip);
         });
 
-        const footer = document.createElement('div');
+        var footer = document.createElement('div');
         footer.className = 'card-footer';
-        const small = document.createElement('small');
+        var small = document.createElement('small');
         small.textContent = c.contacto || '';
-        const btn = document.createElement('button');
+        var btn = document.createElement('button');
         btn.className = 'btn btn-secondary';
         btn.style.padding = '6px 12px';
         btn.style.fontSize = '0.8rem';
         btn.textContent = 'Ver / Editar';
-        btn.onclick = () => abrirModalColaborador(c.id);
+        btn.onclick = function() { abrirModalColaborador(c.id); };
 
         footer.appendChild(small);
         footer.appendChild(btn);
@@ -731,13 +715,13 @@
       areasFuertesTemp = [];
       interesesTemp = [];
 
-      const form = document.getElementById('formColaborador');
+      var form = document.getElementById('formColaborador');
       form.reset();
       document.getElementById('btnEliminar').style.display = id ? 'inline-flex' : 'none';
 
       if (id) {
         document.getElementById('modalTitulo').textContent = 'Editar colaborador';
-        const c = colaboradores.find(col => col.id === id);
+        var c = colaboradores.find(function(col) { return col.id === id; });
         if (c) {
           document.getElementById('colabId').value = c.id;
           document.getElementById('nombre').value = c.nombre || '';
@@ -750,17 +734,15 @@
           document.getElementById('tipoColaborador').value = c.tipo_colaborador || 'interno';
           document.getElementById('contacto').value = c.contacto || '';
           document.getElementById('proyectosActivos').value = (c.proyectos_activos || []).join(', ');
-          areasFuertesTemp = c.areas_fuertes || [];
-          interesesTemp = c.intereses || [];
-          renderTags('areasFuertesContainer', areasFuertesTemp, 'areas');
-          renderTags('interesesContainer', interesesTemp, 'intereses');
+          areasFuertesTemp = (c.areas_fuertes || []).slice();
+          interesesTemp = (c.intereses || []).slice();
+          renderTagsList('areasFuertesContainer', areasFuertesTemp, 'areas');
+          renderTagsList('interesesContainer', interesesTemp, 'intereses');
         }
       } else {
         document.getElementById('modalTitulo').textContent = 'Nuevo colaborador';
-        areasFuertesTemp = [];
-        interesesTemp = [];
-        renderTags('areasFuertesContainer', areasFuertesTemp, 'areas');
-        renderTags('interesesContainer', interesesTemp, 'intereses');
+        renderTagsList('areasFuertesContainer', areasFuertesTemp, 'areas');
+        renderTagsList('interesesContainer', interesesTemp, 'intereses');
       }
 
       document.getElementById('modalColaborador').style.display = 'block';
@@ -773,20 +755,20 @@
 
     document.getElementById('formColaborador').addEventListener('submit', function(e) {
       e.preventDefault();
-      const nombre = document.getElementById('nombre').value.trim();
-      const cargo = document.getElementById('cargo').value.trim();
-      const especialidad = document.getElementById('especialidadPrincipal').value.trim();
-      const anios = parseInt(document.getElementById('aniosExperiencia').value, 10);
+      var nombre = document.getElementById('nombre').value.trim();
+      var cargo = document.getElementById('cargo').value.trim();
+      var especialidad = document.getElementById('especialidadPrincipal').value.trim();
+      var anios = parseInt(document.getElementById('aniosExperiencia').value, 10);
 
       if (!nombre || !cargo || !especialidad || isNaN(anios)) {
         alert('Completa los campos obligatorios.');
         return;
       }
 
-      const colab = {
+      var colab = {
         id: colaboradorEditandoId || ('colab_' + Date.now()),
-        nombre,
-        cargo,
+        nombre: nombre,
+        cargo: cargo,
         foto_url: document.getElementById('fotoUrl').value.trim(),
         anios_experiencia: anios,
         areas_fuertes: areasFuertesTemp.slice(),
@@ -794,16 +776,14 @@
         aportes: parseInt(document.getElementById('aportes').value, 10) || 0,
         ensayos_exitosos: parseInt(document.getElementById('ensayosExitosos').value, 10) || 0,
         proyectos_activos: document.getElementById('proyectosActivos').value
-          .split(',')
-          .map(p => p.trim())
-          .filter(p => p),
+          .split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; }),
         tipo_colaborador: document.getElementById('tipoColaborador').value,
         contacto: document.getElementById('contacto').value.trim(),
         intereses: interesesTemp.slice()
       };
 
       if (colaboradorEditandoId) {
-        const idx = colaboradores.findIndex(c => c.id === colaboradorEditandoId);
+        var idx = colaboradores.findIndex(function(c) { return c.id === colaboradorEditandoId; });
         if (idx !== -1) colaboradores[idx] = colab;
       } else {
         colaboradores.push(colab);
@@ -818,70 +798,76 @@
     function eliminarColaborador() {
       if (!colaboradorEditandoId) return;
       if (!confirm('¿Eliminar este colaborador?')) return;
-      colaboradores = colaboradores.filter(c => c.id !== colaboradorEditandoId);
+      colaboradores = colaboradores.filter(function(c) { return c.id !== colaboradorEditandoId; });
       saveColaboradores();
       actualizarSelectsFiltro();
       renderColaboradores();
       cerrarModalColaborador();
     }
 
-    // Matching simple por puntos de coincidencia
     function buscarMatching() {
-      const area = document.getElementById('matchArea').value;
-      const keywords = document.getElementById('matchKeywords').value
-        .split(',')
-        .map(k => k.trim().toLowerCase())
-        .filter(k => k);
+      var area = document.getElementById('matchArea').value;
+      var keywords = document.getElementById('matchKeywords').value
+        .split(',').map(function(k) { return k.trim().toLowerCase(); }).filter(function(k) { return k; });
 
-      const resultados = colaboradores.map(c => {
-        let score = 0;
-        if (area && (c.areas_fuertes || []).includes(area)) score += 2;
+      var resultados = colaboradores.map(function(c) {
+        var score = 0;
+        if (area && (c.areas_fuertes || []).indexOf(area) !== -1) score += 2;
         if (keywords.length) {
-          const intereses = (c.intereses || []).map(i => i.toLowerCase());
-          keywords.forEach(k => {
-            if (intereses.includes(k)) score += 1;
+          var intereses = (c.intereses || []).map(function(i) { return i.toLowerCase(); });
+          keywords.forEach(function(k) {
+            if (intereses.indexOf(k) !== -1) score += 1;
           });
         }
-        // pequeño bonus por ensayos exitosos
         score += (c.ensayos_exitosos || 0) * 0.1;
-        return { colaborador: c, score };
-      }).filter(r => r.score > 0)
-        .sort((a,b) => b.score - a.score);
+        return { colaborador: c, score: score };
+      }).filter(function(r) { return r.score > 0; })
+        .sort(function(a,b) { return b.score - a.score; });
 
-      const container = document.getElementById('matchingResults');
+      var container = document.getElementById('matchingResults');
       container.innerHTML = '';
       if (resultados.length === 0) {
-        container.innerHTML = '<p>Sin coincidencias todavía. Ajusta área o palabras clave.</p>';
+        container.innerHTML = '<p>Sin coincidencias. Ajusta área o palabras clave.</p>';
         return;
       }
 
-      resultados.slice(0, 15).forEach(r => {
-        const c = r.colaborador;
-        const item = document.createElement('div');
+      resultados.slice(0, 15).forEach(function(r) {
+        var c = r.colaborador;
+        var item = document.createElement('div');
         item.className = 'matching-item';
-        item.innerHTML = `
-          <div>
-            <strong>${c.nombre}</strong><br>
-            <span style="font-size:0.8rem;">${c.especialidad_principal || ''}</span><br>
-            <span style="font-size:0.8rem; color:#555;">Áreas: ${(c.areas_fuertes || []).join(', ')}</span>
-          </div>
-          <div style="text-align:right;">
-            <div class="matching-score">${r.score.toFixed(1)}</div>
-            <button class="btn btn-secondary" style="padding:4px 8px;font-size:0.75rem;margin-top:4px;"
-              onclick="abrirModalColaborador('${c.id}')">Ver perfil</button>
-          </div>
-        `;
+        item.innerHTML =
+          '<div>' +
+            '<strong>' + c.nombre + '</strong><br>' +
+            '<span style="font-size:0.8rem;">' + (c.especialidad_principal || '') + '</span><br>' +
+            '<span style="font-size:0.8rem; color:#555;">Áreas: ' + (c.areas_fuertes || []).join(', ') + '</span>' +
+          '</div>' +
+          '<div style="text-align:right;">' +
+            '<div class="matching-score">' + r.score.toFixed(1) + '</div>' +
+            '<button class="btn btn-secondary" style="padding:4px 8px;font-size:0.75rem;margin-top:4px;" onclick="abrirModalColaborador(\'' + c.id + '\')">Ver perfil</button>' +
+          '</div>';
         container.appendChild(item);
       });
     }
 
-    // Cerrar modal clicando fuera
-    window.addEventListener('click', e => {
-      const modal = document.getElementById('modalColaborador');
+    window.addEventListener('click', function(e) {
+      var modal = document.getElementById('modalColaborador');
       if (e.target === modal) cerrarModalColaborador();
     });
 
     document.addEventListener('DOMContentLoaded', init);
+  </script>
+
   <script src="auth-guard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        if (window.esAdmin()) {
+          document.getElementById('btnAdmin').style.display = 'inline-flex';
+        }
+      }
+    });
+  </script>
 </body>
 </html>
+
