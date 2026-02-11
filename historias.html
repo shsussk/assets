@@ -12,36 +12,29 @@
       --color-card: #ffffff;
       --shadow: 0 8px 24px rgba(0,0,0,0.08);
       --radius: 14px;
-      --chip-bg: #e8f4e8;
-      --chip-text: #256029;
-      --impact-rend: #4caf50;
-      --impact-costos: #f9a825;
-      --impact-calidad: #2196f3;
+      --tag-bg: #e3f2fd;
+      --tag-text: #0d47a1;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
 
     .page {
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 24px;
-      display: grid;
-      grid-template-columns: 2.2fr 1.4fr;
-      gap: 24px;
     }
 
     .header {
-      grid-column: 1 / -1;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       flex-wrap: wrap;
       gap: 10px;
     }
 
-    .header h1 { color: var(--color-primary); font-size: 2rem; }
+    .header h1 { font-size: 2rem; color: var(--color-primary); }
 
     .header-buttons {
       display: flex;
@@ -52,9 +45,9 @@
 
     .btn {
       background: var(--color-primary);
-      color: white;
+      color: #fff;
       border: none;
-      padding: 10px 18px;
+      padding: 9px 16px;
       border-radius: 999px;
       cursor: pointer;
       font-size: 0.9rem;
@@ -68,19 +61,19 @@
 
     .btn-secondary { background: #6c757d; }
     .btn-danger { background: #f44336; }
-    .btn:hover { opacity: 0.93; }
+    .btn:hover { opacity: 0.92; }
 
     .filters {
-      margin-bottom: 12px;
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
     .filter-group {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
     }
 
     .filter-group label {
@@ -99,19 +92,10 @@
       min-width: 140px;
     }
 
-    .filter-inline {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 18px;
-      font-size: 0.85rem;
-    }
-
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-      margin-top: 8px;
+      gap: 18px;
     }
 
     .card {
@@ -122,98 +106,48 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      cursor: pointer;
+      position: relative;
+      border-top: 4px solid #c8e6c9;
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       gap: 8px;
+      align-items: flex-start;
     }
 
-    .card-title { font-weight: 700; font-size: 1rem; }
-    .card-meta { font-size: 0.8rem; color: #666; }
+    .card-title {
+      font-weight: 700;
+      font-size: 1rem;
+    }
 
-    .highlight-badge {
+    .badge-home {
       font-size: 0.75rem;
       padding: 3px 8px;
       border-radius: 999px;
       background: #fff3cd;
       color: #856404;
-      align-self: flex-start;
     }
 
-    .card-body { font-size: 0.85rem; color: #444; }
-
-    .impact-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 4px;
-      flex-wrap: wrap;
+    .card-meta {
+      font-size: 0.8rem;
+      color: #666;
     }
 
-    .impact-pill {
-      font-size: 0.75rem;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #eef2ff;
-      color: #1e293b;
-    }
-
-    .impact-rend { border: 1px solid var(--impact-rend); color: var(--impact-rend); }
-    .impact-costos { border: 1px solid var(--impact-costos); color: var(--impact-costos); }
-    .impact-calidad { border: 1px solid var(--impact-calidad); color: var(--impact-calidad); }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 4px;
-    }
-
-    .equipo-text { font-size: 0.8rem; color: #555; }
-
-    .card-footer-buttons { display: flex; gap: 6px; }
-
-    .btn-mini { padding: 4px 10px; font-size: 0.75rem; border-radius: 999px; }
-
-    .detalle {
-      background: var(--color-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px 18px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: calc(100vh - 120px);
-      overflow-y: auto;
-    }
-
-    .detalle h2 { font-size: 1.25rem; }
-    .detalle-meta { font-size: 0.85rem; color: #666; }
-
-    .section-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      margin-top: 10px;
-      margin-bottom: 2px;
-    }
-
-    .detalle p { font-size: 0.9rem; line-height: 1.5; }
-
-    .detalle-impact {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-
-    .impact-card {
-      background: #f9fafb;
-      border-radius: 10px;
-      padding: 8px 10px;
+    .problem {
       font-size: 0.85rem;
-      min-width: 120px;
+      color: #b71c1c;
+    }
+
+    .solution {
+      font-size: 0.86rem;
+      color: #1b5e20;
+    }
+
+    .impact {
+      font-size: 0.82rem;
+      color: #444;
     }
 
     .tags {
@@ -226,18 +160,19 @@
     .tag {
       padding: 3px 8px;
       border-radius: 999px;
-      background: var(--chip-bg);
-      color: var(--chip-text);
+      background: var(--tag-bg);
+      color: var(--tag-text);
       font-size: 0.75rem;
     }
 
-    .detalle-footer {
+    .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 8px;
-      gap: 8px;
+      margin-top: 6px;
     }
+
+    .card-footer small { font-size: 0.78rem; color: #777; }
 
     .modal {
       display: none;
@@ -250,11 +185,11 @@
 
     .modal-content {
       background: white;
-      max-width: 720px;
+      max-width: 750px;
       margin: 20px auto;
       border-radius: 16px;
       box-shadow: var(--shadow);
-      padding: 24px 24px 18px;
+      padding: 24px 24px 20px;
       max-height: 90vh;
       overflow-y: auto;
     }
@@ -263,10 +198,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
-    .modal-header h2 { font-size: 1.2rem; }
+    .modal-header h2 { font-size: 1.3rem; }
 
     .close-btn {
       background: transparent;
@@ -281,7 +216,7 @@
       gap: 14px;
     }
 
-    .form-group { margin-bottom: 12px; }
+    .form-group { margin-bottom: 14px; }
 
     .form-group label {
       display: block;
@@ -325,8 +260,8 @@
     .tag-pill {
       padding: 3px 8px;
       border-radius: 999px;
-      background: var(--chip-bg);
-      color: var(--chip-text);
+      background: var(--tag-bg);
+      color: var(--tag-text);
       font-size: 0.75rem;
       display: inline-flex;
       align-items: center;
@@ -344,16 +279,12 @@
       display: flex;
       justify-content: flex-end;
       gap: 10px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
-    @media (max-width: 960px) {
-      .page { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 640px) {
+    @media (max-width: 700px) {
       .form-row { grid-template-columns: 1fr; }
-      .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .header { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -365,58 +296,41 @@
         <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
         <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
         <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
-        <button class="btn" onclick="abrirModalHistoria()">+ Nueva historia de éxito</button>
+        <button class="btn" onclick="abrirModalHistoria()">+ Nueva historia</button>
         <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
 
-    <!-- Columna izquierda: filtros + cards -->
-    <section>
-      <div class="filters">
-        <div class="filter-group">
-          <label>Buscar</label>
-          <input type="text" id="filtroTexto" placeholder="Título, problema, solución, tags..." oninput="renderHistorias()">
-        </div>
-        <div class="filter-group">
-          <label>Área</label>
-          <select id="filtroArea" onchange="renderHistorias()">
-            <option value="">Todas</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Año</label>
-          <select id="filtroAnio" onchange="renderHistorias()">
-            <option value="">Todos</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Foco impacto (por tags)</label>
-          <select id="filtroFoco" onchange="renderHistorias()">
-            <option value="">Todos</option>
-            <option value="economico">Económico</option>
-            <option value="agronomico">Agronómico</option>
-            <option value="social">Social</option>
-          </select>
-        </div>
-        <div class="filter-inline">
-          <input type="checkbox" id="filtroHome" onchange="renderHistorias()">
-          <label for="filtroHome">Solo destacadas en home</label>
-        </div>
+    <section class="filters">
+      <div class="filter-group">
+        <label>Buscar título</label>
+        <input type="text" id="filtroTitulo" oninput="renderHistorias()">
       </div>
-
-      <div id="cardsHistorias" class="cards"></div>
+      <div class="filter-group">
+        <label>Área</label>
+        <select id="filtroArea" onchange="renderHistorias()">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Tag</label>
+        <input type="text" id="filtroTag" oninput="renderHistorias()">
+      </div>
+      <div class="filter-group">
+        <label>Visibles en home</label>
+        <select id="filtroHome" onchange="renderHistorias()">
+          <option value="">Todas</option>
+          <option value="si">Solo visibles</option>
+          <option value="no">Solo ocultas</option>
+        </select>
+      </div>
     </section>
 
-    <!-- Columna derecha: detalle -->
-    <aside class="detalle" id="detallePanel">
-      <h2>Selecciona una historia</h2>
-      <p style="font-size:0.9rem;color:#666;">
-        Aquí verás el detalle completo: problema original, solución, impacto y equipo colaborador.
-      </p>
-    </aside>
+    <section>
+      <div id="cardsHistorias" class="cards"></div>
+    </section>
   </div>
 
-  <!-- Modal crear / editar historia -->
   <div class="modal" id="modalHistoria">
     <div class="modal-content">
       <div class="modal-header">
@@ -427,83 +341,78 @@
       <form id="formHistoria">
         <input type="hidden" id="historiaId">
 
+        <div class="form-group">
+          <label>Título *</label>
+          <input type="text" id="titulo" required>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label>Título *</label>
-            <input type="text" id="titulo" required>
+            <label>Área *</label>
+            <select id="area" required>
+              <option value="">Seleccionar área</option>
+              <option value="Manejo de plagas">Manejo de plagas</option>
+              <option value="Rendimiento de cultivo">Rendimiento de cultivo</option>
+              <option value="Tratamientos de suelo">Tratamientos de suelo</option>
+              <option value="Calidad de fruto">Calidad de fruto</option>
+              <option value="Postcosecha">Postcosecha</option>
+            </select>
           </div>
           <div class="form-group">
-            <label>Área *</label>
-            <select id="area" required></select>
+            <label>Ensayo relacionado (ID opcional)</label>
+            <input type="text" id="ensayoRelacionado" placeholder="ensayo_123">
           </div>
         </div>
 
         <div class="form-group">
           <label>Problema original *</label>
-          <textarea id="problemaOriginal" required></textarea>
+          <textarea id="problemaOriginal" required placeholder="¿Qué problema había?"></textarea>
         </div>
 
         <div class="form-group">
-          <label>Ensayo relacionado</label>
-          <select id="ensayoRelacionado">
-            <option value="">Sin ensayo asociado</option>
-          </select>
+          <label>Solución implementada *</label>
+          <textarea id="solucion" required placeholder="¿Qué se hizo para resolverlo?"></textarea>
         </div>
 
         <div class="form-group">
-          <label>Solución aplicada *</label>
-          <textarea id="solucion" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Testimonio</label>
-          <textarea id="testimonio" placeholder="Cita de productor, técnico, gerente..."></textarea>
+          <label>Testimonio / relato</label>
+          <textarea id="testimonio" placeholder="Resumen narrativo, comentarios de campo, etc."></textarea>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Fecha de resolución *</label>
-            <input type="date" id="fechaResolucion" required>
+            <label>Fecha de resolución</label>
+            <input type="date" id="fechaResolucion">
           </div>
           <div class="form-group">
-            <label>Equipo colaborador (Ctrl para multi‑selección)</label>
-            <select id="equipoColaborador" multiple size="4"></select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Incremento de rendimiento (%)</label>
-            <input type="number" id="impactoRendimiento" min="0" step="0.1">
-          </div>
-          <div class="form-group">
-            <label>Reducción de costos (%)</label>
-            <input type="number" id="impactoCostos" min="0" step="0.1">
+            <label>Visible en portada</label>
+            <select id="visibleHome">
+              <option value="false">No</option>
+              <option value="true">Sí</option>
+            </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Mejora en calidad (%)</label>
-          <input type="number" id="impactoCalidad" min="0" step="0.1">
+          <label>Equipo colaborador (nombres separados por coma)</label>
+          <input type="text" id="equipoColaborador" placeholder="Nombre 1, Nombre 2...">
+        </div>
+
+        <div class="form-group">
+          <label>Impacto cuantitativo (ej: % reducción incidencia, kg/ha, etc.)</label>
+          <textarea id="impactoCuantitativo" placeholder='Ejemplo: {"reduccion_inc":25, "aumento_rendimiento":1200}'></textarea>
         </div>
 
         <div class="form-group">
           <label>Impacto cualitativo</label>
-          <textarea id="impactoCualitativo" placeholder="Lecciones, cambios en manejo, aceptación del productor..."></textarea>
+          <textarea id="impactoCualitativo" placeholder="Percepción de productores, mejoras en procesos, etc."></textarea>
         </div>
 
         <div class="form-group">
           <label>Tags (Enter para añadir)</label>
           <div class="tags-input" id="tagsContainer">
-            <input type="text" id="tagsInput" placeholder="regenerativo, bioinsumos, cítricos...">
+            <input type="text" id="tagsInput" placeholder="HLB, biocontrol, poscosecha...">
           </div>
-        </div>
-
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="visibleHome">
-            Visible en home / dashboard
-          </label>
         </div>
 
         <div class="modal-footer">
@@ -515,41 +424,32 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script>
     var historias = [];
-    var tagsTemp = [];
     var historiaEditandoId = null;
-    var colaboradores = [];
-    var ensayos = [];
+    var tagsTemp = [];
 
-    function loadHistoriasExito() {
-      var raw = localStorage.getItem('historias_exito');
-      return raw ? JSON.parse(raw) : [];
-    }
-
-    function saveHistoriasExito(items) {
-      localStorage.setItem('historias_exito', JSON.stringify(items));
-    }
-
-    function loadColaboradores() {
-      var raw = localStorage.getItem('colaboradores');
-      colaboradores = raw ? JSON.parse(raw) : [];
-    }
-
-    function loadEnsayos() {
-      var raw = localStorage.getItem('ensayos');
-      ensayos = raw ? JSON.parse(raw) : [];
+    async function loadHistorias() {
+      var { data, error } = await DB.historias.listar();
+      if (error) {
+        alert('Error al cargar historias: ' + error.message);
+        historias = [];
+      } else {
+        historias = data || [];
+      }
     }
 
     function initTagsInput() {
-      var input = document.getElementById('tagsInput');
-      input.addEventListener('keydown', function(e) {
+      var tagsInput = document.getElementById('tagsInput');
+      tagsInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
-          var val = input.value.trim();
+          var val = tagsInput.value.trim();
           if (val && tagsTemp.indexOf(val) === -1) {
             tagsTemp.push(val);
-            input.value = '';
+            tagsInput.value = '';
             renderTags();
           }
         }
@@ -558,12 +458,12 @@
 
     function renderTags() {
       var container = document.getElementById('tagsContainer');
-      var input = document.getElementById('tagsInput');
+      var input = container.querySelector('input');
       container.innerHTML = '';
-      tagsTemp.forEach(function(t, idx) {
+      tagsTemp.forEach(function(tag, idx) {
         var pill = document.createElement('span');
         pill.className = 'tag-pill';
-        pill.innerHTML = t + '<button type="button" onclick="removeTag(' + idx + ')">×</button>';
+        pill.innerHTML = tag + '<button type="button" onclick="removeTag(' + idx + ')">×</button>';
         container.appendChild(pill);
       });
       container.appendChild(input);
@@ -574,67 +474,18 @@
       renderTags();
     }
 
-    function initSelectsFormulario() {
-      var areaSelect = document.getElementById('area');
-      areaSelect.innerHTML = '';
-      var areas = {};
-      ensayos.forEach(function(e) { if (e.area) areas[e.area] = true; });
-      ['Manejo de plagas','Rendimiento de cultivo','Tratamientos de suelo','Calidad de fruto','Postcosecha'].forEach(function(a) { areas[a] = true; });
-      Object.keys(areas).forEach(function(a) {
-        var opt = document.createElement('option');
-        opt.value = a;
-        opt.textContent = a;
-        areaSelect.appendChild(opt);
-      });
-
-      var ensayoSel = document.getElementById('ensayoRelacionado');
-      ensayoSel.innerHTML = '<option value="">Sin ensayo asociado</option>';
-      ensayos.forEach(function(e) {
-        var opt = document.createElement('option');
-        opt.value = e.id;
-        opt.textContent = e.metricaObjetivo ? e.metricaObjetivo + ' (' + e.area + ')' : e.id;
-        ensayoSel.appendChild(opt);
-      });
-
-      var colabSel = document.getElementById('equipoColaborador');
-      colabSel.innerHTML = '';
-      colaboradores.forEach(function(c) {
-        var opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = c.nombre;
-        colabSel.appendChild(opt);
-      });
-    }
-
-    function actualizarSelectsFiltros() {
-      var areaSel = document.getElementById('filtroArea');
-      var anioSel = document.getElementById('filtroAnio');
-      areaSel.innerHTML = '<option value="">Todas</option>';
-      anioSel.innerHTML = '<option value="">Todos</option>';
-
-      var areas = {};
-      var anios = {};
-
+    function actualizarFiltrosAreas() {
+      var areas = [];
       historias.forEach(function(h) {
-        if (h.area) areas[h.area] = true;
-        if (h.fecha_resolucion) {
-          var anio = h.fecha_resolucion.substring(0,4);
-          anios[anio] = true;
-        }
+        if (h.area && areas.indexOf(h.area) === -1) areas.push(h.area);
       });
-
-      Object.keys(areas).sort().forEach(function(a) {
+      var sel = document.getElementById('filtroArea');
+      sel.innerHTML = '<option value=\"\">Todas</option>';
+      areas.forEach(function(a) {
         var opt = document.createElement('option');
         opt.value = a;
         opt.textContent = a;
-        areaSel.appendChild(opt);
-      });
-
-      Object.keys(anios).sort().forEach(function(a) {
-        var opt = document.createElement('option');
-        opt.value = a;
-        opt.textContent = a;
-        anioSel.appendChild(opt);
+        sel.appendChild(opt);
       });
     }
 
@@ -642,314 +493,130 @@
       var cont = document.getElementById('cardsHistorias');
       cont.innerHTML = '';
 
-      var texto = document.getElementById('filtroTexto').value.toLowerCase();
-      var areaF = document.getElementById('filtroArea').value;
-      var anioF = document.getElementById('filtroAnio').value;
-      var focoF = document.getElementById('filtroFoco').value;
-      var soloHome = document.getElementById('filtroHome').checked;
+      var fTitulo = document.getElementById('filtroTitulo').value.toLowerCase();
+      var fArea = document.getElementById('filtroArea').value;
+      var fTag = document.getElementById('filtroTag').value.toLowerCase();
+      var fHome = document.getElementById('filtroHome').value;
 
-      var lista = historias.slice();
-
-      lista = lista.filter(function(h) {
-        if (texto) {
-          var blob = (h.titulo + ' ' + h.problema_original + ' ' + h.solucion + ' ' + (h.tags || []).join(' ')).toLowerCase();
-          if (blob.indexOf(texto) === -1) return false;
-        }
-        if (areaF && h.area !== areaF) return false;
-        if (anioF && (!h.fecha_resolucion || h.fecha_resolucion.indexOf(anioF) !== 0)) return false;
-        if (soloHome && !h.visible_en_home) return false;
-        if (focoF) {
+      var lista = historias.filter(function(h) {
+        if (fTitulo && (!h.titulo || h.titulo.toLowerCase().indexOf(fTitulo) === -1)) return false;
+        if (fArea && h.area !== fArea) return false;
+        if (fTag) {
           var tags = (h.tags || []).map(function(t) { return t.toLowerCase(); });
-          if (focoF === 'economico' && tags.indexOf('economico') === -1) return false;
-          if (focoF === 'agronomico' && tags.indexOf('agronomico') === -1) return false;
-          if (focoF === 'social' && tags.indexOf('social') === -1) return false;
+          if (!tags.some(function(t) { return t.indexOf(fTag) !== -1; })) return false;
         }
+        if (fHome === 'si' && !h.visible_en_home) return false;
+        if (fHome === 'no' && h.visible_en_home) return false;
         return true;
       });
 
       if (lista.length === 0) {
-        cont.innerHTML = '<p>No hay historias aún o los filtros son muy restrictivos.</p>';
+        cont.innerHTML = '<p>No hay historias que cumplan los filtros.</p>';
         return;
       }
-
-      lista.sort(function(a,b) { return (b.fecha_resolucion || '').localeCompare(a.fecha_resolucion || ''); });
 
       lista.forEach(function(h) {
         var card = document.createElement('article');
         card.className = 'card';
-        card.onclick = function(e) {
-          if (e.target.tagName.toLowerCase() === 'button') return;
-          mostrarDetalle(h.id);
-        };
 
         var header = document.createElement('div');
         header.className = 'card-header';
 
-        var titleBox = document.createElement('div');
         var title = document.createElement('div');
         title.className = 'card-title';
         title.textContent = h.titulo;
+
+        var badge = document.createElement('span');
+        if (h.visible_en_home) {
+          badge.className = 'badge-home';
+          badge.textContent = 'Destacada en home';
+        }
+
+        header.appendChild(title);
+        if (h.visible_en_home) header.appendChild(badge);
+
         var meta = document.createElement('div');
         meta.className = 'card-meta';
-        meta.textContent = (h.area || '') + ' · ' + (h.fecha_resolucion || '');
-        titleBox.appendChild(title);
-        titleBox.appendChild(meta);
-        header.appendChild(titleBox);
+        var fechaTxt = h.fecha_resolucion ? new Date(h.fecha_resolucion).toLocaleDateString('es-DO') : 'Fecha no definida';
+        meta.textContent = (h.area || '') + ' · ' + fechaTxt;
 
-        if (h.visible_en_home) {
-          var badge = document.createElement('div');
-          badge.className = 'highlight-badge';
-          badge.textContent = 'Destacada';
-          header.appendChild(badge);
-        }
+        var problem = document.createElement('div');
+        problem.className = 'problem';
+        problem.textContent = 'Problema: ' + (h.problema_original || '');
 
-        var body = document.createElement('div');
-        body.className = 'card-body';
-        var resumen = (h.solucion || h.testimonio || '').slice(0,140);
-        body.textContent = resumen + (resumen.length === 140 ? '…' : '');
+        var solution = document.createElement('div');
+        solution.className = 'solution';
+        solution.textContent = 'Solución: ' + (h.solucion || '');
 
-        var impactRow = document.createElement('div');
-        impactRow.className = 'impact-row';
-        var iq = h.impacto_cuantitativo || {};
-        if (iq.incremento_rendimiento) {
-          var pill = document.createElement('span');
-          pill.className = 'impact-pill impact-rend';
-          pill.textContent = '+' + iq.incremento_rendimiento + '% rendimiento';
-          impactRow.appendChild(pill);
-        }
-        if (iq.reduccion_costos) {
-          var pill2 = document.createElement('span');
-          pill2.className = 'impact-pill impact-costos';
-          pill2.textContent = '-' + iq.reduccion_costos + '% costos';
-          impactRow.appendChild(pill2);
-        }
-        if (iq.mejora_calidad) {
-          var pill3 = document.createElement('span');
-          pill3.className = 'impact-pill impact-calidad';
-          pill3.textContent = '+' + iq.mejora_calidad + '% calidad';
-          impactRow.appendChild(pill3);
-        }
+        var impact = document.createElement('div');
+        impact.className = 'impact';
+        var impactoTxt = '';
+        if (h.impacto_cualitativo) impactoTxt += h.impacto_cualitativo;
+        if (h.impacto_cuantitativo) impactoTxt += (impactoTxt ? ' | ' : '') + JSON.stringify(h.impacto_cuantitativo);
+        impact.textContent = impactoTxt || 'Impacto pendiente de documentar.';
+
+        var tagsDiv = document.createElement('div');
+        tagsDiv.className = 'tags';
+        (h.tags || []).forEach(function(t) {
+          var tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.textContent = t;
+          tagsDiv.appendChild(tag);
+        });
 
         var footer = document.createElement('div');
         footer.className = 'card-footer';
+        var small = document.createElement('small');
+        small.textContent = (h.equipo_colaborador || []).join(', ');
+        var btn = document.createElement('button');
+        btn.className = 'btn btn-secondary';
+        btn.style.padding = '6px 12px';
+        btn.style.fontSize = '0.8rem';
+        btn.textContent = 'Ver / Editar';
+        btn.onclick = function() { abrirModalHistoria(h.id); };
 
-        var equipoText = document.createElement('div');
-        equipoText.className = 'equipo-text';
-        var nombres = (h.equipo_colaborador || []).map(function(id) {
-          var c = colaboradores.find(function(col) { return col.id === id; });
-          return c ? c.nombre : null;
-        }).filter(Boolean);
-        if (nombres.length > 0) {
-          var primeros = nombres.slice(0,3).join(', ');
-          var extra = nombres.length > 3 ? ' +' + (nombres.length - 3) + ' más' : '';
-          equipoText.textContent = 'Equipo: ' + primeros + extra;
-        } else {
-          equipoText.textContent = 'Equipo: —';
-        }
-
-        var btns = document.createElement('div');
-        btns.className = 'card-footer-buttons';
-        var btnVer = document.createElement('button');
-        btnVer.className = 'btn btn-secondary btn-mini';
-        btnVer.textContent = 'Ver detalle';
-        btnVer.onclick = function(e) { e.stopPropagation(); mostrarDetalle(h.id); };
-        var btnEdit = document.createElement('button');
-        btnEdit.className = 'btn btn-mini';
-        btnEdit.textContent = 'Editar';
-        btnEdit.onclick = function(e) { e.stopPropagation(); abrirModalHistoria(h.id); };
-
-        btns.appendChild(btnVer);
-        btns.appendChild(btnEdit);
-        footer.appendChild(equipoText);
-        footer.appendChild(btns);
+        footer.appendChild(small);
+        footer.appendChild(btn);
 
         card.appendChild(header);
-        card.appendChild(body);
-        card.appendChild(impactRow);
+        card.appendChild(meta);
+        card.appendChild(problem);
+        card.appendChild(solution);
+        card.appendChild(impact);
+        card.appendChild(tagsDiv);
         card.appendChild(footer);
         cont.appendChild(card);
       });
     }
 
-    function mostrarDetalle(id) {
-      var panel = document.getElementById('detallePanel');
-      var h = historias.find(function(x) { return x.id === id; });
-      if (!h) return;
-
-      var ensayo = ensayos.find(function(e) { return e.id === h.ensayo_relacionado; });
-      var iq = h.impacto_cuantitativo || {};
-
-      var nombresEquipo = (h.equipo_colaborador || []).map(function(cid) {
-        var c = colaboradores.find(function(col) { return col.id === cid; });
-        return c ? c.nombre : null;
-      }).filter(Boolean);
-
-      panel.innerHTML = '';
-
-      var title = document.createElement('h2');
-      title.textContent = h.titulo;
-
-      var metaEl = document.createElement('div');
-      metaEl.className = 'detalle-meta';
-      metaEl.textContent = (h.area || '') + ' · ' + (h.fecha_resolucion || '');
-
-      var probTitle = document.createElement('div');
-      probTitle.className = 'section-title';
-      probTitle.textContent = 'Problema original';
-      var probText = document.createElement('p');
-      probText.textContent = h.problema_original || '';
-
-      var solTitle = document.createElement('div');
-      solTitle.className = 'section-title';
-      solTitle.textContent = 'Solución aplicada';
-      var solText = document.createElement('p');
-      solText.textContent = h.solucion || '';
-
-      var impactTitle = document.createElement('div');
-      impactTitle.className = 'section-title';
-      impactTitle.textContent = 'Impacto';
-      var impactCont = document.createElement('div');
-      impactCont.className = 'detalle-impact';
-
-      if (iq.incremento_rendimiento) {
-        var c1 = document.createElement('div');
-        c1.className = 'impact-card';
-        c1.innerHTML = '<strong>Rendimiento</strong><br>+' + iq.incremento_rendimiento + '%';
-        impactCont.appendChild(c1);
-      }
-      if (iq.reduccion_costos) {
-        var c2 = document.createElement('div');
-        c2.className = 'impact-card';
-        c2.innerHTML = '<strong>Costos</strong><br>-' + iq.reduccion_costos + '%';
-        impactCont.appendChild(c2);
-      }
-      if (iq.mejora_calidad) {
-        var c3 = document.createElement('div');
-        c3.className = 'impact-card';
-        c3.innerHTML = '<strong>Calidad</strong><br>+' + iq.mejora_calidad + '%';
-        impactCont.appendChild(c3);
-      }
-
-      var impactQualTitle = document.createElement('div');
-      impactQualTitle.className = 'section-title';
-      impactQualTitle.textContent = 'Impacto cualitativo';
-      var impactQualText = document.createElement('p');
-      impactQualText.textContent = h.impacto_cualitativo || '—';
-
-      var testTitle = document.createElement('div');
-      testTitle.className = 'section-title';
-      testTitle.textContent = 'Testimonio';
-      var testText = document.createElement('p');
-      testText.textContent = h.testimonio || '—';
-
-      var eqTitle = document.createElement('div');
-      eqTitle.className = 'section-title';
-      eqTitle.textContent = 'Equipo colaborador';
-      var eqText = document.createElement('p');
-      eqText.textContent = nombresEquipo.length ? nombresEquipo.join(', ') : '—';
-
-      var ensTitle = document.createElement('div');
-      ensTitle.className = 'section-title';
-      ensTitle.textContent = 'Ensayo relacionado';
-      var ensText = document.createElement('p');
-      ensText.textContent = ensayo ? (ensayo.metricaObjetivo || ensayo.id) : '—';
-
-      var tagsTitle = document.createElement('div');
-      tagsTitle.className = 'section-title';
-      tagsTitle.textContent = 'Tags';
-      var tagsCont = document.createElement('div');
-      tagsCont.className = 'tags';
-      (h.tags || []).forEach(function(t) {
-        var tag = document.createElement('span');
-        tag.className = 'tag';
-        tag.textContent = t;
-        tagsCont.appendChild(tag);
-      });
-      if ((h.tags || []).length === 0) {
-        var pn = document.createElement('p');
-        pn.textContent = '—';
-        pn.style.fontSize = '0.85rem';
-        pn.style.color = '#666';
-        tagsCont.appendChild(pn);
-      }
-
-      var footerEl = document.createElement('div');
-      footerEl.className = 'detalle-footer';
-      var info = document.createElement('small');
-      info.style.color = '#666';
-      info.textContent = h.visible_en_home ? 'Marcada como destacada en el dashboard.' : '';
-      var btn = document.createElement('button');
-      btn.className = 'btn btn-secondary btn-mini';
-      btn.textContent = 'Editar historia';
-      btn.onclick = function() { abrirModalHistoria(h.id); };
-
-      footerEl.appendChild(info);
-      footerEl.appendChild(btn);
-
-      panel.appendChild(title);
-      panel.appendChild(metaEl);
-      panel.appendChild(probTitle);
-      panel.appendChild(probText);
-      panel.appendChild(solTitle);
-      panel.appendChild(solText);
-      panel.appendChild(impactTitle);
-      panel.appendChild(impactCont);
-      panel.appendChild(impactQualTitle);
-      panel.appendChild(impactQualText);
-      panel.appendChild(testTitle);
-      panel.appendChild(testText);
-      panel.appendChild(eqTitle);
-      panel.appendChild(eqText);
-      panel.appendChild(ensTitle);
-      panel.appendChild(ensText);
-      panel.appendChild(tagsTitle);
-      panel.appendChild(tagsCont);
-      panel.appendChild(footerEl);
-    }
-
     function abrirModalHistoria(id) {
       historiaEditandoId = id || null;
       tagsTemp = [];
-
       var form = document.getElementById('formHistoria');
       form.reset();
       document.getElementById('btnEliminarHistoria').style.display = id ? 'inline-flex' : 'none';
 
-      if (!id) document.getElementById('fechaResolucion').valueAsDate = new Date();
-
-      initSelectsFormulario();
-
       if (id) {
-        document.getElementById('modalTitulo').textContent = 'Editar historia';
+        document.getElementById('modalTitulo').textContent = 'Editar historia de éxito';
         var h = historias.find(function(x) { return x.id === id; });
         if (h) {
           document.getElementById('historiaId').value = h.id;
           document.getElementById('titulo').value = h.titulo || '';
           document.getElementById('area').value = h.area || '';
-          document.getElementById('problemaOriginal').value = h.problema_original || '';
           document.getElementById('ensayoRelacionado').value = h.ensayo_relacionado || '';
+          document.getElementById('problemaOriginal').value = h.problema_original || '';
           document.getElementById('solucion').value = h.solucion || '';
           document.getElementById('testimonio').value = h.testimonio || '';
           document.getElementById('fechaResolucion').value = h.fecha_resolucion || '';
-          var iq = h.impacto_cuantitativo || {};
-          document.getElementById('impactoRendimiento').value = iq.incremento_rendimiento || '';
-          document.getElementById('impactoCostos').value = iq.reduccion_costos || '';
-          document.getElementById('impactoCalidad').value = iq.mejora_calidad || '';
+          document.getElementById('visibleHome').value = h.visible_en_home ? 'true' : 'false';
+          document.getElementById('equipoColaborador').value = (h.equipo_colaborador || []).join(', ');
           document.getElementById('impactoCualitativo').value = h.impacto_cualitativo || '';
-          document.getElementById('visibleHome').checked = !!h.visible_en_home;
-
-          var select = document.getElementById('equipoColaborador');
-          (h.equipo_colaborador || []).forEach(function(idc) {
-            var opt = Array.from(select.options).find(function(o) { return o.value === idc; });
-            if (opt) opt.selected = true;
-          });
-
-          tagsTemp = h.tags || [];
+          document.getElementById('impactoCuantitativo').value = h.impacto_cuantitativo ? JSON.stringify(h.impacto_cuantitativo) : '';
+          tagsTemp = (h.tags || []).slice();
           renderTags();
         }
       } else {
         document.getElementById('modalTitulo').textContent = 'Nueva historia de éxito';
-        tagsTemp = [];
         renderTags();
       }
 
@@ -961,69 +628,74 @@
       historiaEditandoId = null;
     }
 
-    document.getElementById('formHistoria').addEventListener('submit', function(e) {
+    document.getElementById('formHistoria').addEventListener('submit', async function(e) {
       e.preventDefault();
       var titulo = document.getElementById('titulo').value.trim();
       var area = document.getElementById('area').value;
       var problema = document.getElementById('problemaOriginal').value.trim();
       var solucion = document.getElementById('solucion').value.trim();
-      var fecha = document.getElementById('fechaResolucion').value;
 
-      if (!titulo || !area || !problema || !solucion || !fecha) {
+      if (!titulo || !area || !problema || !solucion) {
         alert('Completa los campos obligatorios.');
         return;
       }
 
-      var ensayoId = document.getElementById('ensayoRelacionado').value || '';
-      var iq = {
-        incremento_rendimiento: parseFloat(document.getElementById('impactoRendimiento').value) || 0,
-        reduccion_costos: parseFloat(document.getElementById('impactoCostos').value) || 0,
-        mejora_calidad: parseFloat(document.getElementById('impactoCalidad').value) || 0
-      };
-
-      var selectColab = document.getElementById('equipoColaborador');
-      var equipoIds = Array.from(selectColab.selectedOptions).map(function(o) { return o.value; });
-
-      var historia = {
-        id: historiaEditandoId || ('historia_' + Date.now()),
-        titulo: titulo,
-        problema_original: problema,
-        area: area,
-        ensayo_relacionado: ensayoId,
-        solucion: solucion,
-        testimonio: document.getElementById('testimonio').value.trim(),
-        fecha_resolucion: fecha,
-        equipo_colaborador: equipoIds,
-        impacto_cuantitativo: iq,
-        impacto_cualitativo: document.getElementById('impactoCualitativo').value.trim(),
-        tags: tagsTemp.slice(),
-        visible_en_home: document.getElementById('visibleHome').checked
-      };
-
-      if (historiaEditandoId) {
-        var idx = historias.findIndex(function(x) { return x.id === historiaEditandoId; });
-        if (idx !== -1) historias[idx] = historia;
-      } else {
-        historias.push(historia);
+      var impactoCuant;
+      var txtImpactoCuant = document.getElementById('impactoCuantitativo').value.trim();
+      if (txtImpactoCuant) {
+        try {
+          impactoCuant = JSON.parse(txtImpactoCuant);
+        } catch (e) {
+          alert('Impacto cuantitativo debe ser un JSON válido (ejemplo en el placeholder).');
+          return;
+        }
       }
 
-      saveHistoriasExito(historias);
-      actualizarSelectsFiltros();
-      renderHistorias();
-      mostrarDetalle(historia.id);
-      cerrarModalHistoria();
+      var historia = {
+        id: historiaEditandoId || ('hist_' + Date.now()),
+        titulo: titulo,
+        area: area,
+        ensayo_relacionado: document.getElementById('ensayoRelacionado').value.trim(),
+        problema_original: problema,
+        solucion: solucion,
+        testimonio: document.getElementById('testimonio').value.trim(),
+        fecha_resolucion: document.getElementById('fechaResolucion').value || null,
+        equipo_colaborador: document.getElementById('equipoColaborador').value
+          .split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; }),
+        impacto_cuantitativo: impactoCuant || null,
+        impacto_cualitativo: document.getElementById('impactoCualitativo').value.trim(),
+        tags: tagsTemp.slice(),
+        visible_en_home: document.getElementById('visibleHome').value === 'true'
+      };
+
+      var result;
+      if (historiaEditandoId) {
+        result = await DB.historias.actualizar(historiaEditandoId, historia);
+      } else {
+        result = await DB.historias.crear(historia);
+      }
+
+      if (result.error) {
+        alert('Error: ' + result.error.message);
+      } else {
+        await loadHistorias();
+        actualizarFiltrosAreas();
+        renderHistorias();
+        cerrarModalHistoria();
+      }
     });
 
-    function eliminarHistoria() {
+    async function eliminarHistoria() {
       if (!historiaEditandoId) return;
       if (!confirm('¿Eliminar esta historia?')) return;
-      historias = historias.filter(function(h) { return h.id !== historiaEditandoId; });
-      saveHistoriasExito(historias);
-      actualizarSelectsFiltros();
+      var { error } = await DB.historias.eliminar(historiaEditandoId);
+      if (error) {
+        alert('Error: ' + error.message);
+        return;
+      }
+      await loadHistorias();
+      actualizarFiltrosAreas();
       renderHistorias();
-      document.getElementById('detallePanel').innerHTML =
-        '<h2>Selecciona una historia</h2>' +
-        '<p style="font-size:0.9rem;color:#666;">Aquí verás el detalle completo.</p>';
       cerrarModalHistoria();
     }
 
@@ -1032,12 +704,10 @@
       if (e.target === modal) cerrarModalHistoria();
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-      historias = loadHistoriasExito();
-      loadColaboradores();
-      loadEnsayos();
+    document.addEventListener('DOMContentLoaded', async function() {
+      await loadHistorias();
       initTagsInput();
-      actualizarSelectsFiltros();
+      actualizarFiltrosAreas();
       renderHistorias();
     });
   </script>
@@ -1055,3 +725,4 @@
   </script>
 </body>
 </html>
+
