@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Centro de Analítica · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-bg: #f8fafb;
+      --color-card: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+    .page { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .header h1 { color: var(--color-primary); font-size: 2rem; }
+    .btn { background: var(--color-primary); color: #fff; border: none; padding: 10px 18px; border-radius: 999px; cursor: pointer; font-size: 0.95rem; font-weight: 600; text-decoration: none; }
+    .btn-secondary { background:#6c757d; }
+
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:24px; }
+    .kpi-card { background:var(--color-card); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px 16px; }
+    .kpi-label { font-size:0.8rem; text-transform:uppercase; color:#666; margin-bottom:4px; }
+    .kpi-value { font-size:1.6rem; font-weight:800; }
+
+    .tabs { display:flex; gap:8px; margin-bottom:16px; }
+    .tab-btn { padding:8px 14px; border-radius:999px; border:none; cursor:pointer; background:#e5efe7; font-size:0.9rem; }
+    .tab-btn.active { background:var(--color-primary); color:#fff; }
+
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    .grid-2 { display:grid; grid-template-columns:1.6fr 1.4fr; gap:18px; margin-bottom:24px; }
+    .card { background:var(--color-card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 16px 14px; }
+
+    table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+    th,td { padding:8px 10px; border-bottom:1px solid #e5e7eb; text-align:left; }
+    th { background:#f9fafb; text-transform:uppercase; font-size:0.75rem; color:#666; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <h1>📈 Centro de Analítica y BI</h1>
+      <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+    </header>
+
+    <!-- Filtro periodo -->
+    <div style="margin-bottom:16px; display:flex; gap:10px; align-items:center;">
+      <span style="font-size:0.85rem;">Periodo:</span>
+      <select id="filtroPeriodo" onchange="refrescarAnalitica()">
+        <option value="12m">Últimos 12 meses</option>
+        <option value="36m">Últimos 3 años</option>
+        <option value="all">Todo el histórico</option>
+      </select>
+    </div>
+
+    <!-- KPIs Overview -->
+    <div class="kpis" id="kpisOverview">
+      <!-- Se rellenan por JS -->
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="cambiarTab('overview', this)">Visión general</button>
+      <button class="tab-btn" onclick="cambiarTab('productividad', this)">Productividad</button>
+      <button class="tab-btn" onclick="cambiarTab('roi', this)">ROI y rentabilidad</button>
+      <button class="tab-btn" onclick="cambiarTab('tendencias', this)">Tendencias y benchmarking</button>
+    </div>
+
+    <!-- Panel: Overview -->
+    <section id="tab-overview" class="tab-panel active">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Ensayos iniciados vs finalizados</h3>
+          <canvas id="chartEnsayosTiempo"></canvas>
+        </div>
+        <div class="card">
+          <h3>Problemas resueltos vs abiertos</h3>
+          <canvas id="chartProblemas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel: Productividad -->
+    <section id="tab-productividad" class="tab-panel">
+      <div class="card" style="margin-bottom:18px;">
+        <h3>Productividad por colaborador</h3>
+        <canvas id="chartProductividad"></canvas>
+      </div>
+      <div class="card">
+        <h3>Detalle de productividad</h3>
+        <table id="tablaProductividad">
+          <thead>
+            <tr>
+              <th>Colaborador</th>
+              <th>Cargo</th>
+              <th>Años exp.</th>
+              <th>Ensayos exitosos</th>
+              <th>Proyectos activos</th>
+              <th>Áreas fuertes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Panel: ROI -->
+    <section id="tab-roi" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>ROI vs duración de ensayos</h3>
+          <canvas id="chartScatterROI"></canvas>
+        </div>
+        <div class="card">
+          <h3>ROI promedio por área</h3>
+          <canvas id="chartRoiArea"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Resumen de rentabilidad</h3>
+        <div id="resumenRoi" style="font-size:0.9rem;"></div>
+      </div>
+    </section>
+
+    <!-- Panel: Tendencias -->
+    <section id="tab-tendencias" class="tab-panel">
+      <div class="card" style="margin-bottom:18px;">
+        <h3>Tasa de éxito por área en el tiempo</h3>
+        <canvas id="chartExitoAreaTiempo"></canvas>
+      </div>
+      <div class="card">
+        <h3>Mapa interno de desempeño (simple)</h3>
+        <table id="tablaHeatmap">
+          <thead>
+            <tr>
+              <th>Área</th>
+              <th>Tasa éxito (%)</th>
+              <th>ROI promedio</th>
+              <th>Problemas</th>
+              <th>Historias de éxito</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let charts = {};
+
+    function loadEnsayosFromLocalStorage() {
+      const raw = localStorage.getItem('ensayos');
+      return raw ? JSON.parse(raw) : [];
+    }
+    function loadProblemasFromLocalStorage() {
+      const raw = localStorage.getItem('problemas');
+      return raw ? JSON.parse(raw) : [];
+    }
+    function loadColaboradores() {
+      const raw = localStorage.getItem('colaboradores');
+      return raw ? JSON.parse(raw) : [];
+    }
+    function loadHistoriasExito() {
+      const raw = localStorage.getItem('historias_exito');
+      return raw ? JSON.parse(raw) : [];
+    }
+
+    function getDataForAnalytics() {
+      return {
+        ensayos: loadEnsayosFromLocalStorage(),
+        problemas: loadProblemasFromLocalStorage(),
+        colaboradores: loadColaboradores(),
+        historias: loadHistoriasExito()
+      };
+    }
+
+    function cambiarTab(id, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function refrescarAnalitica() {
+      const { ensayos, problemas, colaboradores, historias } = getDataForAnalytics();
+      const periodo = document.getElementById('filtroPeriodo').value;
+
+      const ensayosFiltrados = filtrarPorPeriodoEnsayos(ensayos, periodo);
+      const problemasFiltrados = filtrarPorPeriodoProblemas(problemas, periodo);
+      const historiasFiltradas = filtrarPorPeriodoHistorias(historias, periodo);
+
+      actualizarKPIs(ensayosFiltrados, problemasFiltrados, colaboradores, historiasFiltradas);
+      actualizarChartEnsayosTiempo(ensayosFiltrados);
+      actualizarChartProblemas(problemasFiltrados);
+      actualizarProductividad(colaboradores);
+      actualizarROI(ensayosFiltrados);
+      actualizarTendencias(ensayosFiltrados, problemasFiltrados, historiasFiltradas);
+    }
+
+    function filtrarPorPeriodoEnsayos(ensayos, periodo) {
+      if (periodo === 'all') return ensayos;
+      const ahora = new Date();
+      const meses = periodo === '12m' ? 12 : 36;
+      const limite = new Date(ahora);
+      limite.setMonth(limite.getMonth() - meses);
+      return ensayos.filter(e => {
+        const f = e.fechaInicio || e.fecha_inicio || e.fechaFinEstimado || e.fecha_fin_estimado;
+        if (!f) return false;
+        const d = new Date(f);
+        return d >= limite;
+      });
+    }
+    function filtrarPorPeriodoProblemas(problemas, periodo) {
+      if (periodo === 'all') return problemas;
+      const ahora = new Date();
+      const meses = periodo === '12m' ? 12 : 36;
+      const limite = new Date(ahora);
+      limite.setMonth(limite.getMonth() - meses);
+      return problemas.filter(p => {
+        if (!p.fecha) return false;
+        const d = new Date(p.fecha);
+        return d >= limite;
+      });
+    }
+    function filtrarPorPeriodoHistorias(historias, periodo) {
+      if (periodo === 'all') return historias;
+      const ahora = new Date();
+      const meses = periodo === '12m' ? 12 : 36;
+      const limite = new Date(ahora);
+      limite.setMonth(limite.getMonth() - meses);
+      return historias.filter(h => {
+        if (!h.fecha_resolucion) return false;
+        const d = new Date(h.fecha_resolucion);
+        return d >= limite;
+      });
+    }
+
+    function actualizarKPIs(ensayos, problemas, colaboradores, historias) {
+      const totalEnsayos = ensayos.length;
+      const finalizados = ensayos.filter(e => e.estado === 'finalizado').length;
+      const exitosos = ensayos.filter(e => e.exito).length;
+      const tasaExitoGlobal = finalizados ? (exitosos / finalizados * 100).toFixed(1) : 0;
+
+      const roiFinalizados = ensayos.filter(e => e.estado === 'finalizado' && typeof e.roiEstimado === 'number');
+      const roiProm = roiFinalizados.length
+        ? (roiFinalizados.reduce((s,e) => s + e.roiEstimado, 0) / roiFinalizados.length).toFixed(1)
+        : 0;
+
+      const abiertos = problemas.filter(p => p.estado === 'abierto' || p.estado === 'en proceso').length;
+      const resueltos = problemas.filter(p => p.estado === 'resuelto').length;
+
+      const historiasCount = historias.length;
+      const colabActivos = colaboradores.filter(c => (c.proyectos_activos || []).length > 0).length;
+
+      const cont = document.getElementById('kpisOverview');
+      cont.innerHTML = '';
+
+      const kpis = [
+        { label: 'Ensayos históricos', value: totalEnsayos },
+        { label: 'Tasa de éxito global', value: tasaExitoGlobal + '%' },
+        { label: 'ROI promedio I+D', value: roiProm + '%' },
+        { label: 'Problemas resueltos / abiertos', value: `${resueltos} / ${abiertos}` },
+        { label: 'Historias de éxito', value: historiasCount },
+        { label: 'Colaboradores activos', value: colabActivos }
+      ];
+
+      kpis.forEach(k => {
+        const card = document.createElement('div');
+        card.className = 'kpi-card';
+        card.innerHTML = `<div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div>`;
+        cont.appendChild(card);
+      });
+    }
+
+    function agruparPorMes(ensayos, campoFecha) {
+      const map = {};
+      ensayos.forEach(e => {
+        const f = e[campoFecha] || e[campoFecha.replace('fecha_', 'fecha')];
+        if (!f) return;
+        const d = new Date(f);
+        if (isNaN(d)) return;
+        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+        map[key] = (map[key] || 0) + 1;
+      });
+      const keys = Object.keys(map).sort();
+      return { labels: keys, data: keys.map(k => map[k]) };
+    }
+
+    function actualizarChartEnsayosTiempo(ensayos) {
+      const ini = agruparPorMes(ensayos, 'fecha_inicio');
+      const fin = agruparPorMes(ensayos.filter(e => e.estado === 'finalizado'), 'fecha_final_real');
+
+      const labels = Array.from(new Set([...ini.labels, ...fin.labels])).sort();
+      const dataIni = labels.map(l => ini.labels.includes(l) ? ini.data[ini.labels.indexOf(l)] : 0);
+      const dataFin = labels.map(l => fin.labels.includes(l) ? fin.data[fin.labels.indexOf(l)] : 0);
+
+      const ctx = document.getElementById('chartEnsayosTiempo').getContext('2d');
+      if (charts.ensayosTiempo) charts.ensayosTiempo.destroy();
+      charts.ensayosTiempo = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Iniciados', data: dataIni, borderColor:'#4caf50', backgroundColor:'rgba(76,175,80,0.2)', tension:0.3 },
+            { label: 'Finalizados', data: dataFin, borderColor:'#2196f3', backgroundColor:'rgba(33,150,243,0.2)', tension:0.3 }
+          ]
+        },
+        options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
+      });
+    }
+
+    function actualizarChartProblemas(problemas) {
+      const abiertos = problemas.filter(p => p.estado === 'abierto' || p.estado === 'en proceso').length;
+      const resueltos = problemas.filter(p => p.estado === 'resuelto').length;
+      const ctx = document.getElementById('chartProblemas').getContext('2d');
+      if (charts.problemas) charts.problemas.destroy();
+      charts.problemas = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Resueltos','Abiertos/En proceso'],
+          datasets: [{ data:[resueltos, abiertos], backgroundColor:['#4caf50','#ff9800'] }]
+        },
+        options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
+      });
+    }
+
+    function actualizarProductividad(colaboradores) {
+      const activos = colaboradores.filter(c => (c.proyectos_activos || []).length > 0 || (c.ensayos_exitosos || 0) > 0);
+      const labels = activos.map(c => c.nombre);
+      const exitosos = activos.map(c => c.ensayos_exitosos || 0);
+      const proyectos = activos.map(c => (c.proyectos_activos || []).length);
+
+      const ctx = document.getElementById('chartProductividad').getContext('2d');
+      if (charts.productividad) charts.productividad.destroy();
+      charts.productividad = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label:'Ensayos exitosos', data:exitosos, backgroundColor:'#4caf50' },
+            { label:'Proyectos activos', data:proyectos, backgroundColor:'#2196f3' }
+          ]
+        },
+        options: { responsive:true, plugins:{ legend:{ position:'bottom' } }, scales:{ y:{ beginAtZero:true } } }
+      });
+
+      const tbody = document.querySelector('#tablaProductividad tbody');
+      tbody.innerHTML = '';
+      activos.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.nombre}</td>
+          <td>${c.cargo || ''}</td>
+          <td>${c.anios_experiencia || 0}</td>
+          <td>${c.ensayos_exitosos || 0}</td>
+          <td>${(c.proyectos_activos || []).length}</td>
+          <td>${(c.areas_fuertes || []).join(', ')}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function diasEntre(f1, f2) {
+      const d1 = new Date(f1), d2 = new Date(f2);
+      if (isNaN(d1) || isNaN(d2)) return null;
+      return (d2 - d1) / (1000*60*60*24);
+    }
+
+    function actualizarROI(ensayos) {
+      const finalizados = ensayos.filter(e => e.estado === 'finalizado' && typeof e.roiEstimado === 'number');
+
+      // Scatter ROI vs duración
+      const puntos = finalizados.map(e => {
+        const duracion = diasEntre(e.fecha_inicio, e.fecha_final_real || e.fecha_fin_estimado);
+        return { x: duracion || 0, y: e.roiEstimado, area: e.area || 'Otro' };
+      });
+      const ctxS = document.getElementById('chartScatterROI').getContext('2d');
+      if (charts.scatterROI) charts.scatterROI.destroy();
+      charts.scatterROI = new Chart(ctxS, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label:'Ensayos finalizados',
+            data: puntos,
+            backgroundColor: 'rgba(76,175,80,0.6)'
+          }]
+        },
+        options: {
+          responsive:true,
+          plugins:{ legend:{ display:false } },
+          scales:{
+            x:{ title:{ display:true, text:'Duración (días)' } },
+            y:{ title:{ display:true, text:'ROI (%)' } }
+          }
+        }
+      });
+
+      // ROI promedio por área
+      const map = {};
+      finalizados.forEach(e => {
+        const area = e.area || 'Otro';
+        if (!map[area]) map[area] = [];
+        map[area].push(e.roiEstimado);
+      });
+      const labels = Object.keys(map);
+      const data = labels.map(a => map[a].reduce((s,v)=>s+v,0)/map[a].length);
+      const ctxB = document.getElementById('chartRoiArea').getContext('2d');
+      if (charts.roiArea) charts.roiArea.destroy();
+      charts.roiArea = new Chart(ctxB, {
+        type:'bar',
+        data:{ labels, datasets:[{ label:'ROI promedio (%)', data, backgroundColor:'#4caf50' }] },
+        options:{ responsive:true, scales:{ y:{ beginAtZero:true } } }
+      });
+
+      // Resumen numérico
+      const resumen = document.getElementById('resumenRoi');
+      if (finalizados.length === 0) {
+        resumen.textContent = 'No hay ensayos finalizados con ROI.';
+        return;
+      }
+      const rois = finalizados.map(e => e.roiEstimado);
+      const max = Math.max(...rois);
+      const min = Math.min(...rois);
+      const umbral = 100; // configurable en código
+      const sobreUmbral = rois.filter(r => r > umbral).length;
+      const pctSobre = (sobreUmbral / rois.length * 100).toFixed(1);
+
+      resumen.innerHTML = `
+        <p>Total ensayos con ROI: <strong>${rois.length}</strong></p>
+        <p>ROI máximo: <strong>${max}%</strong> · ROI mínimo: <strong>${min}%</strong></p>
+        <p>Ensayos con ROI &gt; ${umbral}%: <strong>${pctSobre}%</strong> del total</p>
+      `;
+    }
+
+    function actualizarTendencias(ensayos, problemas, historias) {
+      // Tasa de éxito por área y año
+      const map = {};
+      ensayos.forEach(e => {
+        if (!e.fecha_final_real && !e.fecha_fin_estimado) return;
+        const d = new Date(e.fecha_final_real || e.fecha_fin_estimado);
+        if (isNaN(d)) return;
+        const anio = d.getFullYear();
+        const area = e.area || 'Otro';
+        const key = area + '|' + anio;
+        if (!map[key]) map[key] = { total:0, exitosos:0 };
+        map[key].total++;
+        if (e.exito) map[key].exitosos++;
+      });
+
+      const areas = Array.from(new Set(Object.keys(map).map(k => k.split('|')[0])));
+      const anios = Array.from(new Set(Object.keys(map).map(k => k.split('|')[1]))).sort();
+
+      const datasets = areas.map(area => ({
+        label: area,
+        data: anios.map(anio => {
+          const m = map[area + '|' + anio];
+          return m ? (m.exitosos / m.total * 100) : 0;
+        }),
+        borderWidth: 2,
+        tension:0.2
+      }));
+
+      const ctx = document.getElementById('chartExitoAreaTiempo').getContext('2d');
+      if (charts.exitoArea) charts.exitoArea.destroy();
+      charts.exitoArea = new Chart(ctx, {
+        type: 'line',
+        data: { labels: anios, datasets },
+        options: { responsive:true, plugins:{ legend:{ position:'bottom' } }, scales:{ y:{ beginAtZero:true, max:100 } } }
+      });
+
+      // "Heatmap" simple en tabla
+      const tbody = document.querySelector('#tablaHeatmap tbody');
+      tbody.innerHTML = '';
+      const areasAll = Array.from(new Set([
+        ...ensayos.map(e => e.area || 'Otro'),
+        ...problemas.map(p => p.area || p.area_problema || 'Otro'),
+        ...historias.map(h => h.area || 'Otro')
+      ]));
+
+      areasAll.forEach(area => {
+        const ensArea = ensayos.filter(e => (e.area || 'Otro') === area);
+        const finArea = ensArea.filter(e => e.estado === 'finalizado');
+        const exitoArea = finArea.filter(e => e.exito);
+        const tasa = finArea.length ? (exitoArea.length/finArea.length*100).toFixed(1) : '0.0';
+
+        const roiVals = finArea.filter(e => typeof e.roiEstimado === 'number').map(e => e.roiEstimado);
+        const roiProm = roiVals.length ? (roiVals.reduce((s,v)=>s+v,0)/roiVals.length).toFixed(1) : '0.0';
+
+        const probArea = problemas.filter(p => (p.area || p.area_problema || 'Otro') === area).length;
+        const histArea = historias.filter(h => (h.area || 'Otro') === area).length;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${area}</td>
+          <td style="background:${colorPorValor(tasa)}">${tasa}</td>
+          <td style="background:${colorPorValor(roiProm)}">${roiProm}</td>
+          <td style="background:${colorPorValorInverso(probArea)}">${probArea}</td>
+          <td style="background:${colorPorValor(histArea)}">${histArea}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function colorPorValor(v) {
+      const n = parseFloat(v);
+      if (isNaN(n)) return '#ffffff';
+      if (n >= 80) return '#c8e6c9';
+      if (n >= 50) return '#fff9c4';
+      return '#ffcdd2';
+    }
+    function colorPorValorInverso(v) {
+      const n = parseFloat(v);
+      if (n === 0) return '#c8e6c9';
+      if (n <= 3) return '#fff9c4';
+      return '#ffcdd2';
+    }
+
+    document.addEventListener('DOMContentLoaded', refrescarAnalitica);
+
+    // Para que otras páginas puedan refrescar este centro si está abierto
+    window.refrescarAnalitica = refrescarAnalitica;
+  </script>
+</body>
+</html>
