@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Usuarios · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-bg: #f8fafb;
+      --color-card: white;
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header h1 { color: var(--color-primary); font-size: 1.8rem; }
+    .btn { background: var(--color-primary); color: white; border: none; padding: 8px 16px; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 0.85rem; text-decoration: none; }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+    .btn-warning { background: #ff9800; }
+    .card { background: var(--color-card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+    th { background: #f8fafc; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+    tr:hover { background: #f8fafc; }
+    .badge { padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    .badge-admin { background: #e8eaf6; color: #283593; }
+    .badge-editor { background: #e8f5e9; color: #2e7d32; }
+    .badge-lector { background: #fff3e0; color: #e65100; }
+    .badge-pendiente { background: #fff9c4; color: #f57f17; }
+    .badge-bloqueado { background: #ffcdd2; color: #c62828; }
+    .badge-aprobado { background: #c8e6c9; color: #2e7d32; }
+    .acciones { display: flex; gap: 6px; flex-wrap: wrap; }
+    .acciones select { padding: 4px 8px; border-radius: 8px; border: 1px solid #dde2eb; font-size: 0.8rem; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+    .stat-card { background: var(--color-card); border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: center; }
+    .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--color-primary); }
+    .stat-label { font-size: 0.8rem; color: #666; }
+    .no-access { text-align: center; padding: 60px 20px; font-size: 1.2rem; color: #999; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <h1>🔐 Gestión de Usuarios</h1>
+      <div>
+        <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+      </div>
+    </header>
+
+    <div id="contenidoAdmin">
+      <div class="stats" id="statsUsuarios"></div>
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Fecha registro</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaUsuarios"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="sinAcceso" class="no-access" style="display:none;">
+      <p>⛔ No tienes permisos de administrador para ver esta página.</p>
+      <br>
+      <a href="dashboard.html" class="btn">Volver al Dashboard</a>
+    </div>
+  </div>
+
+  <script>
+    var sesion = JSON.parse(localStorage.getItem('sesion_activa'));
+
+    if (!sesion || sesion.rol !== 'admin') {
+      document.getElementById('contenidoAdmin').style.display = 'none';
+      document.getElementById('sinAcceso').style.display = 'block';
+    } else {
+      renderUsuarios();
+    }
+
+    function renderUsuarios() {
+      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+      // Stats
+      var stats = document.getElementById('statsUsuarios');
+      var totalUsers = usuarios.length;
+      var pendientes = usuarios.filter(function(u) { return u.estado === 'pendiente'; }).length;
+      var aprobados = usuarios.filter(function(u) { return u.estado === 'aprobado'; }).length;
+      var bloqueados = usuarios.filter(function(u) { return u.estado === 'bloqueado'; }).length;
+
+      stats.innerHTML =
+        '<div class="stat-card"><div class="stat-value">' + totalUsers + '</div><div class="stat-label">Total usuarios</div></div>' +
+        '<div class="stat-card"><div class="stat-value" style="color:#f57f17">' + pendientes + '</div><div class="stat-label">Pendientes</div></div>' +
+        '<div class="stat-card"><div class="stat-value" style="color:#2e7d32">' + aprobados + '</div><div class="stat-label">Aprobados</div></div>' +
+        '<div class="stat-card"><div class="stat-value" style="color:#c62828">' + bloqueados + '</div><div class="stat-label">Bloqueados</div></div>';
+
+      // Tabla
+      var tbody = document.getElementById('tablaUsuarios');
+      tbody.innerHTML = '';
+
+      usuarios.forEach(function(u) {
+        var tr = document.createElement('tr');
+
+        var rolBadge = u.rol === 'admin' ? 'badge-admin' :
+                       u.rol === 'editor' ? 'badge-editor' :
+                       u.rol === 'lector' ? 'badge-lector' : 'badge-pendiente';
+
+        var estadoBadge = u.estado === 'aprobado' ? 'badge-aprobado' :
+                          u.estado === 'bloqueado' ? 'badge-bloqueado' : 'badge-pendiente';
+
+        var esAdmin = u.id === 'user_admin';
+
+        tr.innerHTML =
+          '<td><strong>' + u.nombre + '</strong></td>' +
+          '<td>' + u.email + '</td>' +
+          '<td><span class="badge ' + rolBadge + '">' + u.rol + '</span></td>' +
+          '<td><span class="badge ' + estadoBadge + '">' + u.estado + '</span></td>' +
+          '<td>' + (u.fechaRegistro ? new Date(u.fechaRegistro).toLocaleDateString('es-DO') : '') + '</td>' +
+          '<td class="acciones">' +
+            (esAdmin ? '<em style="font-size:0.8rem;color:#999;">Admin principal</em>' :
+              '<select onchange="cambiarRol(\'' + u.id + '\', this.value)">' +
+                '<option value="">Cambiar rol</option>' +
+                '<option value="lector"' + (u.rol === 'lector' ? ' selected' : '') + '>Lector</option>' +
+                '<option value="editor"' + (u.rol === 'editor' ? ' selected' : '') + '>Editor</option>' +
+                '<option value="admin"' + (u.rol === 'admin' ? ' selected' : '') + '>Admin</option>' +
+              '</select>' +
+              (u.estado === 'pendiente'
+                ? '<button class="btn" onclick="aprobarUsuario(\'' + u.id + '\')">Aprobar</button>'
+                : '') +
+              (u.estado !== 'bloqueado'
+                ? '<button class="btn btn-warning" onclick="bloquearUsuario(\'' + u.id + '\')">Bloquear</button>'
+                : '<button class="btn" onclick="aprobarUsuario(\'' + u.id + '\')">Desbloquear</button>') +
+              '<button class="btn btn-danger" onclick="eliminarUsuario(\'' + u.id + '\')">Eliminar</button>'
+            ) +
+          '</td>';
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function cambiarRol(id, nuevoRol) {
+      if (!nuevoRol) return;
+      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      var user = usuarios.find(function(u) { return u.id === id; });
+      if (user) {
+        user.rol = nuevoRol;
+        if (user.estado === 'pendiente') user.estado = 'aprobado';
+        localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        renderUsuarios();
+      }
+    }
+
+    function aprobarUsuario(id) {
+      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      var user = usuarios.find(function(u) { return u.id === id; });
+      if (user) {
+        user.estado = 'aprobado';
+        if (user.rol === 'pendiente') user.rol = 'lector';
+        localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        renderUsuarios();
+      }
+    }
+
+    function bloquearUsuario(id) {
+      if (!confirm('¿Bloquear a este usuario?')) return;
+      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      var user = usuarios.find(function(u) { return u.id === id; });
+      if (user) {
+        user.estado = 'bloqueado';
+        localStorage.setItem('usuarios', JSON.stringify(usuarios));
+        renderUsuarios();
+      }
+    }
+
+    function eliminarUsuario(id) {
+      if (!confirm('¿Eliminar este usuario permanentemente?')) return;
+      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      usuarios = usuarios.filter(function(u) { return u.id !== id; });
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      renderUsuarios();
+    }
+  </script>
+</body>
+</html>
