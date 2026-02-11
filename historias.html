@@ -37,11 +37,17 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .header h1 {
-      color: var(--color-primary);
-      font-size: 2rem;
+    .header h1 { color: var(--color-primary); font-size: 2rem; }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -51,18 +57,19 @@
       padding: 10px 18px;
       border-radius: 999px;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
     }
 
     .btn-secondary { background: #6c757d; }
     .btn-danger { background: #f44336; }
     .btn:hover { opacity: 0.93; }
 
-    /* Filtros */
     .filters {
       margin-bottom: 12px;
       display: flex;
@@ -92,11 +99,6 @@
       min-width: 140px;
     }
 
-    .filter-group input[type="checkbox"] {
-      width: auto;
-      margin-right: 4px;
-    }
-
     .filter-inline {
       display: flex;
       align-items: center;
@@ -105,7 +107,6 @@
       font-size: 0.85rem;
     }
 
-    /* Cards listado */
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -130,15 +131,8 @@
       gap: 8px;
     }
 
-    .card-title {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .card-meta {
-      font-size: 0.8rem;
-      color: #666;
-    }
+    .card-title { font-weight: 700; font-size: 1rem; }
+    .card-meta { font-size: 0.8rem; color: #666; }
 
     .highlight-badge {
       font-size: 0.75rem;
@@ -149,10 +143,7 @@
       align-self: flex-start;
     }
 
-    .card-body {
-      font-size: 0.85rem;
-      color: #444;
-    }
+    .card-body { font-size: 0.85rem; color: #444; }
 
     .impact-row {
       display: flex;
@@ -180,23 +171,12 @@
       margin-top: 4px;
     }
 
-    .equipo-text {
-      font-size: 0.8rem;
-      color: #555;
-    }
+    .equipo-text { font-size: 0.8rem; color: #555; }
 
-    .card-footer-buttons {
-      display: flex;
-      gap: 6px;
-    }
+    .card-footer-buttons { display: flex; gap: 6px; }
 
-    .btn-mini {
-      padding: 4px 10px;
-      font-size: 0.75rem;
-      border-radius: 999px;
-    }
+    .btn-mini { padding: 4px 10px; font-size: 0.75rem; border-radius: 999px; }
 
-    /* Detalle */
     .detalle {
       background: var(--color-card);
       border-radius: var(--radius);
@@ -209,14 +189,8 @@
       overflow-y: auto;
     }
 
-    .detalle h2 {
-      font-size: 1.25rem;
-    }
-
-    .detalle-meta {
-      font-size: 0.85rem;
-      color: #666;
-    }
+    .detalle h2 { font-size: 1.25rem; }
+    .detalle-meta { font-size: 0.85rem; color: #666; }
 
     .section-title {
       font-size: 0.9rem;
@@ -225,10 +199,7 @@
       margin-bottom: 2px;
     }
 
-    .detalle p {
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
+    .detalle p { font-size: 0.9rem; line-height: 1.5; }
 
     .detalle-impact {
       display: flex;
@@ -268,7 +239,6 @@
       gap: 8px;
     }
 
-    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -296,9 +266,7 @@
       margin-bottom: 14px;
     }
 
-    .modal-header h2 {
-      font-size: 1.2rem;
-    }
+    .modal-header h2 { font-size: 1.2rem; }
 
     .close-btn {
       background: transparent;
@@ -313,9 +281,7 @@
       gap: 14px;
     }
 
-    .form-group {
-      margin-bottom: 12px;
-    }
+    .form-group { margin-bottom: 12px; }
 
     .form-group label {
       display: block;
@@ -334,10 +300,7 @@
       font-size: 0.9rem;
     }
 
-    .form-group textarea {
-      min-height: 70px;
-      resize: vertical;
-    }
+    .form-group textarea { min-height: 70px; resize: vertical; }
 
     .tags-input {
       display: flex;
@@ -385,9 +348,7 @@
     }
 
     @media (max-width: 960px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
+      .page { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 640px) {
@@ -400,9 +361,12 @@
   <div class="page">
     <header class="header">
       <h1>🌱 Historias de Éxito</h1>
-      <div>
+      <div class="header-buttons">
+        <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
+        <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
         <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
         <button class="btn" onclick="abrirModalHistoria()">+ Nueva historia de éxito</button>
+        <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
 
@@ -502,7 +466,7 @@
             <input type="date" id="fechaResolucion" required>
           </div>
           <div class="form-group">
-            <label>Equipo colaborador (mantén Ctrl para multi‑selección)</label>
+            <label>Equipo colaborador (Ctrl para multi‑selección)</label>
             <select id="equipoColaborador" multiple size="4"></select>
           </div>
         </div>
@@ -552,39 +516,38 @@
   </div>
 
   <script>
-    let historias = [];
-    let tagsTemp = [];
-    let historiaEditandoId = null;
-    let colaboradores = [];
-    let ensayos = [];
+    var historias = [];
+    var tagsTemp = [];
+    var historiaEditandoId = null;
+    var colaboradores = [];
+    var ensayos = [];
 
     function loadHistoriasExito() {
-      const raw = localStorage.getItem('historias_exito');
+      var raw = localStorage.getItem('historias_exito');
       return raw ? JSON.parse(raw) : [];
     }
 
     function saveHistoriasExito(items) {
       localStorage.setItem('historias_exito', JSON.stringify(items));
-      window.parent.postMessage({ tipo: 'actualizarDashboard' }, '*');
     }
 
     function loadColaboradores() {
-      const raw = localStorage.getItem('colaboradores');
+      var raw = localStorage.getItem('colaboradores');
       colaboradores = raw ? JSON.parse(raw) : [];
     }
 
     function loadEnsayos() {
-      const raw = localStorage.getItem('ensayos');
+      var raw = localStorage.getItem('ensayos');
       ensayos = raw ? JSON.parse(raw) : [];
     }
 
     function initTagsInput() {
-      const input = document.getElementById('tagsInput');
-      input.addEventListener('keydown', e => {
+      var input = document.getElementById('tagsInput');
+      input.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
-          const val = input.value.trim();
-          if (val && !tagsTemp.includes(val)) {
+          var val = input.value.trim();
+          if (val && tagsTemp.indexOf(val) === -1) {
             tagsTemp.push(val);
             input.value = '';
             renderTags();
@@ -594,13 +557,13 @@
     }
 
     function renderTags() {
-      const container = document.getElementById('tagsContainer');
-      const input = document.getElementById('tagsInput');
+      var container = document.getElementById('tagsContainer');
+      var input = document.getElementById('tagsInput');
       container.innerHTML = '';
-      tagsTemp.forEach((t, idx) => {
-        const pill = document.createElement('span');
+      tagsTemp.forEach(function(t, idx) {
+        var pill = document.createElement('span');
         pill.className = 'tag-pill';
-        pill.innerHTML = `${t}<button type="button" onclick="removeTag(${idx})">×</button>`;
+        pill.innerHTML = t + '<button type="button" onclick="removeTag(' + idx + ')">×</button>';
         container.appendChild(pill);
       });
       container.appendChild(input);
@@ -612,37 +575,31 @@
     }
 
     function initSelectsFormulario() {
-      // Área: desde ensayos y/o lista fija
-      const areaSelect = document.getElementById('area');
+      var areaSelect = document.getElementById('area');
       areaSelect.innerHTML = '';
-      const areas = new Set();
-      ensayos.forEach(e => {
-        if (e.area) areas.add(e.area);
-      });
-      ['Manejo de plagas','Rendimiento de cultivo','Tratamientos de suelo','Calidad de fruto','Postcosecha']
-        .forEach(a => areas.add(a));
-      areas.forEach(a => {
-        const opt = document.createElement('option');
+      var areas = {};
+      ensayos.forEach(function(e) { if (e.area) areas[e.area] = true; });
+      ['Manejo de plagas','Rendimiento de cultivo','Tratamientos de suelo','Calidad de fruto','Postcosecha'].forEach(function(a) { areas[a] = true; });
+      Object.keys(areas).forEach(function(a) {
+        var opt = document.createElement('option');
         opt.value = a;
         opt.textContent = a;
         areaSelect.appendChild(opt);
       });
 
-      // Ensayos relacionados
-      const ensayoSel = document.getElementById('ensayoRelacionado');
+      var ensayoSel = document.getElementById('ensayoRelacionado');
       ensayoSel.innerHTML = '<option value="">Sin ensayo asociado</option>';
-      ensayos.forEach(e => {
-        const opt = document.createElement('option');
+      ensayos.forEach(function(e) {
+        var opt = document.createElement('option');
         opt.value = e.id;
-        opt.textContent = e.metricaObjetivo ? `${e.metricaObjetivo} (${e.area})` : e.id;
+        opt.textContent = e.metricaObjetivo ? e.metricaObjetivo + ' (' + e.area + ')' : e.id;
         ensayoSel.appendChild(opt);
       });
 
-      // Equipo colaborador
-      const colabSel = document.getElementById('equipoColaborador');
+      var colabSel = document.getElementById('equipoColaborador');
       colabSel.innerHTML = '';
-      colaboradores.forEach(c => {
-        const opt = document.createElement('option');
+      colaboradores.forEach(function(c) {
+        var opt = document.createElement('option');
         opt.value = c.id;
         opt.textContent = c.nombre;
         colabSel.appendChild(opt);
@@ -650,31 +607,31 @@
     }
 
     function actualizarSelectsFiltros() {
-      const areaSel = document.getElementById('filtroArea');
-      const anioSel = document.getElementById('filtroAnio');
+      var areaSel = document.getElementById('filtroArea');
+      var anioSel = document.getElementById('filtroAnio');
       areaSel.innerHTML = '<option value="">Todas</option>';
       anioSel.innerHTML = '<option value="">Todos</option>';
 
-      const areas = new Set();
-      const anios = new Set();
+      var areas = {};
+      var anios = {};
 
-      historias.forEach(h => {
-        if (h.area) areas.add(h.area);
+      historias.forEach(function(h) {
+        if (h.area) areas[h.area] = true;
         if (h.fecha_resolucion) {
-          const anio = h.fecha_resolucion.substring(0,4);
-          anios.add(anio);
+          var anio = h.fecha_resolucion.substring(0,4);
+          anios[anio] = true;
         }
       });
 
-      Array.from(areas).sort().forEach(a => {
-        const opt = document.createElement('option');
+      Object.keys(areas).sort().forEach(function(a) {
+        var opt = document.createElement('option');
         opt.value = a;
         opt.textContent = a;
         areaSel.appendChild(opt);
       });
 
-      Array.from(anios).sort().forEach(a => {
-        const opt = document.createElement('option');
+      Object.keys(anios).sort().forEach(function(a) {
+        var opt = document.createElement('option');
         opt.value = a;
         opt.textContent = a;
         anioSel.appendChild(opt);
@@ -682,30 +639,30 @@
     }
 
     function renderHistorias() {
-      const cont = document.getElementById('cardsHistorias');
+      var cont = document.getElementById('cardsHistorias');
       cont.innerHTML = '';
 
-      const texto = document.getElementById('filtroTexto').value.toLowerCase();
-      const areaF = document.getElementById('filtroArea').value;
-      const anioF = document.getElementById('filtroAnio').value;
-      const focoF = document.getElementById('filtroFoco').value;
-      const soloHome = document.getElementById('filtroHome').checked;
+      var texto = document.getElementById('filtroTexto').value.toLowerCase();
+      var areaF = document.getElementById('filtroArea').value;
+      var anioF = document.getElementById('filtroAnio').value;
+      var focoF = document.getElementById('filtroFoco').value;
+      var soloHome = document.getElementById('filtroHome').checked;
 
-      let lista = historias.slice();
+      var lista = historias.slice();
 
-      lista = lista.filter(h => {
+      lista = lista.filter(function(h) {
         if (texto) {
-          const blob = (h.titulo + ' ' + h.problema_original + ' ' + h.solucion + ' ' + (h.tags || []).join(' ')).toLowerCase();
-          if (!blob.includes(texto)) return false;
+          var blob = (h.titulo + ' ' + h.problema_original + ' ' + h.solucion + ' ' + (h.tags || []).join(' ')).toLowerCase();
+          if (blob.indexOf(texto) === -1) return false;
         }
         if (areaF && h.area !== areaF) return false;
-        if (anioF && (!h.fecha_resolucion || !h.fecha_resolucion.startsWith(anioF))) return false;
+        if (anioF && (!h.fecha_resolucion || h.fecha_resolucion.indexOf(anioF) !== 0)) return false;
         if (soloHome && !h.visible_en_home) return false;
         if (focoF) {
-          const tags = (h.tags || []).map(t => t.toLowerCase());
-          if (focoF === 'economico' && !tags.includes('economico')) return false;
-          if (focoF === 'agronomico' && !tags.includes('agronomico')) return false;
-          if (focoF === 'social' && !tags.includes('social')) return false;
+          var tags = (h.tags || []).map(function(t) { return t.toLowerCase(); });
+          if (focoF === 'economico' && tags.indexOf('economico') === -1) return false;
+          if (focoF === 'agronomico' && tags.indexOf('agronomico') === -1) return false;
+          if (focoF === 'social' && tags.indexOf('social') === -1) return false;
         }
         return true;
       });
@@ -715,104 +672,94 @@
         return;
       }
 
-      lista.sort((a,b) => (b.fecha_resolucion || '').localeCompare(a.fecha_resolucion || ''));
+      lista.sort(function(a,b) { return (b.fecha_resolucion || '').localeCompare(a.fecha_resolucion || ''); });
 
-      lista.forEach(h => {
-        const card = document.createElement('article');
+      lista.forEach(function(h) {
+        var card = document.createElement('article');
         card.className = 'card';
-        card.onclick = (e) => {
+        card.onclick = function(e) {
           if (e.target.tagName.toLowerCase() === 'button') return;
           mostrarDetalle(h.id);
         };
 
-        const header = document.createElement('div');
+        var header = document.createElement('div');
         header.className = 'card-header';
 
-        const titleBox = document.createElement('div');
-        const title = document.createElement('div');
+        var titleBox = document.createElement('div');
+        var title = document.createElement('div');
         title.className = 'card-title';
         title.textContent = h.titulo;
-        const meta = document.createElement('div');
+        var meta = document.createElement('div');
         meta.className = 'card-meta';
-        meta.textContent = `${h.area || ''} · ${h.fecha_resolucion || ''}`;
+        meta.textContent = (h.area || '') + ' · ' + (h.fecha_resolucion || '');
         titleBox.appendChild(title);
         titleBox.appendChild(meta);
-
         header.appendChild(titleBox);
 
         if (h.visible_en_home) {
-          const badge = document.createElement('div');
+          var badge = document.createElement('div');
           badge.className = 'highlight-badge';
           badge.textContent = 'Destacada';
           header.appendChild(badge);
         }
 
-        const body = document.createElement('div');
+        var body = document.createElement('div');
         body.className = 'card-body';
-        const resumen = (h.solucion || h.testimonio || '').slice(0,140);
+        var resumen = (h.solucion || h.testimonio || '').slice(0,140);
         body.textContent = resumen + (resumen.length === 140 ? '…' : '');
 
-        const impactRow = document.createElement('div');
+        var impactRow = document.createElement('div');
         impactRow.className = 'impact-row';
-        const iq = h.impacto_cuantitativo || {};
+        var iq = h.impacto_cuantitativo || {};
         if (iq.incremento_rendimiento) {
-          const pill = document.createElement('span');
+          var pill = document.createElement('span');
           pill.className = 'impact-pill impact-rend';
-          pill.textContent = `+${iq.incremento_rendimiento}% rendimiento`;
+          pill.textContent = '+' + iq.incremento_rendimiento + '% rendimiento';
           impactRow.appendChild(pill);
         }
         if (iq.reduccion_costos) {
-          const pill = document.createElement('span');
-          pill.className = 'impact-pill impact-costos';
-          pill.textContent = `-${iq.reduccion_costos}% costos`;
-          impactRow.appendChild(pill);
+          var pill2 = document.createElement('span');
+          pill2.className = 'impact-pill impact-costos';
+          pill2.textContent = '-' + iq.reduccion_costos + '% costos';
+          impactRow.appendChild(pill2);
         }
         if (iq.mejora_calidad) {
-          const pill = document.createElement('span');
-          pill.className = 'impact-pill impact-calidad';
-          pill.textContent = `+${iq.mejora_calidad}% calidad`;
-          impactRow.appendChild(pill);
+          var pill3 = document.createElement('span');
+          pill3.className = 'impact-pill impact-calidad';
+          pill3.textContent = '+' + iq.mejora_calidad + '% calidad';
+          impactRow.appendChild(pill3);
         }
 
-        const footer = document.createElement('div');
+        var footer = document.createElement('div');
         footer.className = 'card-footer';
 
-        const equipoText = document.createElement('div');
+        var equipoText = document.createElement('div');
         equipoText.className = 'equipo-text';
-        const nombres = (h.equipo_colaborador || [])
-          .map(id => {
-            const c = colaboradores.find(col => col.id === id);
-            return c ? c.nombre : null;
-          })
-          .filter(Boolean);
+        var nombres = (h.equipo_colaborador || []).map(function(id) {
+          var c = colaboradores.find(function(col) { return col.id === id; });
+          return c ? c.nombre : null;
+        }).filter(Boolean);
         if (nombres.length > 0) {
-          const primeros = nombres.slice(0,3).join(', ');
-          const extra = nombres.length > 3 ? ` +${nombres.length - 3} más` : '';
-          equipoText.textContent = `Equipo: ${primeros}${extra}`;
+          var primeros = nombres.slice(0,3).join(', ');
+          var extra = nombres.length > 3 ? ' +' + (nombres.length - 3) + ' más' : '';
+          equipoText.textContent = 'Equipo: ' + primeros + extra;
         } else {
           equipoText.textContent = 'Equipo: —';
         }
 
-        const btns = document.createElement('div');
+        var btns = document.createElement('div');
         btns.className = 'card-footer-buttons';
-        const btnVer = document.createElement('button');
+        var btnVer = document.createElement('button');
         btnVer.className = 'btn btn-secondary btn-mini';
         btnVer.textContent = 'Ver detalle';
-        btnVer.onclick = (e) => {
-          e.stopPropagation();
-          mostrarDetalle(h.id);
-        };
-        const btnEdit = document.createElement('button');
+        btnVer.onclick = function(e) { e.stopPropagation(); mostrarDetalle(h.id); };
+        var btnEdit = document.createElement('button');
         btnEdit.className = 'btn btn-mini';
         btnEdit.textContent = 'Editar';
-        btnEdit.onclick = (e) => {
-          e.stopPropagation();
-          abrirModalHistoria(h.id);
-        };
+        btnEdit.onclick = function(e) { e.stopPropagation(); abrirModalHistoria(h.id); };
 
         btns.appendChild(btnVer);
         btns.appendChild(btnEdit);
-
         footer.appendChild(equipoText);
         footer.appendChild(btns);
 
@@ -820,129 +767,127 @@
         card.appendChild(body);
         card.appendChild(impactRow);
         card.appendChild(footer);
-
         cont.appendChild(card);
       });
     }
 
     function mostrarDetalle(id) {
-      const panel = document.getElementById('detallePanel');
-      const h = historias.find(x => x.id === id);
+      var panel = document.getElementById('detallePanel');
+      var h = historias.find(function(x) { return x.id === id; });
       if (!h) return;
 
-      const ensayo = ensayos.find(e => e.id === h.ensayo_relacionado);
-      const iq = h.impacto_cuantitativo || {};
+      var ensayo = ensayos.find(function(e) { return e.id === h.ensayo_relacionado; });
+      var iq = h.impacto_cuantitativo || {};
 
-      const nombresEquipo = (h.equipo_colaborador || [])
-        .map(cid => {
-          const c = colaboradores.find(col => col.id === cid);
-          return c ? c.nombre : null;
-        })
-        .filter(Boolean);
+      var nombresEquipo = (h.equipo_colaborador || []).map(function(cid) {
+        var c = colaboradores.find(function(col) { return col.id === cid; });
+        return c ? c.nombre : null;
+      }).filter(Boolean);
 
       panel.innerHTML = '';
-      const title = document.createElement('h2');
+
+      var title = document.createElement('h2');
       title.textContent = h.titulo;
 
-      const meta = document.createElement('div');
-      meta.className = 'detalle-meta';
-      meta.textContent = `${h.area || ''} · ${h.fecha_resolucion || ''}`;
+      var metaEl = document.createElement('div');
+      metaEl.className = 'detalle-meta';
+      metaEl.textContent = (h.area || '') + ' · ' + (h.fecha_resolucion || '');
 
-      const probTitle = document.createElement('div');
+      var probTitle = document.createElement('div');
       probTitle.className = 'section-title';
       probTitle.textContent = 'Problema original';
-      const probText = document.createElement('p');
+      var probText = document.createElement('p');
       probText.textContent = h.problema_original || '';
 
-      const solTitle = document.createElement('div');
+      var solTitle = document.createElement('div');
       solTitle.className = 'section-title';
       solTitle.textContent = 'Solución aplicada';
-      const solText = document.createElement('p');
+      var solText = document.createElement('p');
       solText.textContent = h.solucion || '';
 
-      const impactTitle = document.createElement('div');
+      var impactTitle = document.createElement('div');
       impactTitle.className = 'section-title';
       impactTitle.textContent = 'Impacto';
-      const impactCont = document.createElement('div');
+      var impactCont = document.createElement('div');
       impactCont.className = 'detalle-impact';
 
       if (iq.incremento_rendimiento) {
-        const c = document.createElement('div');
-        c.className = 'impact-card';
-        c.innerHTML = `<strong>Rendimiento</strong><br>+${iq.incremento_rendimiento}%`;
-        impactCont.appendChild(c);
+        var c1 = document.createElement('div');
+        c1.className = 'impact-card';
+        c1.innerHTML = '<strong>Rendimiento</strong><br>+' + iq.incremento_rendimiento + '%';
+        impactCont.appendChild(c1);
       }
       if (iq.reduccion_costos) {
-        const c = document.createElement('div');
-        c.className = 'impact-card';
-        c.innerHTML = `<strong>Costos</strong><br>-${iq.reduccion_costos}%`;
-        impactCont.appendChild(c);
+        var c2 = document.createElement('div');
+        c2.className = 'impact-card';
+        c2.innerHTML = '<strong>Costos</strong><br>-' + iq.reduccion_costos + '%';
+        impactCont.appendChild(c2);
       }
       if (iq.mejora_calidad) {
-        const c = document.createElement('div');
-        c.className = 'impact-card';
-        c.innerHTML = `<strong>Calidad</strong><br>+${iq.mejora_calidad}%`;
-        impactCont.appendChild(c);
+        var c3 = document.createElement('div');
+        c3.className = 'impact-card';
+        c3.innerHTML = '<strong>Calidad</strong><br>+' + iq.mejora_calidad + '%';
+        impactCont.appendChild(c3);
       }
 
-      const impactQualTitle = document.createElement('div');
+      var impactQualTitle = document.createElement('div');
       impactQualTitle.className = 'section-title';
       impactQualTitle.textContent = 'Impacto cualitativo';
-      const impactQualText = document.createElement('p');
+      var impactQualText = document.createElement('p');
       impactQualText.textContent = h.impacto_cualitativo || '—';
 
-      const testTitle = document.createElement('div');
+      var testTitle = document.createElement('div');
       testTitle.className = 'section-title';
       testTitle.textContent = 'Testimonio';
-      const testText = document.createElement('p');
+      var testText = document.createElement('p');
       testText.textContent = h.testimonio || '—';
 
-      const eqTitle = document.createElement('div');
+      var eqTitle = document.createElement('div');
       eqTitle.className = 'section-title';
       eqTitle.textContent = 'Equipo colaborador';
-      const eqText = document.createElement('p');
+      var eqText = document.createElement('p');
       eqText.textContent = nombresEquipo.length ? nombresEquipo.join(', ') : '—';
 
-      const ensTitle = document.createElement('div');
+      var ensTitle = document.createElement('div');
       ensTitle.className = 'section-title';
       ensTitle.textContent = 'Ensayo relacionado';
-      const ensText = document.createElement('p');
+      var ensText = document.createElement('p');
       ensText.textContent = ensayo ? (ensayo.metricaObjetivo || ensayo.id) : '—';
 
-      const tagsTitle = document.createElement('div');
+      var tagsTitle = document.createElement('div');
       tagsTitle.className = 'section-title';
       tagsTitle.textContent = 'Tags';
-      const tagsCont = document.createElement('div');
+      var tagsCont = document.createElement('div');
       tagsCont.className = 'tags';
-      (h.tags || []).forEach(t => {
-        const tag = document.createElement('span');
+      (h.tags || []).forEach(function(t) {
+        var tag = document.createElement('span');
         tag.className = 'tag';
         tag.textContent = t;
         tagsCont.appendChild(tag);
       });
       if ((h.tags || []).length === 0) {
-        const p = document.createElement('p');
-        p.textContent = '—';
-        p.style.fontSize = '0.85rem';
-        p.style.color = '#666';
-        tagsCont.appendChild(p);
+        var pn = document.createElement('p');
+        pn.textContent = '—';
+        pn.style.fontSize = '0.85rem';
+        pn.style.color = '#666';
+        tagsCont.appendChild(pn);
       }
 
-      const footer = document.createElement('div');
-      footer.className = 'detalle-footer';
-      const info = document.createElement('small');
+      var footerEl = document.createElement('div');
+      footerEl.className = 'detalle-footer';
+      var info = document.createElement('small');
       info.style.color = '#666';
       info.textContent = h.visible_en_home ? 'Marcada como destacada en el dashboard.' : '';
-      const btn = document.createElement('button');
+      var btn = document.createElement('button');
       btn.className = 'btn btn-secondary btn-mini';
       btn.textContent = 'Editar historia';
-      btn.onclick = () => abrirModalHistoria(h.id);
+      btn.onclick = function() { abrirModalHistoria(h.id); };
 
-      footer.appendChild(info);
-      footer.appendChild(btn);
+      footerEl.appendChild(info);
+      footerEl.appendChild(btn);
 
       panel.appendChild(title);
-      panel.appendChild(meta);
+      panel.appendChild(metaEl);
       panel.appendChild(probTitle);
       panel.appendChild(probText);
       panel.appendChild(solTitle);
@@ -959,25 +904,24 @@
       panel.appendChild(ensText);
       panel.appendChild(tagsTitle);
       panel.appendChild(tagsCont);
-      panel.appendChild(footer);
+      panel.appendChild(footerEl);
     }
 
     function abrirModalHistoria(id) {
       historiaEditandoId = id || null;
       tagsTemp = [];
 
-      const form = document.getElementById('formHistoria');
+      var form = document.getElementById('formHistoria');
       form.reset();
       document.getElementById('btnEliminarHistoria').style.display = id ? 'inline-flex' : 'none';
 
-      // Fecha por defecto
       if (!id) document.getElementById('fechaResolucion').valueAsDate = new Date();
 
       initSelectsFormulario();
 
       if (id) {
         document.getElementById('modalTitulo').textContent = 'Editar historia';
-        const h = historias.find(x => x.id === id);
+        var h = historias.find(function(x) { return x.id === id; });
         if (h) {
           document.getElementById('historiaId').value = h.id;
           document.getElementById('titulo').value = h.titulo || '';
@@ -987,17 +931,16 @@
           document.getElementById('solucion').value = h.solucion || '';
           document.getElementById('testimonio').value = h.testimonio || '';
           document.getElementById('fechaResolucion').value = h.fecha_resolucion || '';
-          const iq = h.impacto_cuantitativo || {};
+          var iq = h.impacto_cuantitativo || {};
           document.getElementById('impactoRendimiento').value = iq.incremento_rendimiento || '';
           document.getElementById('impactoCostos').value = iq.reduccion_costos || '';
           document.getElementById('impactoCalidad').value = iq.mejora_calidad || '';
           document.getElementById('impactoCualitativo').value = h.impacto_cualitativo || '';
           document.getElementById('visibleHome').checked = !!h.visible_en_home;
 
-          // equipo colaborador
-          const select = document.getElementById('equipoColaborador');
-          (h.equipo_colaborador || []).forEach(idc => {
-            const opt = Array.from(select.options).find(o => o.value === idc);
+          var select = document.getElementById('equipoColaborador');
+          (h.equipo_colaborador || []).forEach(function(idc) {
+            var opt = Array.from(select.options).find(function(o) { return o.value === idc; });
             if (opt) opt.selected = true;
           });
 
@@ -1020,34 +963,34 @@
 
     document.getElementById('formHistoria').addEventListener('submit', function(e) {
       e.preventDefault();
-      const titulo = document.getElementById('titulo').value.trim();
-      const area = document.getElementById('area').value;
-      const problema = document.getElementById('problemaOriginal').value.trim();
-      const solucion = document.getElementById('solucion').value.trim();
-      const fecha = document.getElementById('fechaResolucion').value;
+      var titulo = document.getElementById('titulo').value.trim();
+      var area = document.getElementById('area').value;
+      var problema = document.getElementById('problemaOriginal').value.trim();
+      var solucion = document.getElementById('solucion').value.trim();
+      var fecha = document.getElementById('fechaResolucion').value;
 
       if (!titulo || !area || !problema || !solucion || !fecha) {
         alert('Completa los campos obligatorios.');
         return;
       }
 
-      const ensayoId = document.getElementById('ensayoRelacionado').value || '';
-      const iq = {
+      var ensayoId = document.getElementById('ensayoRelacionado').value || '';
+      var iq = {
         incremento_rendimiento: parseFloat(document.getElementById('impactoRendimiento').value) || 0,
         reduccion_costos: parseFloat(document.getElementById('impactoCostos').value) || 0,
         mejora_calidad: parseFloat(document.getElementById('impactoCalidad').value) || 0
       };
 
-      const selectColab = document.getElementById('equipoColaborador');
-      const equipoIds = Array.from(selectColab.selectedOptions).map(o => o.value);
+      var selectColab = document.getElementById('equipoColaborador');
+      var equipoIds = Array.from(selectColab.selectedOptions).map(function(o) { return o.value; });
 
-      const historia = {
+      var historia = {
         id: historiaEditandoId || ('historia_' + Date.now()),
-        titulo,
+        titulo: titulo,
         problema_original: problema,
-        area,
+        area: area,
         ensayo_relacionado: ensayoId,
-        solucion,
+        solucion: solucion,
         testimonio: document.getElementById('testimonio').value.trim(),
         fecha_resolucion: fecha,
         equipo_colaborador: equipoIds,
@@ -1058,7 +1001,7 @@
       };
 
       if (historiaEditandoId) {
-        const idx = historias.findIndex(x => x.id === historiaEditandoId);
+        var idx = historias.findIndex(function(x) { return x.id === historiaEditandoId; });
         if (idx !== -1) historias[idx] = historia;
       } else {
         historias.push(historia);
@@ -1074,24 +1017,22 @@
     function eliminarHistoria() {
       if (!historiaEditandoId) return;
       if (!confirm('¿Eliminar esta historia?')) return;
-      historias = historias.filter(h => h.id !== historiaEditandoId);
+      historias = historias.filter(function(h) { return h.id !== historiaEditandoId; });
       saveHistoriasExito(historias);
       actualizarSelectsFiltros();
       renderHistorias();
-      document.getElementById('detallePanel').innerHTML = `
-        <h2>Selecciona una historia</h2>
-        <p style="font-size:0.9rem;color:#666;">
-          Aquí verás el detalle completo: problema original, solución, impacto y equipo colaborador.
-        </p>`;
+      document.getElementById('detallePanel').innerHTML =
+        '<h2>Selecciona una historia</h2>' +
+        '<p style="font-size:0.9rem;color:#666;">Aquí verás el detalle completo.</p>';
       cerrarModalHistoria();
     }
 
-    window.addEventListener('click', e => {
-      const modal = document.getElementById('modalHistoria');
+    window.addEventListener('click', function(e) {
+      var modal = document.getElementById('modalHistoria');
       if (e.target === modal) cerrarModalHistoria();
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', function() {
       historias = loadHistoriasExito();
       loadColaboradores();
       loadEnsayos();
@@ -1099,6 +1040,18 @@
       actualizarSelectsFiltros();
       renderHistorias();
     });
+  </script>
+
   <script src="auth-guard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        if (window.esAdmin()) {
+          document.getElementById('btnAdmin').style.display = 'inline-flex';
+        }
+      }
+    });
+  </script>
 </body>
 </html>
