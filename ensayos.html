@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ensayos I+D · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- DataTables CDN -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-bg: #f8fafb;
+      --color-card: white;
+      --shadow: 0 8px 24px rgba(0,0,0,0.12);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+    
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      color: var(--color-primary);
+      font-size: 2rem;
+    }
+
+    .btn {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover { background: #43a047; transform: translateY(-1px); }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+
+    /* Tabla */
+    .table-container {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    #ensayosTable { width: 100%; }
+    #ensayosTable th { background: #f8fafc; font-weight: 600; padding: 16px; }
+    #ensayosTable td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+    #ensayosTable tr:hover { background: #f8fafc; }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .status-activo { background: #dcf4dc; color: #4caf50; }
+    .status-finalizado { background: #d1ecf1; color: #17a2b8; }
+    .status-suspendido { background: #fff3cd; color: #ffc107; }
+    .status-fallido { background: #f8d7da; color: #dc3545; }
+
+    /* Filtros */
+    .filters {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-group label { font-size: 0.9rem; font-weight: 500; }
+    .filter-group select, .filter-group input {
+      padding: 8px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 32px;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 768px) {
+      .form-row { grid-template-columns: 1fr; }
+      .filters { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🧪 Ensayos del Departamento de I+D</h1>
+      <div>
+        <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+        <button onclick="abrirModal('crear')" class="btn">+ Crear Ensayo</button>
+      </div>
+    </header>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <div class="filter-group">
+        <label>Área</label>
+        <select id="filtroArea" onchange="aplicarFiltros()">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Estado</label>
+        <select id="filtroEstado" onchange="aplicarFiltros()">
+          <option value="">Todos</option>
+          <option value="activo">Activo</option>
+          <option value="finalizado">Finalizado</option>
+          <option value="suspendido">Suspendido</option>
+          <option value="fallido">Fallido</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Prioridad</label>
+        <select id="filtroPrioridad" onchange="aplicarFiltros()">
+          <option value="">Todas</option>
+          <option value="Baja">Baja</option>
+          <option value="Media">Media</option>
+          <option value="Alta">Alta</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-container">
+      <table id="ensayosTable" class="display">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Área</th>
+            <th>Reportado por</th>
+            <th>Prioridad</th>
+            <th>Responsable I+D</th>
+            <th>Métrica objetivo</th>
+            <th>Inicio</th>
+            <th>Fin Est.</th>
+            <th>% Avance</th>
+            <th>Estado</th>
+            <th>ROI %</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal Crear/Editar -->
+  <div id="modalEnsayo" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitulo">Crear Nuevo Ensayo</h2>
+      <form id="formEnsayo">
+        <input type="hidden" id="editId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Área *</label>
+            <select id="area" required>
+              <option value="">Seleccionar área</option>
+              <option value="Manejo de plagas">Manejo de plagas</option>
+              <option value="Rendimiento de cultivo">Rendimiento de cultivo</option>
+              <option value="Tratamientos de suelo">Tratamientos de suelo</option>
+              <option value="Calidad de fruto">Calidad de fruto</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Prioridad *</label>
+            <select id="prioridad" required>
+              <option value="Baja">Baja</option>
+              <option value="Media">Media</option>
+              <option value="Alta">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Reportado por *</label>
+            <input type="text" id="reportadoPor" required>
+          </div>
+          <div class="form-group">
+            <label>Responsable I+D *</label>
+            <input type="text" id="responsableId" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Métrica objetivo *</label>
+          <input type="text" id="metricaObjetivo" required placeholder="Ej: % reducción de plagas">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha Inicio *</label>
+            <input type="date" id="fechaInicio" required>
+          </div>
+          <div class="form-group">
+            <label>Fecha Fin Estimado *</label>
+            <input type="date" id="fechaFinEstimado" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>% Avance (0-100)</label>
+            <input type="number" id="porcentajeAvance" min="0" max="100" value="0">
+          </div>
+          <div class="form-group">
+            <label>ROI Estimado (%)</label>
+            <input type="number" id="roiEstimado" min="0" step="0.1">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Validador Campo</label>
+            <input type="text" id="validadorCampo">
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="estado">
+              <option value="activo">Activo</option>
+              <option value="finalizado">Finalizado</option>
+              <option value="suspendido">Suspendido</option>
+              <option value="fallido">Fallido</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Publicaciones (separadas por coma)</label>
+          <input type="text" id="publicaciones" placeholder="Ej: Informe plagas 2026, Artículo HLB">
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="exito"> Éxito
+          </label>
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" onclick="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn">Guardar Ensayo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let tablaEnsayos;
+    let editandoId = null;
+
+    // Inicializar al cargar página
+    $(document).ready(function() {
+      cargarEnsayos();
+      actualizarFiltros();
+    });
+
+    // Cargar ensayos desde LocalStorage
+    function cargarEnsayos() {
+      const ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
+      
+      tablaEnsayos = $('#ensayosTable').DataTable({
+        data: ensayos,
+        columns: [
+          { data: 'id' },
+          { data: 'area' },
+          { data: 'reportadoPor' },
+          { data: 'prioridad' },
+          { data: 'responsableId' },
+          { data: 'metricaObjetivo' },
+          { data: 'fechaInicio', render: data => new Date(data).toLocaleDateString('es-DO') },
+          { data: 'fechaFinEstimado', render: data => new Date(data).toLocaleDateString('es-DO') },
+          { data: 'porcentajeAvance', render: data => data + '%' },
+          { 
+            data: 'estado',
+            render: data => {
+              const clases = {
+                'activo': 'status-activo',
+                'finalizado': 'status-finalizado',
+                'suspendido': 'status-suspendido',
+                'fallido': 'status-fallido'
+              };
+              return `<span class="status-badge ${clases[data] || ''}">${data}</span>`;
+            }
+          },
+          { data: 'roiEstimado', render: data => data + '%' },
+          {
+            data: null,
+            orderable: false,
+            render: (data, type, row) => `
+              <button onclick="editarEnsayo('${row.id}')" class="btn btn-secondary" style="padding:6px 12px;font-size:0.8rem;">Editar</button>
+              <button onclick="eliminarEnsayo('${row.id}')" class="btn btn-danger" style="padding:6px 12px;font-size:0.8rem;">Eliminar</button>
+            `
+          }
+        ],
+        pageLength: 25,
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+        }
+      });
+    }
+
+    // Guardar ensayo
+    document.getElementById('formEnsayo').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const ensayo = {
+        id: editandoId || 'ensayo_' + Date.now(),
+        area: document.getElementById('area').value,
+        reportadoPor: document.getElementById('reportadoPor').value,
+        fechaInicio: document.getElementById('fechaInicio').value,
+        fechaFinEstimado: document.getElementById('fechaFinEstimado').value,
+        prioridad: document.getElementById('prioridad').value,
+        responsableId: document.getElementById('responsableId').value,
+        metricaObjetivo: document.getElementById('metricaObjetivo').value,
+        estado: document.getElementById('estado').value,
+        roiEstimado: parseFloat(document.getElementById('roiEstimado').value) || 0,
+        validadorCampo: document.getElementById('validadorCampo').value,
+        porcentajeAvance: parseInt(document.getElementById('porcentajeAvance').value) || 0,
+        exito: document.getElementById('exito').checked,
+        publicaciones: document.getElementById('publicaciones').value.split(',').map(p => p.trim()).filter(p => p)
+      };
+
+      let ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
+      
+      if (editandoId) {
+        const index = ensayos.findIndex(e => e.id === editandoId);
+        ensayos[index] = ensayo;
+      } else {
+        ensayos.push(ensayo);
+      }
+
+      localStorage.setItem('ensayos', JSON.stringify(ensayos));
+      
+      // Actualizar tabla
+      tablaEnsayos.clear().rows.add(ensayos).draw();
+      
+      // Actualizar filtros
+      actualizarFiltros();
+      
+      // Cerrar modal
+      cerrarModal();
+      
+      // Actualizar dashboard (nueva pestaña)
+      actualizarDashboardExterno();
+      
+      alert(editandoId ? 'Ensayo actualizado' : 'Ensayo creado');
+    });
+
+    // Abrir modal
+    function abrirModal(accion) {
+      editandoId = null;
+      document.getElementById('modalTitulo').textContent = accion === 'crear' ? 'Crear Nuevo Ensayo' : 'Editar Ensayo';
+      document.getElementById('formEnsayo').reset();
+      document.getElementById('modalEnsayo').style.display = 'block';
+    }
+
+    // Editar ensayo
+    function editarEnsayo(id) {
+      const ensayos = JSON.parse(localStorage.getElementById('ensayos')) || [];
+      const ensayo = ensayos.find(e => e.id === id);
+      
+      if (ensayo) {
+        editandoId = id;
+        document.getElementById('area').value = ensayo.area || '';
+        document.getElementById('reportadoPor').value = ensayo.reportadoPor || '';
+        document.getElementById('fechaInicio').value = ensayo.fechaInicio || '';
+        document.getElementById('fechaFinEstimado').value = ensayo.fechaFinEstimado || '';
+        document.getElementById('prioridad').value = ensayo.prioridad || '';
+        document.getElementById('responsableId').value = ensayo.responsableId || '';
+        document.getElementById('metricaObjetivo').value = ensayo.metricaObjetivo || '';
+        document.getElementById('estado').value = ensayo.estado || 'activo';
+        document.getElementById('roiEstimado').value = ensayo.roiEstimado || '';
+        document.getElementById('validadorCampo').value = ensayo.validadorCampo || '';
+        document.getElementById('porcentajeAvance').value = ensayo.porcentajeAvance || '';
+        document.getElementById('exito').checked = ensayo.exito || false;
+        document.getElementById('publicaciones').value = ensayo.publicaciones ? ensayo.publicaciones.join(', ') : '';
+        
+        document.getElementById('modalEnsayo').style.display = 'block';
+      }
+    }
+
+    // Eliminar ensayo
+    function eliminarEnsayo(id) {
+      if (confirm('¿Eliminar este ensayo?')) {
+        let ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
+        ensayos = ensayos.filter(e => e.id !== id);
+        localStorage.setItem('ensayos', JSON.stringify(ensayos));
+        
+        tablaEnsayos.clear().rows.add(ensayos).draw();
+        actualizarFiltros();
+        actualizarDashboardExterno();
+      }
+    }
+
+    // Cerrar modal
+    function cerrarModal() {
+      document.getElementById('modalEnsayo').style.display = 'none';
+      editandoId = null;
+    }
+
+    // Filtros dinámicos
+    function actualizarFiltros() {
+      const ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
+      
+      // Áreas únicas
+      const areas = [...new Set(ensayos.map(e => e.area).filter(Boolean))];
+      const selectArea = document.getElementById('filtroArea');
+      selectArea.innerHTML = '<option value="">Todas</option>';
+      areas.forEach(area => {
+        const option = document.createElement('option');
+        option.value = area;
+        option.textContent = area;
+        selectArea.appendChild(option);
+      });
+    }
+
+    function aplicarFiltros() {
+      const area = document.getElementById('filtroArea').value;
+      const estado = document.getElementById('filtroEstado').value;
+      const prioridad = document.getElementById('filtroPrioridad').value;
+
+      tablaEnsayos.column(1).search(area).draw();
+      tablaEnsayos.column(9).search(estado).draw();
+      tablaEnsayos.column(3).search(prioridad).draw();
+    }
+
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+      const modal = document.getElementById('modalEnsayo');
+      if (event.target === modal) cerrarModal();
+    }
+
+    // Actualizar dashboard (postMessage para pestaña abierta)
+    function actualizarDashboardExterno() {
+      window.parent.postMessage({ tipo: 'actualizarDashboard' }, '*');
+      // También funciona si abres dashboard.html directamente después
+    }
+  </script>
+</body>
+</html>
