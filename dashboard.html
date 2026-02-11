@@ -26,30 +26,79 @@
 
     .dashboard { min-height: 100vh; padding: 24px; max-width: 1400px; margin: 0 auto; }
 
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #e5e7eb; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
     .header h1 { font-size: 2rem; color: var(--color-primary); font-weight: 700; }
-    .header .back-btn { background: var(--color-primary); color: white; border: none; padding: 10px 20px; border-radius: var(--radius); cursor: pointer; font-weight: 500; text-decoration: none; }
 
-    /* Navegación */
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+
     .nav-shortcuts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
-    .btn-nav { background: var(--color-primary); color: #fff; text-decoration: none; padding: 10px 16px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-nav {
+      background: var(--color-primary);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
     .btn-nav:hover { background: #43a047; transform: translateY(-1px); }
 
-    /* KPIs */
     .kpis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
-    .kpi-card { background: var(--color-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow-sm); border-left: 4px solid var(--color-primary); transition: transform 0.2s, box-shadow 0.2s; }
+    .kpi-card {
+      background: var(--color-card);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--color-primary);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
     .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
     .kpi-icon { font-size: 1.4rem; margin-bottom: 8px; }
     .kpi-value { font-size: 2rem; font-weight: 800; margin-bottom: 2px; }
     .kpi-label { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
     .kpi-detail { font-size: 0.85rem; color: #888; }
 
-    /* Charts */
     .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
     .chart-container { background: var(--color-card); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
     .chart-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 16px; }
 
-    /* Tables */
     .tables-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
     .table-container { background: var(--color-card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
     .table-header { background: var(--color-primary-light); padding: 14px 18px; font-weight: 600; }
@@ -59,8 +108,6 @@
     tr:hover { background: #f8fafc; cursor: pointer; }
     .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
     .status-activo { background: #dcf4dc; color: var(--color-success); }
-    .status-retrasado { background: #fff3cd; color: var(--color-warning); }
-    .status-riesgo { background: #f8d7da; color: var(--color-danger); }
 
     @media (max-width: 1024px) { .charts-grid, .tables-grid { grid-template-columns: 1fr; } }
     @media (max-width: 768px) { .kpis-grid { grid-template-columns: 1fr 1fr; } .dashboard { padding: 16px; } }
@@ -71,10 +118,14 @@
   <div class="dashboard">
     <header class="header">
       <h1>📊 Dashboard I+D</h1>
-      <a href="index.html" class="back-btn">← Inicio</a>
+      <div class="header-buttons">
+        <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
+        <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
+        <a href="index.html" class="btn btn-secondary">← Inicio</a>
+        <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
+      </div>
     </header>
 
-    <!-- Navegación a todos los módulos -->
     <nav class="nav-shortcuts">
       <a href="ensayos.html" class="btn-nav">🧪 Ensayos</a>
       <a href="problemas.html" class="btn-nav">⚠️ Problemas</a>
@@ -83,7 +134,6 @@
       <a href="analytics.html" class="btn-nav">📈 Centro de Analítica</a>
     </nav>
 
-    <!-- KPIs dinámicos -->
     <div class="kpis-grid">
       <div class="kpi-card">
         <div class="kpi-icon">🧪</div>
@@ -123,7 +173,6 @@
       </div>
     </div>
 
-    <!-- Gráficos -->
     <div class="charts-grid">
       <div class="chart-container">
         <div class="chart-title">📊 Ensayos por Estado</div>
@@ -135,7 +184,6 @@
       </div>
     </div>
 
-    <!-- Tablas -->
     <div class="tables-grid">
       <div class="table-container">
         <div class="table-header">🔬 Ensayos Activos Principales</div>
@@ -159,33 +207,31 @@
   </div>
 
   <script>
-    let chartEnsayos = null;
-    let chartExito = null;
+    var chartEnsayos = null;
+    var chartExito = null;
 
-    // Funciones para leer LocalStorage
     function loadEnsayos() {
-      const raw = localStorage.getItem('ensayos');
+      var raw = localStorage.getItem('ensayos');
       return raw ? JSON.parse(raw) : [];
     }
     function loadProblemas() {
-      const raw = localStorage.getItem('problemas');
+      var raw = localStorage.getItem('problemas');
       return raw ? JSON.parse(raw) : [];
     }
     function loadColaboradores() {
-      const raw = localStorage.getItem('colaboradores');
+      var raw = localStorage.getItem('colaboradores');
       return raw ? JSON.parse(raw) : [];
     }
     function loadHistorias() {
-      const raw = localStorage.getItem('historias_exito');
+      var raw = localStorage.getItem('historias_exito');
       return raw ? JSON.parse(raw) : [];
     }
 
-    // Función principal: actualiza todo el dashboard
     function actualizarDashboard() {
-      const ensayos = loadEnsayos();
-      const problemas = loadProblemas();
-      const colaboradores = loadColaboradores();
-      const historias = loadHistorias();
+      var ensayos = loadEnsayos();
+      var problemas = loadProblemas();
+      var colaboradores = loadColaboradores();
+      var historias = loadHistorias();
 
       actualizarKPIs(ensayos, problemas, colaboradores, historias);
       actualizarGraficoEnsayosPorEstado(ensayos);
@@ -195,90 +241,83 @@
     }
 
     function actualizarKPIs(ensayos, problemas, colaboradores, historias) {
-      // Ensayos activos
-      const activos = ensayos.filter(e => e.estado === 'activo').length;
-      const total = ensayos.length;
-      const finalizados = ensayos.filter(e => e.estado === 'finalizado').length;
+      var activos = ensayos.filter(function(e) { return e.estado === 'activo'; }).length;
+      var total = ensayos.length;
+      var finalizados = ensayos.filter(function(e) { return e.estado === 'finalizado'; }).length;
       document.getElementById('kpiEnsayosActivos').textContent = activos;
       document.getElementById('kpiEnsayosActivosDetalle').textContent =
-        total > 0 ? `${((activos/total)*100).toFixed(0)}% del total (${total} ensayos)` : 'Sin ensayos registrados';
+        total > 0 ? Math.round((activos/total)*100) + '% del total (' + total + ' ensayos)' : 'Sin ensayos registrados';
 
-      // ROI promedio
-      const roiActivos = ensayos.filter(e => e.estado === 'activo' && typeof e.roiEstimado === 'number' && e.roiEstimado > 0);
-      const roiProm = roiActivos.length
-        ? (roiActivos.reduce((s,e) => s + e.roiEstimado, 0) / roiActivos.length).toFixed(1)
+      var roiActivos = ensayos.filter(function(e) { return e.estado === 'activo' && typeof e.roiEstimado === 'number' && e.roiEstimado > 0; });
+      var roiProm = roiActivos.length
+        ? (roiActivos.reduce(function(s,e) { return s + e.roiEstimado; }, 0) / roiActivos.length).toFixed(1)
         : 0;
-      const roiNivel = roiProm >= 150 ? 'Alto' : roiProm >= 80 ? 'Medio' : 'Bajo';
-      const roiColor = roiProm >= 150 ? '#4caf50' : roiProm >= 80 ? '#ff9800' : '#f44336';
+      var roiNivel = roiProm >= 150 ? 'Alto' : roiProm >= 80 ? 'Medio' : 'Bajo';
+      var roiColor = roiProm >= 150 ? '#4caf50' : roiProm >= 80 ? '#ff9800' : '#f44336';
       document.getElementById('kpiRoiValor').textContent = roiProm + '%';
       document.getElementById('kpiRoiDetalle').innerHTML =
-        `<span style="color:${roiColor}">${roiNivel}</span> · ${roiActivos.length} ensayos con ROI`;
+        '<span style="color:' + roiColor + '">' + roiNivel + '</span> · ' + roiActivos.length + ' ensayos con ROI';
 
-      // Tasa de éxito
-      const exitosos = ensayos.filter(e => e.estado === 'finalizado' && e.exito).length;
-      const tasaExito = finalizados > 0 ? ((exitosos / finalizados) * 100).toFixed(1) : 0;
+      var exitosos = ensayos.filter(function(e) { return e.estado === 'finalizado' && e.exito; }).length;
+      var tasaExito = finalizados > 0 ? ((exitosos / finalizados) * 100).toFixed(1) : 0;
       document.getElementById('kpiExitoValor').textContent = tasaExito + '%';
-      document.getElementById('kpiExitoDetalle').textContent = `${exitosos}/${finalizados} ensayos finalizados`;
+      document.getElementById('kpiExitoDetalle').textContent = exitosos + '/' + finalizados + ' ensayos finalizados';
 
-      // Publicaciones
-      const publicaciones = ensayos.filter(e => (e.publicaciones || []).length > 0).length;
+      var publicaciones = ensayos.filter(function(e) { return (e.publicaciones || []).length > 0; }).length;
       document.getElementById('kpiPublicacionesValor').textContent = publicaciones;
 
-      // Problemas abiertos
-      const abiertos = problemas.filter(p => p.estado === 'abierto' || p.estado === 'en proceso').length;
+      var abiertos = problemas.filter(function(p) { return p.estado === 'abierto' || p.estado === 'en proceso'; }).length;
       document.getElementById('kpiProblemasValor').textContent = abiertos;
-      // Desglose por área
-      const porArea = {};
-      problemas.filter(p => p.estado === 'abierto' || p.estado === 'en proceso').forEach(p => {
-        const a = p.area || 'Otro';
+      var porArea = {};
+      problemas.filter(function(p) { return p.estado === 'abierto' || p.estado === 'en proceso'; }).forEach(function(p) {
+        var a = p.area || 'Otro';
         porArea[a] = (porArea[a] || 0) + 1;
       });
-      const detalleProblemas = Object.entries(porArea).map(([a,n]) => `${a} ${n}`).join(', ');
+      var detalleProblemas = Object.keys(porArea).map(function(a) { return a + ' ' + porArea[a]; }).join(', ');
       document.getElementById('kpiProblemasDetalle').textContent = detalleProblemas || 'Sin problemas abiertos';
 
-      // Colaboradores activos
-      const colabActivos = colaboradores.filter(c => (c.proyectos_activos || []).length > 0).length;
-      const colabTotal = colaboradores.length;
+      var colabActivos = colaboradores.filter(function(c) { return (c.proyectos_activos || []).length > 0; }).length;
+      var colabTotal = colaboradores.length;
       document.getElementById('kpiColaboradoresValor').textContent = colabActivos;
       document.getElementById('kpiColaboradoresDetalle').textContent =
-        colabTotal > 0 ? `${((colabActivos/colabTotal)*100).toFixed(0)}% del equipo (${colabTotal} total)` : 'Sin colaboradores registrados';
+        colabTotal > 0 ? Math.round((colabActivos/colabTotal)*100) + '% del equipo (' + colabTotal + ' total)' : 'Sin colaboradores registrados';
     }
 
     function actualizarGraficoEnsayosPorEstado(ensayos) {
-      const estados = {};
-      ensayos.forEach(e => {
-        const est = e.estado || 'sin estado';
+      var estados = {};
+      ensayos.forEach(function(e) {
+        var est = e.estado || 'sin estado';
         estados[est] = (estados[est] || 0) + 1;
       });
 
-      const labels = Object.keys(estados);
-      const data = Object.values(estados);
-      const colores = { activo:'#4caf50', finalizado:'#2196f3', suspendido:'#ff9800', fallido:'#f44336' };
-      const bgColors = labels.map(l => colores[l] || '#9e9e9e');
+      var labels = Object.keys(estados);
+      var data = Object.values(estados);
+      var colores = { activo:'#4caf50', finalizado:'#2196f3', suspendido:'#ff9800', fallido:'#f44336' };
+      var bgColors = labels.map(function(l) { return colores[l] || '#9e9e9e'; });
 
-      const ctx = document.getElementById('chartEnsayosEstado').getContext('2d');
+      var ctx = document.getElementById('chartEnsayosEstado').getContext('2d');
       if (chartEnsayos) chartEnsayos.destroy();
       chartEnsayos = new Chart(ctx, {
         type: 'bar',
-        data: { labels, datasets: [{ label: 'Cantidad', data, backgroundColor: bgColors }] },
+        data: { labels: labels, datasets: [{ label: 'Cantidad', data: data, backgroundColor: bgColors }] },
         options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
       });
     }
 
     function actualizarGraficoExitoPorArea(ensayos) {
-      const map = {};
-      ensayos.filter(e => e.estado === 'finalizado').forEach(e => {
-        const area = e.area || 'Otro';
+      var map = {};
+      ensayos.filter(function(e) { return e.estado === 'finalizado'; }).forEach(function(e) {
+        var area = e.area || 'Otro';
         if (!map[area]) map[area] = { total: 0, exitosos: 0 };
         map[area].total++;
         if (e.exito) map[area].exitosos++;
       });
 
-      const labels = Object.keys(map);
-      const data = labels.map(a => map[a].total > 0 ? ((map[a].exitosos / map[a].total) * 100).toFixed(1) : 0);
-      const bgColors = ['#4caf50','#8bc34a','#cddc39','#f9a825','#ff9800','#2196f3'];
+      var labels = Object.keys(map);
+      var data = labels.map(function(a) { return map[a].total > 0 ? ((map[a].exitosos / map[a].total) * 100).toFixed(1) : 0; });
+      var bgColors = ['#4caf50','#8bc34a','#cddc39','#f9a825','#ff9800','#2196f3'];
 
-      const ctx = document.getElementById('chartExitoArea').getContext('2d');
+      var ctx = document.getElementById('chartExitoArea').getContext('2d');
       if (chartExito) chartExito.destroy();
 
       if (labels.length === 0) {
@@ -292,42 +331,41 @@
 
       chartExito = new Chart(ctx, {
         type: 'doughnut',
-        data: { labels, datasets: [{ data, backgroundColor: bgColors.slice(0, labels.length) }] },
+        data: { labels: labels, datasets: [{ data: data, backgroundColor: bgColors.slice(0, labels.length) }] },
         options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
       });
     }
 
     function actualizarTablaEnsayosActivos(ensayos) {
-      const tbody = document.getElementById('tablaEnsayosActivos');
+      var tbody = document.getElementById('tablaEnsayosActivos');
       tbody.innerHTML = '';
-      const activos = ensayos.filter(e => e.estado === 'activo').slice(0, 10);
+      var activos = ensayos.filter(function(e) { return e.estado === 'activo'; }).slice(0, 10);
 
       if (activos.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">Sin ensayos activos. Crea uno desde 🧪 Ensayos.</td></tr>';
         return;
       }
 
-      activos.forEach(e => {
-        const tr = document.createElement('tr');
-        tr.onclick = () => window.location.href = 'ensayos.html';
-        tr.innerHTML = `
-          <td>${e.area || ''}</td>
-          <td>${e.responsableId || ''}</td>
-          <td>${e.fechaInicio ? new Date(e.fechaInicio).toLocaleDateString('es-DO') : ''}</td>
-          <td>${e.porcentajeAvance || 0}%</td>
-          <td><span class="status-badge status-activo">Activo</span></td>
-        `;
+      activos.forEach(function(e) {
+        var tr = document.createElement('tr');
+        tr.onclick = function() { window.location.href = 'ensayos.html'; };
+        tr.innerHTML =
+          '<td>' + (e.area || '') + '</td>' +
+          '<td>' + (e.responsableId || '') + '</td>' +
+          '<td>' + (e.fechaInicio ? new Date(e.fechaInicio).toLocaleDateString('es-DO') : '') + '</td>' +
+          '<td>' + (e.porcentajeAvance || 0) + '%</td>' +
+          '<td><span class="status-badge status-activo">Activo</span></td>';
         tbody.appendChild(tr);
       });
     }
 
     function actualizarTablaProblemasPrioridad(problemas) {
-      const tbody = document.getElementById('tablaProblemasPrioridad');
+      var tbody = document.getElementById('tablaProblemasPrioridad');
       tbody.innerHTML = '';
-      const criticos = problemas
-        .filter(p => p.estado === 'abierto' || p.estado === 'en proceso')
-        .sort((a,b) => {
-          const ord = { Alta: 0, Media: 1, Baja: 2 };
+      var criticos = problemas
+        .filter(function(p) { return p.estado === 'abierto' || p.estado === 'en proceso'; })
+        .sort(function(a,b) {
+          var ord = { Alta: 0, Media: 1, Baja: 2 };
           return (ord[a.prioridad] || 3) - (ord[b.prioridad] || 3);
         })
         .slice(0, 8);
@@ -337,33 +375,42 @@
         return;
       }
 
-      const coloresPrioridad = { Alta: '#f44336', Media: '#ff9800', Baja: '#4caf50' };
-      criticos.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.onclick = () => window.location.href = 'problemas.html';
-        tr.innerHTML = `
-          <td style="color:${coloresPrioridad[p.prioridad] || '#333'};font-weight:700;">${p.prioridad || ''}</td>
-          <td>${p.area || ''}</td>
-          <td>${p.fecha ? new Date(p.fecha).toLocaleDateString('es-DO') : ''}</td>
-          <td>${p.reportadoPor || ''}</td>
-        `;
+      var coloresPrioridad = { Alta: '#f44336', Media: '#ff9800', Baja: '#4caf50' };
+      criticos.forEach(function(p) {
+        var tr = document.createElement('tr');
+        tr.onclick = function() { window.location.href = 'problemas.html'; };
+        tr.innerHTML =
+          '<td style="color:' + (coloresPrioridad[p.prioridad] || '#333') + ';font-weight:700;">' + (p.prioridad || '') + '</td>' +
+          '<td>' + (p.area || '') + '</td>' +
+          '<td>' + (p.fecha ? new Date(p.fecha).toLocaleDateString('es-DO') : '') + '</td>' +
+          '<td>' + (p.reportadoPor || '') + '</td>';
         tbody.appendChild(tr);
       });
     }
 
-    // Ejecutar al cargar
     document.addEventListener('DOMContentLoaded', actualizarDashboard);
 
-    // Escuchar mensajes desde otros módulos
-    window.addEventListener('message', (event) => {
+    window.addEventListener('message', function(event) {
       if (event.data && event.data.tipo === 'actualizarDashboard') {
         actualizarDashboard();
       }
     });
 
-    // Refrescar cada 10 segundos (por si se edita en otra pestaña)
     setInterval(actualizarDashboard, 10000);
+  </script>
+
   <script src="auth-guard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        if (window.esAdmin()) {
+          document.getElementById('btnAdmin').style.display = 'inline-flex';
+        }
+      }
+    });
+  </script>
 </body>
 </html>
+
 
