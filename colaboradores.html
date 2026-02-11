@@ -509,26 +509,22 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script>
     var colaboradores = [];
     var areasFuertesTemp = [];
     var interesesTemp = [];
     var colaboradorEditandoId = null;
 
-    function loadColaboradores() {
-      var raw = localStorage.getItem('colaboradores');
-      colaboradores = raw ? JSON.parse(raw) : [];
-    }
-
-    function saveColaboradores() {
-      localStorage.setItem('colaboradores', JSON.stringify(colaboradores));
-    }
-
-    function init() {
-      loadColaboradores();
-      initTagsInputs();
-      actualizarSelectsFiltro();
-      renderColaboradores();
+    async function loadColaboradores() {
+      var { data, error } = await DB.colaboradores.listar();
+      if (error) {
+        alert('Error al cargar colaboradores: ' + error.message);
+        colaboradores = [];
+      } else {
+        colaboradores = data || [];
+      }
     }
 
     function initTagsInputs() {
@@ -753,7 +749,7 @@
       colaboradorEditandoId = null;
     }
 
-    document.getElementById('formColaborador').addEventListener('submit', function(e) {
+    document.getElementById('formColaborador').addEventListener('submit', async function(e) {
       e.preventDefault();
       var nombre = document.getElementById('nombre').value.trim();
       var cargo = document.getElementById('cargo').value.trim();
@@ -782,24 +778,32 @@
         intereses: interesesTemp.slice()
       };
 
+      var result;
       if (colaboradorEditandoId) {
-        var idx = colaboradores.findIndex(function(c) { return c.id === colaboradorEditandoId; });
-        if (idx !== -1) colaboradores[idx] = colab;
+        result = await DB.colaboradores.actualizar(colaboradorEditandoId, colab);
       } else {
-        colaboradores.push(colab);
+        result = await DB.colaboradores.crear(colab);
       }
 
-      saveColaboradores();
-      actualizarSelectsFiltro();
-      renderColaboradores();
-      cerrarModalColaborador();
+      if (result.error) {
+        alert('Error: ' + result.error.message);
+      } else {
+        await loadColaboradores();
+        actualizarSelectsFiltro();
+        renderColaboradores();
+        cerrarModalColaborador();
+      }
     });
 
-    function eliminarColaborador() {
+    async function eliminarColaborador() {
       if (!colaboradorEditandoId) return;
       if (!confirm('¿Eliminar este colaborador?')) return;
-      colaboradores = colaboradores.filter(function(c) { return c.id !== colaboradorEditandoId; });
-      saveColaboradores();
+      var { error } = await DB.colaboradores.eliminar(colaboradorEditandoId);
+      if (error) {
+        alert('Error: ' + error.message);
+        return;
+      }
+      await loadColaboradores();
       actualizarSelectsFiltro();
       renderColaboradores();
       cerrarModalColaborador();
@@ -854,7 +858,12 @@
       if (e.target === modal) cerrarModalColaborador();
     });
 
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', async function() {
+      await loadColaboradores();
+      initTagsInputs();
+      actualizarSelectsFiltro();
+      renderColaboradores();
+    });
   </script>
 
   <script src="auth-guard.js"></script>
@@ -870,4 +879,5 @@
   </script>
 </body>
 </html>
+
 
