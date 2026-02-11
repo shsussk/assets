@@ -5,15 +5,14 @@
   <title>Entrada – Ecosistema de I+D · Plantaciones del Norte</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Tipografía sencilla del sistema -->
   <style>
     :root {
-      --color-primary: #4caf50;        /* verde principal */
-      --color-primary-light: #dcf4dc;  /* fondo suave */
-      --color-accent: #f9a825;         /* amarillo de acento */
+      --color-primary: #4caf50;
+      --color-primary-light: #dcf4dc;
+      --color-accent: #f9a825;
       --color-text: #333333;
-      --color-bg: #f5f9f5;             /* fondo principal */
-      --color-card: #e8f4e8;           /* fondo de cards */
+      --color-bg: #f5f9f5;
+      --color-card: #e8f4e8;
       --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.08);
       --radius-lg: 18px;
       --radius-md: 12px;
@@ -47,7 +46,6 @@
       gap: 24px;
     }
 
-    /* Bloque filosofía (izquierda) */
     .philosophy-section {
       flex: 3;
       background-color: var(--color-primary-light);
@@ -134,7 +132,6 @@
       color: #4b5b4b;
     }
 
-    /* Bloque derecho: logo + CTA */
     .logo-cta-section {
       flex: 2;
       background: white;
@@ -213,18 +210,15 @@
       margin-top: -6px;
     }
 
-    /* Responsivo */
     @media (max-width: 960px) {
       .landing-wrapper {
         flex-direction: column;
         padding: 16px;
       }
-
       .philosophy-section,
       .logo-cta-section {
         min-height: auto;
       }
-
       .values-row {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -234,15 +228,12 @@
       .philosophy-section {
         padding: 22px 18px 20px;
       }
-
       .logo-cta-section {
         padding: 22px 18px;
       }
-
       .values-row {
         grid-template-columns: 1fr;
       }
-
       .btn-enter {
         width: 100%;
         justify-content: center;
@@ -252,7 +243,6 @@
 </head>
 <body>
   <div class="landing-wrapper">
-    <!-- Bloque izquierdo: filosofía + valores -->
     <section class="philosophy-section">
       <div>
         <header class="philosophy-header">
@@ -274,19 +264,16 @@
             <h3>Colaboración sin jerarquías</h3>
             <p>Todos aprendemos de todos</p>
           </article>
-
           <article class="value-card">
             <div class="value-icon">🔍</div>
             <h3>Curiosidad científica</h3>
             <p>Cada problema es una oportunidad</p>
           </article>
-
           <article class="value-card">
             <div class="value-icon">♻️</div>
             <h3>Regeneración constante</h3>
             <p>Mejoramos continuamente</p>
           </article>
-
           <article class="value-card">
             <div class="value-icon">❤️</div>
             <h3>Calor humano</h3>
@@ -296,11 +283,11 @@
       </div>
     </section>
 
-    <!-- Bloque derecho: logo + CTA -->
     <aside class="logo-cta-section">
       <div class="company-logo">
-  <img src="logo.png" alt="Logo de Plantaciones del Norte">
-</div>
+        <!-- Usa la ruta absoluta de tu GitHub Pages -->
+        <img src="https://shsussk.github.io/Activos/logo.png" alt="Logo de Plantaciones del Norte">
+      </div>
       <p class="logo-caption">Ecosistema de Investigación y Desarrollo · Plantaciones del Norte</p>
 
       <button class="btn-enter" onclick="window.location.href='dashboard.html'">
