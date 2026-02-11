@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Entrada – Ecosistema de I+D · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tipografía sencilla del sistema -->
+  <style>
+    :root {
+      --color-primary: #4caf50;        /* verde principal */
+      --color-primary-light: #dcf4dc;  /* fondo suave */
+      --color-accent: #f9a825;         /* amarillo de acento */
+      --color-text: #333333;
+      --color-bg: #f5f9f5;             /* fondo principal */
+      --color-card: #e8f4e8;           /* fondo de cards */
+      --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.08);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .landing-wrapper {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      max-width: 1200px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 24px;
+      gap: 24px;
+    }
+
+    /* Bloque filosofía (izquierda) */
+    .philosophy-section {
+      flex: 3;
+      background-color: var(--color-primary-light);
+      border-radius: var(--radius-lg);
+      padding: 32px 32px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .philosophy-header h1 {
+      font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+      font-weight: 800;
+      color: var(--color-primary);
+      margin-bottom: 8px;
+    }
+
+    .philosophy-header .subtitle {
+      font-size: 0.95rem;
+      color: #466b46;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .philosophy-body {
+      margin-top: 28px;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: var(--radius-md);
+      padding: 20px 22px 18px;
+    }
+
+    .philosophy-body h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--color-accent);
+      margin-bottom: 8px;
+    }
+
+    .philosophy-body p {
+      font-size: 0.98rem;
+      line-height: 1.7;
+      text-align: left;
+    }
+
+    .values-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .value-card {
+      background-color: var(--color-card);
+      border-radius: var(--radius-md);
+      padding: 14px 12px 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .value-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      color: var(--color-primary);
+      font-size: 1.1rem;
+      margin-bottom: 2px;
+    }
+
+    .value-card h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .value-card p {
+      font-size: 0.78rem;
+      color: #4b5b4b;
+    }
+
+    /* Bloque derecho: logo + CTA */
+    .logo-cta-section {
+      flex: 2;
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .company-logo {
+      width: 220px;
+      max-width: 80%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .company-logo img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .logo-caption {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #777;
+      text-align: center;
+    }
+
+    .btn-enter {
+      margin-top: 12px;
+      padding: 14px 26px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: var(--radius-pill);
+      border: none;
+      cursor: pointer;
+      background-color: var(--color-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+    }
+
+    .btn-enter span.icon {
+      font-size: 1.1rem;
+    }
+
+    .btn-enter:hover {
+      background-color: #43a047;
+      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-enter:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 8px rgba(76, 175, 80, 0.35);
+    }
+
+    .btn-enter:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
+
+    .cta-helper {
+      font-size: 0.85rem;
+      color: #777;
+      text-align: center;
+      margin-top: -6px;
+    }
+
+    /* Responsivo */
+    @media (max-width: 960px) {
+      .landing-wrapper {
+        flex-direction: column;
+        padding: 16px;
+      }
+
+      .philosophy-section,
+      .logo-cta-section {
+        min-height: auto;
+      }
+
+      .values-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .philosophy-section {
+        padding: 22px 18px 20px;
+      }
+
+      .logo-cta-section {
+        padding: 22px 18px;
+      }
+
+      .values-row {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-enter {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="landing-wrapper">
+    <!-- Bloque izquierdo: filosofía + valores -->
+    <section class="philosophy-section">
+      <div>
+        <header class="philosophy-header">
+          <h1>Donde la ciencia se encuentra con la sabiduría del campo</h1>
+          <p class="subtitle">Departamento de Investigación y Desarrollo – Plantaciones del Norte</p>
+        </header>
+
+        <div class="philosophy-body">
+          <h2>Nuestra filosofía</h2>
+          <p>
+            Creemos que las mejores soluciones nacen cuando combinamos el rigor científico con la experiencia práctica del campo.
+            Aquí cada voz importa, cada observación cuenta, y cada éxito se celebra en conjunto.
+          </p>
+        </div>
+
+        <div class="values-row">
+          <article class="value-card">
+            <div class="value-icon">🤝</div>
+            <h3>Colaboración sin jerarquías</h3>
+            <p>Todos aprendemos de todos</p>
+          </article>
+
+          <article class="value-card">
+            <div class="value-icon">🔍</div>
+            <h3>Curiosidad científica</h3>
+            <p>Cada problema es una oportunidad</p>
+          </article>
+
+          <article class="value-card">
+            <div class="value-icon">♻️</div>
+            <h3>Regeneración constante</h3>
+            <p>Mejoramos continuamente</p>
+          </article>
+
+          <article class="value-card">
+            <div class="value-icon">❤️</div>
+            <h3>Calor humano</h3>
+            <p>La tecnología nos une, no nos separa</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bloque derecho: logo + CTA -->
+    <aside class="logo-cta-section">
+      <div class="company-logo">
+        <!-- Ajusta la ruta del logo según dónde lo subas -->
+        <img src="assets/logo.png" alt="Logo de Plantaciones del Norte">
+      </div>
+      <p class="logo-caption">Ecosistema de Investigación y Desarrollo · Plantaciones del Norte</p>
+
+      <button class="btn-enter" onclick="window.location.href='dashboard.html'">
+        <span class="icon">🚪</span>
+        <span>Entrar al Ecosistema</span>
+      </button>
+      <p class="cta-helper">Un solo clic para entrar al ecosistema interno del departamento.</p>
+    </aside>
+  </div>
+</body>
+</html>
