@@ -168,6 +168,25 @@
     .btn-enter:active { transform: translateY(0); box-shadow: 0 3px 8px rgba(76, 175, 80, 0.35); }
     .btn-enter:focus { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
+    .btn-logout {
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: var(--radius-pill);
+      border: none;
+      cursor: pointer;
+      background-color: #f44336;
+      color: white;
+      transition: background-color 0.18s ease;
+    }
+    .btn-logout:hover { background-color: #d32f2f; }
+
+    .user-info {
+      font-size: 0.85rem;
+      color: #555;
+      text-align: center;
+    }
+
     .cta-helper { font-size: 0.85rem; color: #777; text-align: center; margin-top: -6px; }
 
     @media (max-width: 960px) {
@@ -232,13 +251,28 @@
       </div>
       <p class="logo-caption">Ecosistema de Investigación y Desarrollo · Plantaciones del Norte</p>
 
+      <!-- Info del usuario logueado -->
+      <div id="userInfo" class="user-info"></div>
+
       <button class="btn-enter" onclick="window.location.href='dashboard.html'">
         <span class="icon">🚪</span>
         <span>Entrar al Ecosistema</span>
       </button>
       <p class="cta-helper">Un solo clic para entrar al ecosistema interno del departamento.</p>
+
+      <!-- Botón cerrar sesión -->
+      <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
     </aside>
   </div>
+
+  <script src="auth-guard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent = '👤 Bienvenido/a, ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+      }
+    });
+  </script>
 </body>
 </html>
 
