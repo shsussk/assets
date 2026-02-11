@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reporte de Problemas · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- DataTables CDN -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-bg: #f8fafb;
+      --color-card: white;
+      --shadow: 0 8px 24px rgba(0,0,0,0.12);
+      --radius: 12px;
+      --color-baja: #dcf4dc;
+      --color-media: #fff3cd;
+      --color-alta: #f8d7da;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+    
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      color: var(--color-primary);
+      font-size: 2rem;
+    }
+
+    .btn {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover { background: #43a047; transform: translateY(-1px); }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+
+    /* Tabla */
+    .table-container {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    #problemasTable { width: 100%; }
+    #problemasTable th { background: #f8fafc; font-weight: 600; padding: 16px; }
+    #problemasTable td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+    #problemasTable tr:hover { background: #f8fafc; }
+
+    .prioridad-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .prioridad-baja { background: var(--color-baja); color: #4caf50; }
+    .prioridad-media { background: var(--color-media); color: #ff9800; }
+    .prioridad-alta { background: var(--color-alta); color: #f44336; }
+
+    .estado-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .estado-abierto { background: #fff3cd; color: #856404; }
+    .estado-proceso { background: #cce5ff; color: #004085; }
+    .estado-resuelto { background: #d4edda; color: #155724; }
+    .estado-descartado { background: #f8d7da; color: #721c24; }
+
+    /* Filtros */
+    .filters {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-group label { font-size: 0.9rem; font-weight: 500; }
+    .filter-group select, .filter-group input {
+      padding: 8px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 32px;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 768px) {
+      .form-row { grid-template-columns: 1fr; }
+      .filters { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>⚠️ Reporte de Problemas</h1>
+      <div>
+        <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+        <button onclick="abrirModal('crear')" class="btn">+ Reportar Problema</button>
+      </div>
+    </header>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <div class="filter-group">
+        <label>Área</label>
+        <select id="filtroArea" onchange="aplicarFiltros()">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Prioridad</label>
+        <select id="filtroPrioridad" onchange="aplicarFiltros()">
+          <option value="">Todas</option>
+          <option value="Baja">Baja</option>
+          <option value="Media">Media</option>
+          <option value="Alta">Alta</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Estado</label>
+        <select id="filtroEstado" onchange="aplicarFiltros()">
+          <option value="">Todos</option>
+          <option value="abierto">Abierto</option>
+          <option value="en proceso">En proceso</option>
+          <option value="resuelto">Resuelto</option>
+          <option value="descartado">Descartado</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-container">
+      <table id="problemasTable" class="display">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Área</th>
+            <th>Descripción</th>
+            <th>Reportado por</th>
+            <th>Fecha</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th>Responsable</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modalProblema" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitulo">Reportar Nuevo Problema</h2>
+      <form id="formProblema">
+        <input type="hidden" id="editId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Área *</label>
+            <select id="area" required>
+              <option value="">Seleccionar área</option>
+              <option value="Campo">Campo</option>
+              <option value="Laboratorio">Laboratorio</option>
+              <option value="Postcosecha">Postcosecha</option>
+              <option value="Administración">Administración</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Prioridad *</label>
+            <select id="prioridad" required>
+              <option value="Baja">Baja</option>
+              <option value="Media">Media</option>
+              <option value="Alta">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Reportado por *</label>
+          <input type="text" id="reportadoPor" required>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha *</label>
+          <input type="date" id="fecha" required>
+        </div>
+
+        <div class="form-group">
+          <label>Descripción *</label>
+          <textarea id="descripcion" required placeholder="Describe el problema claramente..." maxlength="500"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Estado *</label>
+            <select id="estado" required>
+              <option value="abierto">Abierto</option>
+              <option value="en proceso">En proceso</option>
+              <option value="resuelto">Resuelto</option>
+              <option value="descartado">Descartado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Responsable</label>
+            <input type="text" id="responsable">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Observaciones</label>
+          <textarea id="observaciones" placeholder="Comentarios de seguimiento o cierre..."></textarea>
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" onclick="cerrarModal()" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn">Guardar Problema</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let tablaProblemas;
+    let editandoId = null;
+
+    $(document).ready(function() {
+      cargarProblemas();
+      actualizarFiltros();
+      document.getElementById('fecha').valueAsDate = new Date(); // Fecha actual por defecto
+    });
+
+    function cargarProblemas() {
+      const problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+      
+      tablaProblemas = $('#problemasTable').DataTable({
+        data: problemas,
+        columns: [
+          { data: 'id' },
+          { data: 'area' },
+          { data: 'descripcion' },
+          { data: 'reportadoPor' },
+          { data: 'fecha', render: data => new Date(data).toLocaleDateString('es-DO') },
+          { 
+            data: 'prioridad',
+            render: data => {
+              const clases = {
+                'Baja': 'prioridad-baja',
+                'Media': 'prioridad-media',
+                'Alta': 'prioridad-alta'
+              };
+              return `<span class="prioridad-badge ${clases[data] || ''}">${data}</span>`;
+            }
+          },
+          { 
+            data: 'estado',
+            render: data => {
+              const clases = {
+                'abierto': 'estado-abierto',
+                'en proceso': 'estado-proceso',
+                'resuelto': 'estado-resuelto',
+                'descartado': 'estado-descartado'
+              };
+              return `<span class="estado-badge ${clases[data] || ''}">${data}</span>`;
+            }
+          },
+          { data: 'responsable' },
+          {
+            data: null,
+            orderable: false,
+            render: (data, type, row) => `
+              <button onclick="editarProblema('${row.id}')" class="btn btn-secondary" style="padding:6px 12px;font-size:0.8rem;">Editar</button>
+              <button onclick="eliminarProblema('${row.id}')" class="btn btn-danger" style="padding:6px 12px;font-size:0.8rem;">Eliminar</button>
+            `
+          }
+        ],
+        pageLength: 25,
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+        }
+      });
+    }
+
+    // Guardar problema
+    document.getElementById('formProblema').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const problema = {
+        id: editandoId || 'problema_' + Date.now(),
+        area: document.getElementById('area').value,
+        reportadoPor: document.getElementById('reportadoPor').value,
+        fecha: document.getElementById('fecha').value,
+        descripcion: document.getElementById('descripcion').value,
+        prioridad: document.getElementById('prioridad').value,
+        estado: document.getElementById('estado').value,
+        responsable: document.getElementById('responsable').value,
+        observaciones: document.getElementById('observaciones').value,
+        fechaCierre: document.getElementById('estado').value === 'resuelto' ? new Date().toISOString().split('T')[0] : null
+      };
+
+      let problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+      
+      if (editandoId) {
+        const index = problemas.findIndex(p => p.id === editandoId);
+        problemas[index] = problema;
+      } else {
+        problemas.push(problema);
+      }
+
+      localStorage.setItem('problemas', JSON.stringify(problemas));
+      
+      tablaProblemas.clear().rows.add(problemas).draw();
+      actualizarFiltros();
+      actualizarDashboardExterno();
+      
+      cerrarModal();
+      alert(editandoId ? 'Problema actualizado' : 'Problema reportado');
+    });
+
+    function abrirModal(accion) {
+      editandoId = null;
+      document.getElementById('modalTitulo').textContent = accion === 'crear' ? 'Reportar Nuevo Problema' : 'Editar Problema';
+      document.getElementById('formProblema').reset();
+      document.getElementById('fecha').valueAsDate = new Date();
+      document.getElementById('modalProblema').style.display = 'block';
+    }
+
+    function editarProblema(id) {
+      const problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+      const problema = problemas.find(p => p.id === id);
+      
+      if (problema) {
+        editandoId = id;
+        document.getElementById('area').value = problema.area || '';
+        document.getElementById('reportadoPor').value = problema.reportadoPor || '';
+        document.getElementById('fecha').value = problema.fecha || '';
+        document.getElementById('descripcion').value = problema.descripcion || '';
+        document.getElementById('prioridad').value = problema.prioridad || '';
+        document.getElementById('estado').value = problema.estado || 'abierto';
+        document.getElementById('responsable').value = problema.responsable || '';
+        document.getElementById('observaciones').value = problema.observaciones || '';
+        
+        document.getElementById('modalProblema').style.display = 'block';
+      }
+    }
+
+    function eliminarProblema(id) {
+      if (confirm('¿Eliminar este problema?')) {
+        let problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+        problemas = problemas.filter(p => p.id !== id);
+        localStorage.setItem('problemas', JSON.stringify(problemas));
+        
+        tablaProblemas.clear().rows.add(problemas).draw();
+        actualizarFiltros();
+        actualizarDashboardExterno();
+      }
+    }
+
+    function cerrarModal() {
+      document.getElementById('modalProblema').style.display = 'none';
+      editandoId = null;
+    }
+
+    function actualizarFiltros() {
+      const problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+      const areas = [...new Set(problemas.map(p => p.area).filter(Boolean))];
+      
+      const selectArea = document.getElementById('filtroArea');
+      selectArea.innerHTML = '<option value="">Todas</option>';
+      areas.forEach(area => {
+        const option = document.createElement('option');
+        option.value = area;
+        option.textContent = area;
+        selectArea.appendChild(option);
+      });
+    }
+
+    function aplicarFiltros() {
+      const area = document.getElementById('filtroArea').value;
+      const prioridad = document.getElementById('filtroPrioridad').value;
+      const estado = document.getElementById('filtroEstado').value;
+
+      tablaProblemas.column(1).search(area).draw();
+      tablaProblemas.column(5).search(prioridad).draw();
+      tablaProblemas.column(6).search(estado).draw();
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('modalProblema');
+      if (event.target === modal) cerrarModal();
+    }
+
+    function actualizarDashboardExterno() {
+      window.parent.postMessage({ tipo: 'actualizarDashboard' }, '*');
+    }
+  </script>
+</body>
+</html>
