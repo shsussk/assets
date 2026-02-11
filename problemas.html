@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -195,7 +196,6 @@
       </div>
     </header>
 
-    <!-- Filtros -->
     <div class="filters">
       <div class="filter-group">
         <label>Área</label>
@@ -224,7 +224,6 @@
       </div>
     </div>
 
-    <!-- Tabla -->
     <div class="table-container">
       <table id="problemasTable" class="display">
         <thead>
@@ -244,7 +243,6 @@
     </div>
   </div>
 
-  <!-- Modal -->
   <div id="modalProblema" class="modal">
     <div class="modal-content">
       <h2 id="modalTitulo">Reportar Nuevo Problema</h2>
@@ -316,26 +314,30 @@
     </div>
   </div>
 
+  <script src="supabase-config.js"></script>
   <script>
     var tablaProblemas;
     var editandoId = null;
 
     $(document).ready(function() {
       cargarProblemas();
-      actualizarFiltros();
       document.getElementById('fecha').valueAsDate = new Date();
     });
 
-    function cargarProblemas() {
-      var problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+    async function cargarProblemas() {
+      var { data: problemas, error } = await DB.problemas.listar();
+      if (error) {
+        alert('Error al cargar problemas: ' + error.message);
+        return;
+      }
       
       tablaProblemas = $('#problemasTable').DataTable({
-        data: problemas,
+        data: problemas || [],
         columns: [
           { data: 'id' },
           { data: 'area' },
           { data: 'descripcion' },
-          { data: 'reportadoPor' },
+          { data: 'reportado_por' },
           { data: 'fecha', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
           { 
             data: 'prioridad',
@@ -366,57 +368,57 @@
           url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
         }
       });
+
+      actualizarFiltros(problemas);
     }
 
-    document.getElementById('formProblema').addEventListener('submit', function(e) {
+    document.getElementById('formProblema').addEventListener('submit', async function(e) {
       e.preventDefault();
       
       var problema = {
         id: editandoId || 'problema_' + Date.now(),
         area: document.getElementById('area').value,
-        reportadoPor: document.getElementById('reportadoPor').value,
+        reportado_por: document.getElementById('reportadoPor').value,
         fecha: document.getElementById('fecha').value,
         descripcion: document.getElementById('descripcion').value,
         prioridad: document.getElementById('prioridad').value,
         estado: document.getElementById('estado').value,
         responsable: document.getElementById('responsable').value,
         observaciones: document.getElementById('observaciones').value,
-        fechaCierre: document.getElementById('estado').value === 'resuelto' ? new Date().toISOString().split('T')[0] : null
+        fecha_cierre: document.getElementById('estado').value === 'resuelto' ? new Date().toISOString().split('T')[0] : null
       };
 
-      var problemas = JSON.parse(localStorage.getItem('problemas')) || [];
-      
+      var result;
       if (editandoId) {
-        var index = problemas.findIndex(function(p) { return p.id === editandoId; });
-        if (index !== -1) problemas[index] = problema;
+        result = await DB.problemas.actualizar(editandoId, problema);
       } else {
-        problemas.push(problema);
+        result = await DB.problemas.crear(problema);
       }
 
-      localStorage.setItem('problemas', JSON.stringify(problemas));
-      
-      tablaProblemas.clear().rows.add(problemas).draw();
-      actualizarFiltros();
-      cerrarModal();
-      alert(editandoId ? 'Problema actualizado' : 'Problema reportado');
+      if (result.error) {
+        alert('Error: ' + result.error.message);
+      } else {
+        alert(editandoId ? 'Problema actualizado' : 'Problema reportado');
+        window.location.reload();
+      }
     });
 
     function abrirModal(accion) {
       editandoId = null;
-      document.getElementById('modalTitulo').textContent = accion === 'crear' ? 'Reportar Nuevo Problema' : 'Editar Problema';
+      document.getElementById('modalTitulo').textContent = 'Reportar Nuevo Problema';
       document.getElementById('formProblema').reset();
       document.getElementById('fecha').valueAsDate = new Date();
       document.getElementById('modalProblema').style.display = 'block';
     }
 
-    function editarProblema(id) {
-      var problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+    async function editarProblema(id) {
+      var { data: problemas } = await DB.problemas.listar();
       var problema = problemas.find(function(p) { return p.id === id; });
       
       if (problema) {
         editandoId = id;
         document.getElementById('area').value = problema.area || '';
-        document.getElementById('reportadoPor').value = problema.reportadoPor || '';
+        document.getElementById('reportadoPor').value = problema.reportado_por || '';
         document.getElementById('fecha').value = problema.fecha || '';
         document.getElementById('descripcion').value = problema.descripcion || '';
         document.getElementById('prioridad').value = problema.prioridad || '';
@@ -428,14 +430,14 @@
       }
     }
 
-    function eliminarProblema(id) {
+    async function eliminarProblema(id) {
       if (confirm('¿Eliminar este problema?')) {
-        var problemas = JSON.parse(localStorage.getItem('problemas')) || [];
-        problemas = problemas.filter(function(p) { return p.id !== id; });
-        localStorage.setItem('problemas', JSON.stringify(problemas));
-        
-        tablaProblemas.clear().rows.add(problemas).draw();
-        actualizarFiltros();
+        var { error } = await DB.problemas.eliminar(id);
+        if (error) {
+          alert('Error: ' + error.message);
+        } else {
+          window.location.reload();
+        }
       }
     }
 
@@ -444,8 +446,7 @@
       editandoId = null;
     }
 
-    function actualizarFiltros() {
-      var problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+    function actualizarFiltros(problemas) {
       var areas = [];
       problemas.forEach(function(p) {
         if (p.area && areas.indexOf(p.area) === -1) areas.push(p.area);
@@ -490,4 +491,5 @@
   </script>
 </body>
 </html>
+
 
