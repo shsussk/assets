@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Centro de Analítica · Plantaciones del Norte</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -45,11 +46,11 @@
       padding: 10px 18px;
       border-radius: 999px;
       cursor: pointer;
-      font-size: 0.9rem;
       font-weight: 600;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      font-size: 0.9rem;
       text-decoration: none;
       transition: all 0.2s;
     }
@@ -323,6 +324,7 @@
     </div>
   </div>
 
+  <script src="supabase-config.js"></script>
   <script>
     var charts = {};
     var ensayos = [];
@@ -330,11 +332,17 @@
     var colaboradores = [];
     var historias = [];
 
-    function loadData() {
-      ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
-      problemas = JSON.parse(localStorage.getItem('problemas')) || [];
-      colaboradores = JSON.parse(localStorage.getItem('colaboradores')) || [];
-      historias = JSON.parse(localStorage.getItem('historias_exito')) || [];
+    async function loadData() {
+      var [eRes, pRes, cRes, hRes] = await Promise.all([
+        DB.ensayos.listar(),
+        DB.problemas.listar(),
+        DB.colaboradores.listar(),
+        DB.historias.listar()
+      ]);
+      ensayos = eRes.data || [];
+      problemas = pRes.data || [];
+      colaboradores = cRes.data || [];
+      historias = hRes.data || [];
     }
 
     function filtrarEnsayos() {
@@ -351,8 +359,8 @@
         if (estado && e.estado !== estado) return false;
         if (prioridad && e.prioridad !== prioridad) return false;
 
-        if (periodo !== 'todo' && e.fechaInicio) {
-          var fi = new Date(e.fechaInicio);
+        if (periodo !== 'todo' && e.fecha_inicio) {
+          var fi = new Date(e.fecha_inicio);
           if (periodo === 'ultimo6m') {
             var hace6 = new Date(hoy);
             hace6.setMonth(hace6.getMonth() - 6);
@@ -400,12 +408,12 @@
       var exitosos = finalizados.filter(function(e) { return e.exito; });
       var tasaExito = finalizados.length > 0 ? ((exitosos.length / finalizados.length) * 100).toFixed(1) : 0;
 
-      var roiList = ef.filter(function(e) { return typeof e.roiEstimado === 'number' && e.roiEstimado > 0; });
-      var roiProm = roiList.length ? (roiList.reduce(function(s,e) { return s + e.roiEstimado; }, 0) / roiList.length).toFixed(1) : 0;
+      var roiList = ef.filter(function(e) { return typeof e.roi_estimado === 'number' && e.roi_estimado > 0; });
+      var roiProm = roiList.length ? (roiList.reduce(function(s,e) { return s + e.roi_estimado; }, 0) / roiList.length).toFixed(1) : 0;
 
       var duraciones = finalizados.map(function(e) {
-        var inicio = new Date(e.fechaInicio);
-        var fin = e.fecha_final_real ? new Date(e.fecha_final_real) : new Date(e.fechaFinEstimado);
+        var inicio = new Date(e.fecha_inicio);
+        var fin = e.fecha_final_real ? new Date(e.fecha_final_real) : new Date(e.fecha_fin_estimado);
         return Math.max(0, Math.round((fin - inicio) / (1000 * 60 * 60 * 24)));
       }).filter(function(d) { return d > 0; });
       var durProm = duraciones.length ? Math.round(duraciones.reduce(function(a,b) { return a+b; }, 0) / duraciones.length) : 0;
@@ -438,7 +446,6 @@
     }
 
     function actualizarGraficos(ef, pf) {
-      // Estado
       var estados = {};
       ef.forEach(function(e) { var est = e.estado || 'sin estado'; estados[est] = (estados[est] || 0) + 1; });
       var coloresEstado = { activo: '#4caf50', finalizado: '#2196f3', suspendido: '#ff9800', fallido: '#f44336' };
@@ -451,7 +458,6 @@
         options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
       });
 
-      // Área
       var areas = {};
       ef.forEach(function(e) { var a = e.area || 'Otro'; areas[a] = (areas[a] || 0) + 1; });
       var coloresArea = ['#4caf50','#8bc34a','#cddc39','#f9a825','#ff9800','#2196f3','#9c27b0'];
@@ -464,12 +470,11 @@
         options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
       });
 
-      // ROI por Área
       var roiPorArea = {};
-      ef.filter(function(e) { return typeof e.roiEstimado === 'number' && e.roiEstimado > 0; }).forEach(function(e) {
+      ef.filter(function(e) { return typeof e.roi_estimado === 'number' && e.roi_estimado > 0; }).forEach(function(e) {
         var a = e.area || 'Otro';
         if (!roiPorArea[a]) roiPorArea[a] = [];
-        roiPorArea[a].push(e.roiEstimado);
+        roiPorArea[a].push(e.roi_estimado);
       });
       var roiLabels = Object.keys(roiPorArea);
       var roiData = roiLabels.map(function(a) {
@@ -485,7 +490,6 @@
         options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
       });
 
-      // Prioridad
       var prioridades = { Baja: 0, Media: 0, Alta: 0 };
       ef.forEach(function(e) { if (prioridades.hasOwnProperty(e.prioridad)) prioridades[e.prioridad]++; });
       crearOActualizarChart('chartPrioridad', {
@@ -497,11 +501,10 @@
         options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
       });
 
-      // Timeline
       var meses = {};
       ef.forEach(function(e) {
-        if (e.fechaInicio) {
-          var m = e.fechaInicio.substring(0, 7);
+        if (e.fecha_inicio) {
+          var m = e.fecha_inicio.substring(0, 7);
           meses[m] = (meses[m] || 0) + 1;
         }
       });
@@ -522,7 +525,6 @@
         options: { responsive: true, scales: { y: { beginAtZero: true } } }
       });
 
-      // Problemas por área
       var probAreas = {};
       pf.forEach(function(p) { var a = p.area || 'Otro'; probAreas[a] = (probAreas[a] || 0) + 1; });
       crearOActualizarChart('chartProblemasArea', {
@@ -534,7 +536,6 @@
         options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
       });
 
-      // Top colaboradores
       var topColab = colaboradores.slice()
         .sort(function(a,b) { return (b.aportes || 0) - (a.aportes || 0); })
         .slice(0, 10);
@@ -553,7 +554,6 @@
       container.innerHTML = '';
       var insights = [];
 
-      // Área con más ensayos activos
       var areaActivos = {};
       ef.filter(function(e) { return e.estado === 'activo'; }).forEach(function(e) {
         var a = e.area || 'Otro';
@@ -567,16 +567,14 @@
         });
       }
 
-      // Ensayos con ROI más alto
-      var topRoi = ef.filter(function(e) { return e.roiEstimado > 0; }).sort(function(a,b) { return b.roiEstimado - a.roiEstimado; })[0];
+      var topRoi = ef.filter(function(e) { return e.roi_estimado > 0; }).sort(function(a,b) { return b.roi_estimado - a.roi_estimado; })[0];
       if (topRoi) {
         insights.push({
           titulo: '💰 Mayor ROI estimado',
-          texto: 'El ensayo "' + (topRoi.metricaObjetivo || topRoi.id) + '" en ' + topRoi.area + ' tiene un ROI estimado de ' + topRoi.roiEstimado + '%, el más alto registrado.'
+          texto: 'El ensayo "' + (topRoi.metrica_objetivo || topRoi.id) + '" en ' + topRoi.area + ' tiene un ROI estimado de ' + topRoi.roi_estimado + '%, el más alto registrado.'
         });
       }
 
-      // Problemas alta prioridad
       var altaPrioridad = pf.filter(function(p) { return p.prioridad === 'Alta' && (p.estado === 'abierto' || p.estado === 'en proceso'); });
       if (altaPrioridad.length > 0) {
         insights.push({
@@ -585,8 +583,7 @@
         });
       }
 
-      // Ensayos sin avance
-      var sinAvance = ef.filter(function(e) { return e.estado === 'activo' && (e.porcentajeAvance || 0) === 0; });
+      var sinAvance = ef.filter(function(e) { return e.estado === 'activo' && (e.porcentaje_avance || 0) === 0; });
       if (sinAvance.length > 0) {
         insights.push({
           titulo: '⏸️ Ensayos sin avance',
@@ -594,7 +591,6 @@
         });
       }
 
-      // Tasa de éxito por área
       var exitoPorArea = {};
       ef.filter(function(e) { return e.estado === 'finalizado'; }).forEach(function(e) {
         var a = e.area || 'Otro';
@@ -639,25 +635,25 @@
         return;
       }
 
-      ef.sort(function(a,b) { return (b.fechaInicio || '').localeCompare(a.fechaInicio || ''); });
+      ef.sort(function(a,b) { return (b.fecha_inicio || '').localeCompare(a.fecha_inicio || ''); });
 
       ef.forEach(function(e) {
         var clases = { activo: 'badge-activo', finalizado: 'badge-finalizado', suspendido: 'badge-suspendido', fallido: 'badge-fallido' };
         var tr = document.createElement('tr');
         tr.innerHTML =
           '<td>' + (e.area || '') + '</td>' +
-          '<td>' + (e.metricaObjetivo || '') + '</td>' +
-          '<td>' + (e.responsableId || '') + '</td>' +
+          '<td>' + (e.metrica_objetivo || '') + '</td>' +
+          '<td>' + (e.responsable_id || '') + '</td>' +
           '<td>' + (e.prioridad || '') + '</td>' +
           '<td><span class="badge ' + (clases[e.estado] || '') + '">' + (e.estado || '') + '</span></td>' +
-          '<td>' + (e.roiEstimado || 0) + '%</td>' +
-          '<td>' + (e.porcentajeAvance || 0) + '%</td>' +
-          '<td>' + (e.fechaInicio ? new Date(e.fechaInicio).toLocaleDateString('es-DO') : '') + '</td>';
+          '<td>' + (e.roi_estimado || 0) + '%</td>' +
+          '<td>' + (e.porcentaje_avance || 0) + '%</td>' +
+          '<td>' + (e.fecha_inicio ? new Date(e.fecha_inicio).toLocaleDateString('es-DO') : '') + '</td>';
         tbody.appendChild(tr);
       });
     }
 
-    function actualizarTodo() {
+    async function actualizarTodo() {
       var ef = filtrarEnsayos();
       var pf = filtrarProblemas();
       actualizarKPIs(ef, pf);
@@ -666,8 +662,8 @@
       actualizarTabla(ef);
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      loadData();
+    document.addEventListener('DOMContentLoaded', async function() {
+      await loadData();
       actualizarSelectAreas();
       actualizarTodo();
     });
