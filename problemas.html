@@ -183,12 +183,15 @@
 <body>
   <div class="container">
     <header class="header">
-      <h1>⚠️ Reporte de Problemas</h1>
-      <div>
-        <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
-        <button onclick="abrirModal('crear')" class="btn">+ Reportar Problema</button>
-      </div>
-    </header>
+  <h1>⚠️ Reporte de Problemas</h1>
+  <div>
+    <span id="userInfo" style="font-size:0.85rem;color:#666;margin-right:12px;"></span>
+    <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;margin-right:8px;">🔐 Usuarios</a>
+    <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+    <button onclick="abrirModal('crear')" class="btn">+ Reportar Problema</button>
+    <button onclick="cerrarSesion()" class="btn" style="background:#f44336;margin-left:8px;">Cerrar sesión</button>
+  </div>
+</header>
 
     <!-- Filtros -->
     <div class="filters">
@@ -484,6 +487,23 @@
     function actualizarDashboardExterno() {
       window.parent.postMessage({ tipo: 'actualizarDashboard' }, '*');
     }
-  <script src="auth-guard.js"></script>
+    </script>
+      ...
+    </script>
+
+    <script src="auth-guard.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.SESION) {
+          document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+          if (window.esAdmin()) {
+            document.getElementById('btnAdmin').style.display = 'inline-block';
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
+
 </body>
 </html>
