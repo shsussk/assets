@@ -14,518 +14,676 @@
       --shadow: 0 8px 24px rgba(0,0,0,0.08);
       --radius: 14px;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+
     .page { max-width: 1400px; margin: 0 auto; padding: 24px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .header h1 { color: var(--color-primary); font-size: 2rem; }
-    .btn { background: var(--color-primary); color: #fff; border: none; padding: 10px 18px; border-radius: 999px; cursor: pointer; font-size: 0.95rem; font-weight: 600; text-decoration: none; }
-    .btn-secondary { background:#6c757d; }
 
-    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:24px; }
-    .kpi-card { background:var(--color-card); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px 16px; }
-    .kpi-label { font-size:0.8rem; text-transform:uppercase; color:#666; margin-bottom:4px; }
-    .kpi-value { font-size:1.6rem; font-weight:800; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-    .tabs { display:flex; gap:8px; margin-bottom:16px; }
-    .tab-btn { padding:8px 14px; border-radius:999px; border:none; cursor:pointer; background:#e5efe7; font-size:0.9rem; }
-    .tab-btn.active { background:var(--color-primary); color:#fff; }
+    .header h1 { font-size: 2rem; color: var(--color-primary); }
 
-    .tab-panel { display:none; }
-    .tab-panel.active { display:block; }
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-    .grid-2 { display:grid; grid-template-columns:1.6fr 1.4fr; gap:18px; margin-bottom:24px; }
-    .card { background:var(--color-card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 16px 14px; }
+    .btn {
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
 
-    table { width:100%; border-collapse:collapse; font-size:0.85rem; }
-    th,td { padding:8px 10px; border-bottom:1px solid #e5e7eb; text-align:left; }
-    th { background:#f9fafb; text-transform:uppercase; font-size:0.75rem; color:#666; }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+    .btn:hover { opacity: 0.92; }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      background: var(--color-card);
+      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .filter-group { display: flex; flex-direction: column; gap: 4px; }
+    .filter-group label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; color: #555; }
+    .filter-group select, .filter-group input {
+      padding: 8px 12px;
+      border: 1px solid #dde2eb;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      min-width: 150px;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .kpi {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--color-primary);
+    }
+
+    .kpi-icon { font-size: 1.3rem; margin-bottom: 6px; }
+    .kpi-value { font-size: 1.8rem; font-weight: 800; }
+    .kpi-label { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 0.04em; }
+    .kpi-detail { font-size: 0.82rem; color: #888; margin-top: 4px; }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .chart-card {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .chart-card h3 { font-size: 1rem; margin-bottom: 12px; color: #444; }
+
+    .full-width { grid-column: 1 / -1; }
+
+    .table-section {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .table-header {
+      background: #e8f4e8;
+      padding: 14px 18px;
+      font-weight: 600;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+    th { background: #f8fafc; font-size: 0.8rem; text-transform: uppercase; color: #666; }
+    tr:hover { background: #f8fafc; }
+
+    .badge {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-activo { background: #dcf4dc; color: #4caf50; }
+    .badge-finalizado { background: #d1ecf1; color: #17a2b8; }
+    .badge-suspendido { background: #fff3cd; color: #ffc107; }
+    .badge-fallido { background: #f8d7da; color: #dc3545; }
+
+    .insights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .insight-card {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      border-left: 4px solid #f9a825;
+    }
+
+    .insight-card h4 { font-size: 0.95rem; margin-bottom: 6px; color: #333; }
+    .insight-card p { font-size: 0.85rem; color: #555; line-height: 1.5; }
+
+    @media (max-width: 960px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .kpis { grid-template-columns: 1fr 1fr; }
+      .header { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
   <div class="page">
     <header class="header">
-      <h1>📈 Centro de Analítica y BI</h1>
-      <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+      <h1>📈 Centro de Analítica</h1>
+      <div class="header-buttons">
+        <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
+        <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
+        <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+        <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
+      </div>
     </header>
 
-    <!-- Filtro periodo -->
-    <div style="margin-bottom:16px; display:flex; gap:10px; align-items:center;">
-      <span style="font-size:0.85rem;">Periodo:</span>
-      <select id="filtroPeriodo" onchange="refrescarAnalitica()">
-        <option value="12m">Últimos 12 meses</option>
-        <option value="36m">Últimos 3 años</option>
-        <option value="all">Todo el histórico</option>
-      </select>
+    <!-- Filtros globales -->
+    <div class="filters">
+      <div class="filter-group">
+        <label>Período</label>
+        <select id="filtroPeriodo" onchange="actualizarTodo()">
+          <option value="todo">Todo el tiempo</option>
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="ultimo6m">Últimos 6 meses</option>
+          <option value="ultimo12m">Últimos 12 meses</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Área</label>
+        <select id="filtroArea" onchange="actualizarTodo()">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Estado</label>
+        <select id="filtroEstado" onchange="actualizarTodo()">
+          <option value="">Todos</option>
+          <option value="activo">Activo</option>
+          <option value="finalizado">Finalizado</option>
+          <option value="suspendido">Suspendido</option>
+          <option value="fallido">Fallido</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Prioridad</label>
+        <select id="filtroPrioridad" onchange="actualizarTodo()">
+          <option value="">Todas</option>
+          <option value="Baja">Baja</option>
+          <option value="Media">Media</option>
+          <option value="Alta">Alta</option>
+        </select>
+      </div>
     </div>
 
-    <!-- KPIs Overview -->
-    <div class="kpis" id="kpisOverview">
-      <!-- Se rellenan por JS -->
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-icon">🧪</div>
+        <div id="kpiTotal" class="kpi-value">0</div>
+        <div class="kpi-label">Ensayos totales</div>
+        <div id="kpiTotalDetalle" class="kpi-detail"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">✅</div>
+        <div id="kpiExito" class="kpi-value">0%</div>
+        <div class="kpi-label">Tasa de éxito</div>
+        <div id="kpiExitoDetalle" class="kpi-detail"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">📈</div>
+        <div id="kpiRoi" class="kpi-value">0%</div>
+        <div class="kpi-label">ROI promedio</div>
+        <div id="kpiRoiDetalle" class="kpi-detail"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">⏱️</div>
+        <div id="kpiDuracion" class="kpi-value">0d</div>
+        <div class="kpi-label">Duración promedio</div>
+        <div id="kpiDuracionDetalle" class="kpi-detail"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">⚠️</div>
+        <div id="kpiProblemas" class="kpi-value">0</div>
+        <div class="kpi-label">Problemas abiertos</div>
+        <div id="kpiProblemasDetalle" class="kpi-detail"></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon">🌱</div>
+        <div id="kpiHistorias" class="kpi-value">0</div>
+        <div class="kpi-label">Historias de éxito</div>
+        <div id="kpiHistoriasDetalle" class="kpi-detail"></div>
+      </div>
     </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="cambiarTab('overview', this)">Visión general</button>
-      <button class="tab-btn" onclick="cambiarTab('productividad', this)">Productividad</button>
-      <button class="tab-btn" onclick="cambiarTab('roi', this)">ROI y rentabilidad</button>
-      <button class="tab-btn" onclick="cambiarTab('tendencias', this)">Tendencias y benchmarking</button>
+    <!-- Gráficos -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>📊 Ensayos por Estado</h3>
+        <canvas id="chartEstado"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>🎯 Ensayos por Área</h3>
+        <canvas id="chartArea"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>📈 ROI por Área</h3>
+        <canvas id="chartRoiArea"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>🔥 Prioridad de Ensayos</h3>
+        <canvas id="chartPrioridad"></canvas>
+      </div>
+      <div class="chart-card full-width">
+        <h3>📅 Ensayos creados por mes</h3>
+        <canvas id="chartTimeline"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>⚠️ Problemas por Área</h3>
+        <canvas id="chartProblemasArea"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>👥 Top Colaboradores (aportes)</h3>
+        <canvas id="chartTopColaboradores"></canvas>
+      </div>
     </div>
 
-    <!-- Panel: Overview -->
-    <section id="tab-overview" class="tab-panel active">
-      <div class="grid-2">
-        <div class="card">
-          <h3>Ensayos iniciados vs finalizados</h3>
-          <canvas id="chartEnsayosTiempo"></canvas>
-        </div>
-        <div class="card">
-          <h3>Problemas resueltos vs abiertos</h3>
-          <canvas id="chartProblemas"></canvas>
-        </div>
-      </div>
-    </section>
+    <!-- Insights automáticos -->
+    <div id="insightsContainer" class="insights"></div>
 
-    <!-- Panel: Productividad -->
-    <section id="tab-productividad" class="tab-panel">
-      <div class="card" style="margin-bottom:18px;">
-        <h3>Productividad por colaborador</h3>
-        <canvas id="chartProductividad"></canvas>
-      </div>
-      <div class="card">
-        <h3>Detalle de productividad</h3>
-        <table id="tablaProductividad">
-          <thead>
-            <tr>
-              <th>Colaborador</th>
-              <th>Cargo</th>
-              <th>Años exp.</th>
-              <th>Ensayos exitosos</th>
-              <th>Proyectos activos</th>
-              <th>Áreas fuertes</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Panel: ROI -->
-    <section id="tab-roi" class="tab-panel">
-      <div class="grid-2">
-        <div class="card">
-          <h3>ROI vs duración de ensayos</h3>
-          <canvas id="chartScatterROI"></canvas>
-        </div>
-        <div class="card">
-          <h3>ROI promedio por área</h3>
-          <canvas id="chartRoiArea"></canvas>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Resumen de rentabilidad</h3>
-        <div id="resumenRoi" style="font-size:0.9rem;"></div>
-      </div>
-    </section>
-
-    <!-- Panel: Tendencias -->
-    <section id="tab-tendencias" class="tab-panel">
-      <div class="card" style="margin-bottom:18px;">
-        <h3>Tasa de éxito por área en el tiempo</h3>
-        <canvas id="chartExitoAreaTiempo"></canvas>
-      </div>
-      <div class="card">
-        <h3>Mapa interno de desempeño (simple)</h3>
-        <table id="tablaHeatmap">
-          <thead>
-            <tr>
-              <th>Área</th>
-              <th>Tasa éxito (%)</th>
-              <th>ROI promedio</th>
-              <th>Problemas</th>
-              <th>Historias de éxito</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+    <!-- Tabla detallada -->
+    <div class="table-section">
+      <div class="table-header">🔬 Detalle de Ensayos (filtrados)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Área</th>
+            <th>Métrica</th>
+            <th>Responsable</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th>ROI %</th>
+            <th>Avance</th>
+            <th>Inicio</th>
+          </tr>
+        </thead>
+        <tbody id="tablaDetalle"></tbody>
+      </table>
+    </div>
   </div>
 
   <script>
-    let charts = {};
+    var charts = {};
+    var ensayos = [];
+    var problemas = [];
+    var colaboradores = [];
+    var historias = [];
 
-    function loadEnsayosFromLocalStorage() {
-      const raw = localStorage.getItem('ensayos');
-      return raw ? JSON.parse(raw) : [];
-    }
-    function loadProblemasFromLocalStorage() {
-      const raw = localStorage.getItem('problemas');
-      return raw ? JSON.parse(raw) : [];
-    }
-    function loadColaboradores() {
-      const raw = localStorage.getItem('colaboradores');
-      return raw ? JSON.parse(raw) : [];
-    }
-    function loadHistoriasExito() {
-      const raw = localStorage.getItem('historias_exito');
-      return raw ? JSON.parse(raw) : [];
+    function loadData() {
+      ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
+      problemas = JSON.parse(localStorage.getItem('problemas')) || [];
+      colaboradores = JSON.parse(localStorage.getItem('colaboradores')) || [];
+      historias = JSON.parse(localStorage.getItem('historias_exito')) || [];
     }
 
-    function getDataForAnalytics() {
-      return {
-        ensayos: loadEnsayosFromLocalStorage(),
-        problemas: loadProblemasFromLocalStorage(),
-        colaboradores: loadColaboradores(),
-        historias: loadHistoriasExito()
-      };
-    }
+    function filtrarEnsayos() {
+      var periodo = document.getElementById('filtroPeriodo').value;
+      var area = document.getElementById('filtroArea').value;
+      var estado = document.getElementById('filtroEstado').value;
+      var prioridad = document.getElementById('filtroPrioridad').value;
 
-    function cambiarTab(id, btn) {
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('tab-' + id).classList.add('active');
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
+      var hoy = new Date();
+      var lista = ensayos.slice();
 
-    function refrescarAnalitica() {
-      const { ensayos, problemas, colaboradores, historias } = getDataForAnalytics();
-      const periodo = document.getElementById('filtroPeriodo').value;
+      lista = lista.filter(function(e) {
+        if (area && e.area !== area) return false;
+        if (estado && e.estado !== estado) return false;
+        if (prioridad && e.prioridad !== prioridad) return false;
 
-      const ensayosFiltrados = filtrarPorPeriodoEnsayos(ensayos, periodo);
-      const problemasFiltrados = filtrarPorPeriodoProblemas(problemas, periodo);
-      const historiasFiltradas = filtrarPorPeriodoHistorias(historias, periodo);
-
-      actualizarKPIs(ensayosFiltrados, problemasFiltrados, colaboradores, historiasFiltradas);
-      actualizarChartEnsayosTiempo(ensayosFiltrados);
-      actualizarChartProblemas(problemasFiltrados);
-      actualizarProductividad(colaboradores);
-      actualizarROI(ensayosFiltrados);
-      actualizarTendencias(ensayosFiltrados, problemasFiltrados, historiasFiltradas);
-    }
-
-    function filtrarPorPeriodoEnsayos(ensayos, periodo) {
-      if (periodo === 'all') return ensayos;
-      const ahora = new Date();
-      const meses = periodo === '12m' ? 12 : 36;
-      const limite = new Date(ahora);
-      limite.setMonth(limite.getMonth() - meses);
-      return ensayos.filter(e => {
-        const f = e.fechaInicio || e.fecha_inicio || e.fechaFinEstimado || e.fecha_fin_estimado;
-        if (!f) return false;
-        const d = new Date(f);
-        return d >= limite;
-      });
-    }
-    function filtrarPorPeriodoProblemas(problemas, periodo) {
-      if (periodo === 'all') return problemas;
-      const ahora = new Date();
-      const meses = periodo === '12m' ? 12 : 36;
-      const limite = new Date(ahora);
-      limite.setMonth(limite.getMonth() - meses);
-      return problemas.filter(p => {
-        if (!p.fecha) return false;
-        const d = new Date(p.fecha);
-        return d >= limite;
-      });
-    }
-    function filtrarPorPeriodoHistorias(historias, periodo) {
-      if (periodo === 'all') return historias;
-      const ahora = new Date();
-      const meses = periodo === '12m' ? 12 : 36;
-      const limite = new Date(ahora);
-      limite.setMonth(limite.getMonth() - meses);
-      return historias.filter(h => {
-        if (!h.fecha_resolucion) return false;
-        const d = new Date(h.fecha_resolucion);
-        return d >= limite;
-      });
-    }
-
-    function actualizarKPIs(ensayos, problemas, colaboradores, historias) {
-      const totalEnsayos = ensayos.length;
-      const finalizados = ensayos.filter(e => e.estado === 'finalizado').length;
-      const exitosos = ensayos.filter(e => e.exito).length;
-      const tasaExitoGlobal = finalizados ? (exitosos / finalizados * 100).toFixed(1) : 0;
-
-      const roiFinalizados = ensayos.filter(e => e.estado === 'finalizado' && typeof e.roiEstimado === 'number');
-      const roiProm = roiFinalizados.length
-        ? (roiFinalizados.reduce((s,e) => s + e.roiEstimado, 0) / roiFinalizados.length).toFixed(1)
-        : 0;
-
-      const abiertos = problemas.filter(p => p.estado === 'abierto' || p.estado === 'en proceso').length;
-      const resueltos = problemas.filter(p => p.estado === 'resuelto').length;
-
-      const historiasCount = historias.length;
-      const colabActivos = colaboradores.filter(c => (c.proyectos_activos || []).length > 0).length;
-
-      const cont = document.getElementById('kpisOverview');
-      cont.innerHTML = '';
-
-      const kpis = [
-        { label: 'Ensayos históricos', value: totalEnsayos },
-        { label: 'Tasa de éxito global', value: tasaExitoGlobal + '%' },
-        { label: 'ROI promedio I+D', value: roiProm + '%' },
-        { label: 'Problemas resueltos / abiertos', value: `${resueltos} / ${abiertos}` },
-        { label: 'Historias de éxito', value: historiasCount },
-        { label: 'Colaboradores activos', value: colabActivos }
-      ];
-
-      kpis.forEach(k => {
-        const card = document.createElement('div');
-        card.className = 'kpi-card';
-        card.innerHTML = `<div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div>`;
-        cont.appendChild(card);
-      });
-    }
-
-    function agruparPorMes(ensayos, campoFecha) {
-      const map = {};
-      ensayos.forEach(e => {
-        const f = e[campoFecha] || e[campoFecha.replace('fecha_', 'fecha')];
-        if (!f) return;
-        const d = new Date(f);
-        if (isNaN(d)) return;
-        const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-        map[key] = (map[key] || 0) + 1;
-      });
-      const keys = Object.keys(map).sort();
-      return { labels: keys, data: keys.map(k => map[k]) };
-    }
-
-    function actualizarChartEnsayosTiempo(ensayos) {
-      const ini = agruparPorMes(ensayos, 'fecha_inicio');
-      const fin = agruparPorMes(ensayos.filter(e => e.estado === 'finalizado'), 'fecha_final_real');
-
-      const labels = Array.from(new Set([...ini.labels, ...fin.labels])).sort();
-      const dataIni = labels.map(l => ini.labels.includes(l) ? ini.data[ini.labels.indexOf(l)] : 0);
-      const dataFin = labels.map(l => fin.labels.includes(l) ? fin.data[fin.labels.indexOf(l)] : 0);
-
-      const ctx = document.getElementById('chartEnsayosTiempo').getContext('2d');
-      if (charts.ensayosTiempo) charts.ensayosTiempo.destroy();
-      charts.ensayosTiempo = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [
-            { label: 'Iniciados', data: dataIni, borderColor:'#4caf50', backgroundColor:'rgba(76,175,80,0.2)', tension:0.3 },
-            { label: 'Finalizados', data: dataFin, borderColor:'#2196f3', backgroundColor:'rgba(33,150,243,0.2)', tension:0.3 }
-          ]
-        },
-        options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
-      });
-    }
-
-    function actualizarChartProblemas(problemas) {
-      const abiertos = problemas.filter(p => p.estado === 'abierto' || p.estado === 'en proceso').length;
-      const resueltos = problemas.filter(p => p.estado === 'resuelto').length;
-      const ctx = document.getElementById('chartProblemas').getContext('2d');
-      if (charts.problemas) charts.problemas.destroy();
-      charts.problemas = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Resueltos','Abiertos/En proceso'],
-          datasets: [{ data:[resueltos, abiertos], backgroundColor:['#4caf50','#ff9800'] }]
-        },
-        options: { responsive:true, plugins:{ legend:{ position:'bottom' } } }
-      });
-    }
-
-    function actualizarProductividad(colaboradores) {
-      const activos = colaboradores.filter(c => (c.proyectos_activos || []).length > 0 || (c.ensayos_exitosos || 0) > 0);
-      const labels = activos.map(c => c.nombre);
-      const exitosos = activos.map(c => c.ensayos_exitosos || 0);
-      const proyectos = activos.map(c => (c.proyectos_activos || []).length);
-
-      const ctx = document.getElementById('chartProductividad').getContext('2d');
-      if (charts.productividad) charts.productividad.destroy();
-      charts.productividad = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [
-            { label:'Ensayos exitosos', data:exitosos, backgroundColor:'#4caf50' },
-            { label:'Proyectos activos', data:proyectos, backgroundColor:'#2196f3' }
-          ]
-        },
-        options: { responsive:true, plugins:{ legend:{ position:'bottom' } }, scales:{ y:{ beginAtZero:true } } }
-      });
-
-      const tbody = document.querySelector('#tablaProductividad tbody');
-      tbody.innerHTML = '';
-      activos.forEach(c => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${c.nombre}</td>
-          <td>${c.cargo || ''}</td>
-          <td>${c.anios_experiencia || 0}</td>
-          <td>${c.ensayos_exitosos || 0}</td>
-          <td>${(c.proyectos_activos || []).length}</td>
-          <td>${(c.areas_fuertes || []).join(', ')}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function diasEntre(f1, f2) {
-      const d1 = new Date(f1), d2 = new Date(f2);
-      if (isNaN(d1) || isNaN(d2)) return null;
-      return (d2 - d1) / (1000*60*60*24);
-    }
-
-    function actualizarROI(ensayos) {
-      const finalizados = ensayos.filter(e => e.estado === 'finalizado' && typeof e.roiEstimado === 'number');
-
-      // Scatter ROI vs duración
-      const puntos = finalizados.map(e => {
-        const duracion = diasEntre(e.fecha_inicio, e.fecha_final_real || e.fecha_fin_estimado);
-        return { x: duracion || 0, y: e.roiEstimado, area: e.area || 'Otro' };
-      });
-      const ctxS = document.getElementById('chartScatterROI').getContext('2d');
-      if (charts.scatterROI) charts.scatterROI.destroy();
-      charts.scatterROI = new Chart(ctxS, {
-        type: 'scatter',
-        data: {
-          datasets: [{
-            label:'Ensayos finalizados',
-            data: puntos,
-            backgroundColor: 'rgba(76,175,80,0.6)'
-          }]
-        },
-        options: {
-          responsive:true,
-          plugins:{ legend:{ display:false } },
-          scales:{
-            x:{ title:{ display:true, text:'Duración (días)' } },
-            y:{ title:{ display:true, text:'ROI (%)' } }
+        if (periodo !== 'todo' && e.fechaInicio) {
+          var fi = new Date(e.fechaInicio);
+          if (periodo === 'ultimo6m') {
+            var hace6 = new Date(hoy);
+            hace6.setMonth(hace6.getMonth() - 6);
+            if (fi < hace6) return false;
+          } else if (periodo === 'ultimo12m') {
+            var hace12 = new Date(hoy);
+            hace12.setMonth(hace12.getMonth() - 12);
+            if (fi < hace12) return false;
+          } else {
+            if (fi.getFullYear().toString() !== periodo) return false;
           }
         }
+        return true;
       });
 
-      // ROI promedio por área
-      const map = {};
-      finalizados.forEach(e => {
-        const area = e.area || 'Otro';
-        if (!map[area]) map[area] = [];
-        map[area].push(e.roiEstimado);
-      });
-      const labels = Object.keys(map);
-      const data = labels.map(a => map[a].reduce((s,v)=>s+v,0)/map[a].length);
-      const ctxB = document.getElementById('chartRoiArea').getContext('2d');
-      if (charts.roiArea) charts.roiArea.destroy();
-      charts.roiArea = new Chart(ctxB, {
-        type:'bar',
-        data:{ labels, datasets:[{ label:'ROI promedio (%)', data, backgroundColor:'#4caf50' }] },
-        options:{ responsive:true, scales:{ y:{ beginAtZero:true } } }
-      });
-
-      // Resumen numérico
-      const resumen = document.getElementById('resumenRoi');
-      if (finalizados.length === 0) {
-        resumen.textContent = 'No hay ensayos finalizados con ROI.';
-        return;
-      }
-      const rois = finalizados.map(e => e.roiEstimado);
-      const max = Math.max(...rois);
-      const min = Math.min(...rois);
-      const umbral = 100; // configurable en código
-      const sobreUmbral = rois.filter(r => r > umbral).length;
-      const pctSobre = (sobreUmbral / rois.length * 100).toFixed(1);
-
-      resumen.innerHTML = `
-        <p>Total ensayos con ROI: <strong>${rois.length}</strong></p>
-        <p>ROI máximo: <strong>${max}%</strong> · ROI mínimo: <strong>${min}%</strong></p>
-        <p>Ensayos con ROI &gt; ${umbral}%: <strong>${pctSobre}%</strong> del total</p>
-      `;
+      return lista;
     }
 
-    function actualizarTendencias(ensayos, problemas, historias) {
-      // Tasa de éxito por área y año
-      const map = {};
-      ensayos.forEach(e => {
-        if (!e.fecha_final_real && !e.fecha_fin_estimado) return;
-        const d = new Date(e.fecha_final_real || e.fecha_fin_estimado);
-        if (isNaN(d)) return;
-        const anio = d.getFullYear();
-        const area = e.area || 'Otro';
-        const key = area + '|' + anio;
-        if (!map[key]) map[key] = { total:0, exitosos:0 };
-        map[key].total++;
-        if (e.exito) map[key].exitosos++;
+    function filtrarProblemas() {
+      var area = document.getElementById('filtroArea').value;
+      return problemas.filter(function(p) {
+        if (area && p.area !== area) return false;
+        return true;
+      });
+    }
+
+    function actualizarSelectAreas() {
+      var areas = {};
+      ensayos.forEach(function(e) { if (e.area) areas[e.area] = true; });
+      problemas.forEach(function(p) { if (p.area) areas[p.area] = true; });
+
+      var sel = document.getElementById('filtroArea');
+      sel.innerHTML = '<option value="">Todas</option>';
+      Object.keys(areas).sort().forEach(function(a) {
+        var opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        sel.appendChild(opt);
+      });
+    }
+
+    function actualizarKPIs(ef, pf) {
+      var total = ef.length;
+      var finalizados = ef.filter(function(e) { return e.estado === 'finalizado'; });
+      var exitosos = finalizados.filter(function(e) { return e.exito; });
+      var tasaExito = finalizados.length > 0 ? ((exitosos.length / finalizados.length) * 100).toFixed(1) : 0;
+
+      var roiList = ef.filter(function(e) { return typeof e.roiEstimado === 'number' && e.roiEstimado > 0; });
+      var roiProm = roiList.length ? (roiList.reduce(function(s,e) { return s + e.roiEstimado; }, 0) / roiList.length).toFixed(1) : 0;
+
+      var duraciones = finalizados.map(function(e) {
+        var inicio = new Date(e.fechaInicio);
+        var fin = e.fecha_final_real ? new Date(e.fecha_final_real) : new Date(e.fechaFinEstimado);
+        return Math.max(0, Math.round((fin - inicio) / (1000 * 60 * 60 * 24)));
+      }).filter(function(d) { return d > 0; });
+      var durProm = duraciones.length ? Math.round(duraciones.reduce(function(a,b) { return a+b; }, 0) / duraciones.length) : 0;
+
+      var probAbiertos = pf.filter(function(p) { return p.estado === 'abierto' || p.estado === 'en proceso'; }).length;
+
+      document.getElementById('kpiTotal').textContent = total;
+      document.getElementById('kpiTotalDetalle').textContent = finalizados.length + ' finalizados, ' + ef.filter(function(e) { return e.estado === 'activo'; }).length + ' activos';
+
+      document.getElementById('kpiExito').textContent = tasaExito + '%';
+      document.getElementById('kpiExitoDetalle').textContent = exitosos.length + '/' + finalizados.length + ' finalizados con éxito';
+
+      document.getElementById('kpiRoi').textContent = roiProm + '%';
+      document.getElementById('kpiRoiDetalle').textContent = roiList.length + ' ensayos con ROI estimado';
+
+      document.getElementById('kpiDuracion').textContent = durProm + 'd';
+      document.getElementById('kpiDuracionDetalle').textContent = duraciones.length + ' ensayos con fechas completas';
+
+      document.getElementById('kpiProblemas').textContent = probAbiertos;
+      document.getElementById('kpiProblemasDetalle').textContent = pf.length + ' problemas totales';
+
+      document.getElementById('kpiHistorias').textContent = historias.length;
+      document.getElementById('kpiHistoriasDetalle').textContent = historias.filter(function(h) { return h.visible_en_home; }).length + ' destacadas';
+    }
+
+    function crearOActualizarChart(id, config) {
+      var ctx = document.getElementById(id).getContext('2d');
+      if (charts[id]) charts[id].destroy();
+      charts[id] = new Chart(ctx, config);
+    }
+
+    function actualizarGraficos(ef, pf) {
+      // Estado
+      var estados = {};
+      ef.forEach(function(e) { var est = e.estado || 'sin estado'; estados[est] = (estados[est] || 0) + 1; });
+      var coloresEstado = { activo: '#4caf50', finalizado: '#2196f3', suspendido: '#ff9800', fallido: '#f44336' };
+      crearOActualizarChart('chartEstado', {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(estados),
+          datasets: [{ data: Object.values(estados), backgroundColor: Object.keys(estados).map(function(e) { return coloresEstado[e] || '#9e9e9e'; }) }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
       });
 
-      const areas = Array.from(new Set(Object.keys(map).map(k => k.split('|')[0])));
-      const anios = Array.from(new Set(Object.keys(map).map(k => k.split('|')[1]))).sort();
+      // Área
+      var areas = {};
+      ef.forEach(function(e) { var a = e.area || 'Otro'; areas[a] = (areas[a] || 0) + 1; });
+      var coloresArea = ['#4caf50','#8bc34a','#cddc39','#f9a825','#ff9800','#2196f3','#9c27b0'];
+      crearOActualizarChart('chartArea', {
+        type: 'bar',
+        data: {
+          labels: Object.keys(areas),
+          datasets: [{ label: 'Ensayos', data: Object.values(areas), backgroundColor: coloresArea.slice(0, Object.keys(areas).length) }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+      });
 
-      const datasets = areas.map(area => ({
-        label: area,
-        data: anios.map(anio => {
-          const m = map[area + '|' + anio];
-          return m ? (m.exitosos / m.total * 100) : 0;
-        }),
-        borderWidth: 2,
-        tension:0.2
-      }));
+      // ROI por Área
+      var roiPorArea = {};
+      ef.filter(function(e) { return typeof e.roiEstimado === 'number' && e.roiEstimado > 0; }).forEach(function(e) {
+        var a = e.area || 'Otro';
+        if (!roiPorArea[a]) roiPorArea[a] = [];
+        roiPorArea[a].push(e.roiEstimado);
+      });
+      var roiLabels = Object.keys(roiPorArea);
+      var roiData = roiLabels.map(function(a) {
+        var arr = roiPorArea[a];
+        return (arr.reduce(function(s,v) { return s+v; }, 0) / arr.length).toFixed(1);
+      });
+      crearOActualizarChart('chartRoiArea', {
+        type: 'bar',
+        data: {
+          labels: roiLabels,
+          datasets: [{ label: 'ROI Promedio %', data: roiData, backgroundColor: '#f9a825' }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+      });
 
-      const ctx = document.getElementById('chartExitoAreaTiempo').getContext('2d');
-      if (charts.exitoArea) charts.exitoArea.destroy();
-      charts.exitoArea = new Chart(ctx, {
+      // Prioridad
+      var prioridades = { Baja: 0, Media: 0, Alta: 0 };
+      ef.forEach(function(e) { if (prioridades.hasOwnProperty(e.prioridad)) prioridades[e.prioridad]++; });
+      crearOActualizarChart('chartPrioridad', {
+        type: 'pie',
+        data: {
+          labels: Object.keys(prioridades),
+          datasets: [{ data: Object.values(prioridades), backgroundColor: ['#4caf50','#ff9800','#f44336'] }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+
+      // Timeline
+      var meses = {};
+      ef.forEach(function(e) {
+        if (e.fechaInicio) {
+          var m = e.fechaInicio.substring(0, 7);
+          meses[m] = (meses[m] || 0) + 1;
+        }
+      });
+      var mesesOrdenados = Object.keys(meses).sort();
+      crearOActualizarChart('chartTimeline', {
         type: 'line',
-        data: { labels: anios, datasets },
-        options: { responsive:true, plugins:{ legend:{ position:'bottom' } }, scales:{ y:{ beginAtZero:true, max:100 } } }
+        data: {
+          labels: mesesOrdenados,
+          datasets: [{
+            label: 'Ensayos creados',
+            data: mesesOrdenados.map(function(m) { return meses[m]; }),
+            borderColor: '#4caf50',
+            backgroundColor: 'rgba(76,175,80,0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
       });
 
-      // "Heatmap" simple en tabla
-      const tbody = document.querySelector('#tablaHeatmap tbody');
+      // Problemas por área
+      var probAreas = {};
+      pf.forEach(function(p) { var a = p.area || 'Otro'; probAreas[a] = (probAreas[a] || 0) + 1; });
+      crearOActualizarChart('chartProblemasArea', {
+        type: 'bar',
+        data: {
+          labels: Object.keys(probAreas),
+          datasets: [{ label: 'Problemas', data: Object.values(probAreas), backgroundColor: '#f44336' }]
+        },
+        options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+      });
+
+      // Top colaboradores
+      var topColab = colaboradores.slice()
+        .sort(function(a,b) { return (b.aportes || 0) - (a.aportes || 0); })
+        .slice(0, 10);
+      crearOActualizarChart('chartTopColaboradores', {
+        type: 'bar',
+        data: {
+          labels: topColab.map(function(c) { return c.nombre; }),
+          datasets: [{ label: 'Aportes', data: topColab.map(function(c) { return c.aportes || 0; }), backgroundColor: '#2196f3' }]
+        },
+        options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+      });
+    }
+
+    function generarInsights(ef, pf) {
+      var container = document.getElementById('insightsContainer');
+      container.innerHTML = '';
+      var insights = [];
+
+      // Área con más ensayos activos
+      var areaActivos = {};
+      ef.filter(function(e) { return e.estado === 'activo'; }).forEach(function(e) {
+        var a = e.area || 'Otro';
+        areaActivos[a] = (areaActivos[a] || 0) + 1;
+      });
+      var topArea = Object.keys(areaActivos).sort(function(a,b) { return areaActivos[b] - areaActivos[a]; })[0];
+      if (topArea) {
+        insights.push({
+          titulo: '🔬 Área más activa',
+          texto: '"' + topArea + '" tiene ' + areaActivos[topArea] + ' ensayos activos, siendo el área con mayor actividad de investigación.'
+        });
+      }
+
+      // Ensayos con ROI más alto
+      var topRoi = ef.filter(function(e) { return e.roiEstimado > 0; }).sort(function(a,b) { return b.roiEstimado - a.roiEstimado; })[0];
+      if (topRoi) {
+        insights.push({
+          titulo: '💰 Mayor ROI estimado',
+          texto: 'El ensayo "' + (topRoi.metricaObjetivo || topRoi.id) + '" en ' + topRoi.area + ' tiene un ROI estimado de ' + topRoi.roiEstimado + '%, el más alto registrado.'
+        });
+      }
+
+      // Problemas alta prioridad
+      var altaPrioridad = pf.filter(function(p) { return p.prioridad === 'Alta' && (p.estado === 'abierto' || p.estado === 'en proceso'); });
+      if (altaPrioridad.length > 0) {
+        insights.push({
+          titulo: '🚨 Alerta de problemas',
+          texto: 'Hay ' + altaPrioridad.length + ' problema(s) de alta prioridad abiertos que requieren atención inmediata.'
+        });
+      }
+
+      // Ensayos sin avance
+      var sinAvance = ef.filter(function(e) { return e.estado === 'activo' && (e.porcentajeAvance || 0) === 0; });
+      if (sinAvance.length > 0) {
+        insights.push({
+          titulo: '⏸️ Ensayos sin avance',
+          texto: sinAvance.length + ' ensayo(s) activo(s) muestran 0% de avance. Verifica si necesitan atención o reasignación.'
+        });
+      }
+
+      // Tasa de éxito por área
+      var exitoPorArea = {};
+      ef.filter(function(e) { return e.estado === 'finalizado'; }).forEach(function(e) {
+        var a = e.area || 'Otro';
+        if (!exitoPorArea[a]) exitoPorArea[a] = { total: 0, exito: 0 };
+        exitoPorArea[a].total++;
+        if (e.exito) exitoPorArea[a].exito++;
+      });
+      var mejorArea = null;
+      var mejorTasa = 0;
+      Object.keys(exitoPorArea).forEach(function(a) {
+        var tasa = exitoPorArea[a].total > 0 ? (exitoPorArea[a].exito / exitoPorArea[a].total) : 0;
+        if (tasa > mejorTasa) { mejorTasa = tasa; mejorArea = a; }
+      });
+      if (mejorArea && mejorTasa > 0) {
+        insights.push({
+          titulo: '🏆 Área más exitosa',
+          texto: '"' + mejorArea + '" tiene una tasa de éxito de ' + (mejorTasa * 100).toFixed(0) + '% en ensayos finalizados.'
+        });
+      }
+
+      if (insights.length === 0) {
+        insights.push({
+          titulo: '📋 Sin datos suficientes',
+          texto: 'Agrega más ensayos, problemas e historias para generar insights automáticos.'
+        });
+      }
+
+      insights.forEach(function(ins) {
+        var card = document.createElement('div');
+        card.className = 'insight-card';
+        card.innerHTML = '<h4>' + ins.titulo + '</h4><p>' + ins.texto + '</p>';
+        container.appendChild(card);
+      });
+    }
+
+    function actualizarTabla(ef) {
+      var tbody = document.getElementById('tablaDetalle');
       tbody.innerHTML = '';
-      const areasAll = Array.from(new Set([
-        ...ensayos.map(e => e.area || 'Otro'),
-        ...problemas.map(p => p.area || p.area_problema || 'Otro'),
-        ...historias.map(h => h.area || 'Otro')
-      ]));
 
-      areasAll.forEach(area => {
-        const ensArea = ensayos.filter(e => (e.area || 'Otro') === area);
-        const finArea = ensArea.filter(e => e.estado === 'finalizado');
-        const exitoArea = finArea.filter(e => e.exito);
-        const tasa = finArea.length ? (exitoArea.length/finArea.length*100).toFixed(1) : '0.0';
+      if (ef.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#999;">Sin ensayos para los filtros seleccionados.</td></tr>';
+        return;
+      }
 
-        const roiVals = finArea.filter(e => typeof e.roiEstimado === 'number').map(e => e.roiEstimado);
-        const roiProm = roiVals.length ? (roiVals.reduce((s,v)=>s+v,0)/roiVals.length).toFixed(1) : '0.0';
+      ef.sort(function(a,b) { return (b.fechaInicio || '').localeCompare(a.fechaInicio || ''); });
 
-        const probArea = problemas.filter(p => (p.area || p.area_problema || 'Otro') === area).length;
-        const histArea = historias.filter(h => (h.area || 'Otro') === area).length;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${area}</td>
-          <td style="background:${colorPorValor(tasa)}">${tasa}</td>
-          <td style="background:${colorPorValor(roiProm)}">${roiProm}</td>
-          <td style="background:${colorPorValorInverso(probArea)}">${probArea}</td>
-          <td style="background:${colorPorValor(histArea)}">${histArea}</td>
-        `;
+      ef.forEach(function(e) {
+        var clases = { activo: 'badge-activo', finalizado: 'badge-finalizado', suspendido: 'badge-suspendido', fallido: 'badge-fallido' };
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + (e.area || '') + '</td>' +
+          '<td>' + (e.metricaObjetivo || '') + '</td>' +
+          '<td>' + (e.responsableId || '') + '</td>' +
+          '<td>' + (e.prioridad || '') + '</td>' +
+          '<td><span class="badge ' + (clases[e.estado] || '') + '">' + (e.estado || '') + '</span></td>' +
+          '<td>' + (e.roiEstimado || 0) + '%</td>' +
+          '<td>' + (e.porcentajeAvance || 0) + '%</td>' +
+          '<td>' + (e.fechaInicio ? new Date(e.fechaInicio).toLocaleDateString('es-DO') : '') + '</td>';
         tbody.appendChild(tr);
       });
     }
 
-    function colorPorValor(v) {
-      const n = parseFloat(v);
-      if (isNaN(n)) return '#ffffff';
-      if (n >= 80) return '#c8e6c9';
-      if (n >= 50) return '#fff9c4';
-      return '#ffcdd2';
-    }
-    function colorPorValorInverso(v) {
-      const n = parseFloat(v);
-      if (n === 0) return '#c8e6c9';
-      if (n <= 3) return '#fff9c4';
-      return '#ffcdd2';
+    function actualizarTodo() {
+      var ef = filtrarEnsayos();
+      var pf = filtrarProblemas();
+      actualizarKPIs(ef, pf);
+      actualizarGraficos(ef, pf);
+      generarInsights(ef, pf);
+      actualizarTabla(ef);
     }
 
-    document.addEventListener('DOMContentLoaded', refrescarAnalitica);
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      actualizarSelectAreas();
+      actualizarTodo();
+    });
+  </script>
 
-    // Para que otras páginas puedan refrescar este centro si está abierto
-    window.refrescarAnalitica = refrescarAnalitica;
   <script src="auth-guard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        if (window.esAdmin()) {
+          document.getElementById('btnAdmin').style.display = 'inline-flex';
+        }
+      }
+    });
+  </script>
 </body>
 </html>
+
