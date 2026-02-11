@@ -2,192 +2,517 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Usuarios · Plantaciones del Norte</title>
+  <title>Administración de Usuarios · Ecosistema I+D</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root {
       --color-primary: #4caf50;
       --color-bg: #f8fafb;
-      --color-card: white;
-      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --color-card: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,0.1);
       --radius: 14px;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
-    .page { max-width: 1100px; margin: 0 auto; padding: 24px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .header h1 { color: var(--color-primary); font-size: 1.8rem; }
-    .btn { background: var(--color-primary); color: white; border: none; padding: 8px 16px; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 0.85rem; text-decoration: none; }
+
+    .page { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header h1 { font-size: 1.9rem; color: var(--color-primary); }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
     .btn-secondary { background: #6c757d; }
     .btn-danger { background: #f44336; }
-    .btn-warning { background: #ff9800; }
-    .card { background: var(--color-card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #f1f5f9; }
-    th { background: #f8fafc; font-size: 0.8rem; text-transform: uppercase; color: #666; }
-    tr:hover { background: #f8fafc; }
-    .badge { padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
-    .badge-admin { background: #e8eaf6; color: #283593; }
-    .badge-editor { background: #e8f5e9; color: #2e7d32; }
-    .badge-lector { background: #fff3e0; color: #e65100; }
-    .badge-pendiente { background: #fff9c4; color: #f57f17; }
-    .badge-bloqueado { background: #ffcdd2; color: #c62828; }
-    .badge-aprobado { background: #c8e6c9; color: #2e7d32; }
-    .acciones { display: flex; gap: 6px; flex-wrap: wrap; }
-    .acciones select { padding: 4px 8px; border-radius: 8px; border: 1px solid #dde2eb; font-size: 0.8rem; }
-    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .stat-card { background: var(--color-card); border-radius: 10px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); text-align: center; }
-    .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--color-primary); }
-    .stat-label { font-size: 0.8rem; color: #666; }
-    .no-access { text-align: center; padding: 60px 20px; font-size: 1.2rem; color: #999; }
+    .btn-small { padding: 4px 10px; font-size: 0.78rem; }
+    .btn:hover { opacity: 0.92; }
+
+    .card {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.85rem;
+    }
+
+    .summary div {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 999px;
+    }
+
+    .table-container {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    #usuariosTable { width: 100%; }
+    #usuariosTable th { background: #f8fafc; font-weight: 600; padding: 12px; }
+    #usuariosTable td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
+    #usuariosTable tr:hover { background: #f8fafc; }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-rol-admin { background: #e3f2fd; color: #0d47a1; }
+    .badge-rol-editor { background: #e8f5e9; color: #1b5e20; }
+    .badge-rol-lector { background: #f3e5f5; color: #4a148c; }
+
+    .badge-estado-aprobado { background: #d4edda; color: #155724; }
+    .badge-estado-pendiente { background: #fff3cd; color: #856404; }
+    .badge-estado-bloqueado { background: #f8d7da; color: #721c24; }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+
+    .filter-group label {
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .filter-group select,
+    .filter-group input {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+      min-width: 130px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 500px;
+      margin: 20px auto;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 22px 22px 18px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .modal-header h2 { font-size: 1.2rem; }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .form-group { margin-bottom: 12px; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .header { flex-direction: column; align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
   <div class="page">
     <header class="header">
-      <h1>🔐 Gestión de Usuarios</h1>
-      <div>
+      <h1>🔐 Administración de Usuarios</h1>
+      <div class="header-buttons">
+        <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
         <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+        <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
 
-    <div id="contenidoAdmin">
-      <div class="stats" id="statsUsuarios"></div>
-      <div class="card">
-        <table>
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Rol</th>
-              <th>Estado</th>
-              <th>Fecha registro</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tablaUsuarios"></tbody>
-        </table>
+    <section class="card">
+      <h2 style="font-size:1rem;margin-bottom:8px;">Resumen rápido</h2>
+      <div class="summary">
+        <div id="resumenTotal">Usuarios: 0</div>
+        <div id="resumenPendientes">Pendientes: 0</div>
+        <div id="resumenAdmins">Admins: 0</div>
+        <div id="resumenEditores">Editores: 0</div>
+        <div id="resumenLectores">Lectores: 0</div>
       </div>
-    </div>
+    </section>
 
-    <div id="sinAcceso" class="no-access" style="display:none;">
-      <p>⛔ No tienes permisos de administrador para ver esta página.</p>
-      <br>
-      <a href="dashboard.html" class="btn">Volver al Dashboard</a>
+    <section class="table-container">
+      <div class="filters">
+        <div class="filter-group">
+          <label>Buscar nombre / email</label>
+          <input type="text" id="filtroTexto" oninput="aplicarFiltros()">
+        </div>
+        <div class="filter-group">
+          <label>Rol</label>
+          <select id="filtroRol" onchange="aplicarFiltros()">
+            <option value="">Todos</option>
+            <option value="admin">Admin</option>
+            <option value="editor">Editor</option>
+            <option value="lector">Lector</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Estado</label>
+          <select id="filtroEstado" onchange="aplicarFiltros()">
+            <option value="">Todos</option>
+            <option value="aprobado">Aprobado</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="bloqueado">Bloqueado</option>
+          </select>
+        </div>
+      </div>
+
+      <table id="usuariosTable" class="display">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Registro</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+      </table>
+    </section>
+  </div>
+
+  <div class="modal" id="modalUsuario">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Editar usuario</h2>
+        <button class="close-btn" onclick="cerrarModal()">×</button>
+      </div>
+      <form id="formUsuario">
+        <input type="hidden" id="usuarioId">
+
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="uNombre" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="uEmail" required>
+        </div>
+
+        <div class="form-group">
+          <label>Rol</label>
+          <select id="uRol">
+            <option value="admin">Admin</option>
+            <option value="editor">Editor</option>
+            <option value="lector">Lector</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="uEstado">
+            <option value="aprobado">Aprobado</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="bloqueado">Bloqueado</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña (dejar en blanco para no cambiar)</label>
+          <input type="text" id="uPassword" placeholder="••••••">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-small" onclick="cerrarModal()">Cancelar</button>
+          <button type="button" class="btn btn-danger btn-small" onclick="eliminarUsuario()">Eliminar</button>
+          <button type="submit" class="btn btn-small">Guardar cambios</button>
+        </div>
+      </form>
     </div>
   </div>
 
+  <script src="supabase-config.js"></script>
   <script>
-    var sesion = JSON.parse(localStorage.getItem('sesion_activa'));
+    var tabla;
+    var usuarios = [];
+    var usuarioEditando = null;
 
-    if (!sesion || sesion.rol !== 'admin') {
-      document.getElementById('contenidoAdmin').style.display = 'none';
-      document.getElementById('sinAcceso').style.display = 'block';
-    } else {
-      renderUsuarios();
+    async function cargarUsuarios() {
+      var { data, error } = await DB.usuarios.listar();
+      if (error) {
+        alert('Error al cargar usuarios: ' + error.message);
+        return;
+      }
+      usuarios = data || [];
+      inicializarTabla();
+      actualizarResumen();
     }
 
-    function renderUsuarios() {
-      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+    function inicializarTabla() {
+      if (tabla) {
+        tabla.clear();
+        tabla.rows.add(usuarios);
+        tabla.draw();
+        return;
+      }
 
-      // Stats
-      var stats = document.getElementById('statsUsuarios');
-      var totalUsers = usuarios.length;
+      tabla = $('#usuariosTable').DataTable({
+        data: usuarios,
+        columns: [
+          { data: 'nombre' },
+          { data: 'email' },
+          { 
+            data: 'rol',
+            render: function(data) {
+              var clases = {
+                admin: 'badge badge-rol-admin',
+                editor: 'badge badge-rol-editor',
+                lector: 'badge badge-rol-lector'
+              };
+              var text = data || 'pendiente';
+              return '<span class="' + (clases[data] || 'badge') + '">' + text + '</span>';
+            }
+          },
+          { 
+            data: 'estado',
+            render: function(data) {
+              var clases = {
+                aprobado: 'badge badge-estado-aprobado',
+                pendiente: 'badge badge-estado-pendiente',
+                bloqueado: 'badge badge-estado-bloqueado'
+              };
+              return '<span class="' + (clases[data] || 'badge') + '">' + data + '</span>';
+            }
+          },
+          { 
+            data: 'fecha_registro',
+            render: function(data) {
+              return data ? new Date(data).toLocaleDateString('es-DO') : '';
+            }
+          },
+          {
+            data: null,
+            orderable: false,
+            render: function(data, type, row) {
+              var botones = '';
+              if (row.estado === 'pendiente') {
+                botones += '<button class="btn btn-small" onclick="cambiarEstado(\'' + row.id + '\', \'aprobado\')">Aprobar</button> ';
+              }
+              if (row.estado !== 'bloqueado') {
+                botones += '<button class="btn btn-secondary btn-small" onclick="cambiarEstado(\'' + row.id + '\', \'bloqueado\')">Bloquear</button> ';
+              } else {
+                botones += '<button class="btn btn-secondary btn-small" onclick="cambiarEstado(\'' + row.id + '\', \'aprobado\')">Desbloquear</button> ';
+              }
+              botones += '<button class="btn btn-secondary btn-small" onclick="abrirModal(\'' + row.id + '\')">Editar</button>';
+              return botones;
+            }
+          }
+        ],
+        pageLength: 25,
+        language: {
+ }
+
+    function actualizarResumen() {
+      var total = usuarios.length;
       var pendientes = usuarios.filter(function(u) { return u.estado === 'pendiente'; }).length;
-      var aprobados = usuarios.filter(function(u) { return u.estado === 'aprobado'; }).length;
-      var bloqueados = usuarios.filter(function(u) { return u.estado === 'bloqueado'; }).length;
+      var admins = usuarios.filter(function(u) { return u.rol === 'admin'; }).length;
+      var editores = usuarios.filter(function(u) { return u.rol === 'editor'; }).length;
+      var lectores = usuarios.filter(function(u) { return u.rol === 'lector'; }).length;
 
-      stats.innerHTML =
-        '<div class="stat-card"><div class="stat-value">' + totalUsers + '</div><div class="stat-label">Total usuarios</div></div>' +
-        '<div class="stat-card"><div class="stat-value" style="color:#f57f17">' + pendientes + '</div><div class="stat-label">Pendientes</div></div>' +
-        '<div class="stat-card"><div class="stat-value" style="color:#2e7d32">' + aprobados + '</div><div class="stat-label">Aprobados</div></div>' +
-        '<div class="stat-card"><div class="stat-value" style="color:#c62828">' + bloqueados + '</div><div class="stat-label">Bloqueados</div></div>';
-
-      // Tabla
-      var tbody = document.getElementById('tablaUsuarios');
-      tbody.innerHTML = '';
-
-      usuarios.forEach(function(u) {
-        var tr = document.createElement('tr');
-
-        var rolBadge = u.rol === 'admin' ? 'badge-admin' :
-                       u.rol === 'editor' ? 'badge-editor' :
-                       u.rol === 'lector' ? 'badge-lector' : 'badge-pendiente';
-
-        var estadoBadge = u.estado === 'aprobado' ? 'badge-aprobado' :
-                          u.estado === 'bloqueado' ? 'badge-bloqueado' : 'badge-pendiente';
-
-        var esAdmin = u.id === 'user_admin';
-
-        tr.innerHTML =
-          '<td><strong>' + u.nombre + '</strong></td>' +
-          '<td>' + u.email + '</td>' +
-          '<td><span class="badge ' + rolBadge + '">' + u.rol + '</span></td>' +
-          '<td><span class="badge ' + estadoBadge + '">' + u.estado + '</span></td>' +
-          '<td>' + (u.fechaRegistro ? new Date(u.fechaRegistro).toLocaleDateString('es-DO') : '') + '</td>' +
-          '<td class="acciones">' +
-            (esAdmin ? '<em style="font-size:0.8rem;color:#999;">Admin principal</em>' :
-              '<select onchange="cambiarRol(\'' + u.id + '\', this.value)">' +
-                '<option value="">Cambiar rol</option>' +
-                '<option value="lector"' + (u.rol === 'lector' ? ' selected' : '') + '>Lector</option>' +
-                '<option value="editor"' + (u.rol === 'editor' ? ' selected' : '') + '>Editor</option>' +
-                '<option value="admin"' + (u.rol === 'admin' ? ' selected' : '') + '>Admin</option>' +
-              '</select>' +
-              (u.estado === 'pendiente'
-                ? '<button class="btn" onclick="aprobarUsuario(\'' + u.id + '\')">Aprobar</button>'
-                : '') +
-              (u.estado !== 'bloqueado'
-                ? '<button class="btn btn-warning" onclick="bloquearUsuario(\'' + u.id + '\')">Bloquear</button>'
-                : '<button class="btn" onclick="aprobarUsuario(\'' + u.id + '\')">Desbloquear</button>') +
-              '<button class="btn btn-danger" onclick="eliminarUsuario(\'' + u.id + '\')">Eliminar</button>'
-            ) +
-          '</td>';
-
-        tbody.appendChild(tr);
-      });
+      document.getElementById('resumenTotal').textContent = 'Usuarios: ' + total;
+      document.getElementById('resumenPendientes').textContent = 'Pendientes: ' + pendientes;
+      document.getElementById('resumenAdmins').textContent = 'Admins: ' + admins;
+      document.getElementById('resumenEditores').textContent = 'Editores: ' + editores;
+      document.getElementById('resumenLectores').textContent = 'Lectores: ' + lectores;
     }
 
-    function cambiarRol(id, nuevoRol) {
-      if (!nuevoRol) return;
-      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-      var user = usuarios.find(function(u) { return u.id === id; });
-      if (user) {
-        user.rol = nuevoRol;
-        if (user.estado === 'pendiente') user.estado = 'aprobado';
-        localStorage.setItem('usuarios', JSON.stringify(usuarios));
-        renderUsuarios();
+    function aplicarFiltros() {
+      var txt = document.getElementById('filtroTexto').value.toLowerCase();
+      var rol = document.getElementById('filtroRol').value;
+      var est = document.getElementById('filtroEstado').value;
+
+      tabla.search(txt).draw();
+
+      tabla.column(2).search(rol).draw();
+      tabla.column(3).search(est).draw();
+    }
+
+    async function cambiarEstado(id, nuevoEstado) {
+      var { error } = await DB.usuarios.actualizar(id, { estado: nuevoEstado });
+      if (error) {
+        alert('Error al cambiar estado: ' + error.message);
+        return;
       }
+      await cargarUsuarios();
     }
 
-    function aprobarUsuario(id) {
-      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-      var user = usuarios.find(function(u) { return u.id === id; });
-      if (user) {
-        user.estado = 'aprobado';
-        if (user.rol === 'pendiente') user.rol = 'lector';
-        localStorage.setItem('usuarios', JSON.stringify(usuarios));
-        renderUsuarios();
+    function abrirModal(id) {
+      usuarioEditando = usuarios.find(function(u) { return u.id === id; });
+      if (!usuarioEditando) return;
+
+      document.getElementById('usuarioId').value = usuarioEditando.id;
+      document.getElementById('uNombre').value = usuarioEditando.nombre || '';
+      document.getElementById('uEmail').value = usuarioEditando.email || '';
+      document.getElementById('uRol').value = usuarioEditando.rol || 'lector';
+      document.getElementById('uEstado').value = usuarioEditando.estado || 'pendiente';
+      document.getElementById('uPassword').value = '';
+
+      document.getElementById('modalUsuario').style.display = 'block';
+    }
+
+    function cerrarModal() {
+      document.getElementById('modalUsuario').style.display = 'none';
+      usuarioEditando = null;
+    }
+
+    document.getElementById('formUsuario').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!usuarioEditando) return;
+
+      var updates = {
+        nombre: document.getElementById('uNombre').value.trim(),
+        email: document.getElementById('uEmail').value.trim().toLowerCase(),
+        rol: document.getElementById('uRol').value,
+        estado: document.getElementById('uEstado').value
+      };
+
+      var newPass = document.getElementById('uPassword').value.trim();
+      if (newPass) updates.password = newPass;
+
+      var { error } = await DB.usuarios.actualizar(usuarioEditando.id, updates);
+      if (error) {
+        alert('Error al actualizar usuario: ' + error.message);
+        return;
       }
-    }
 
-    function bloquearUsuario(id) {
-      if (!confirm('¿Bloquear a este usuario?')) return;
-      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-      var user = usuarios.find(function(u) { return u.id === id; });
-      if (user) {
-        user.estado = 'bloqueado';
-        localStorage.setItem('usuarios', JSON.stringify(usuarios));
-        renderUsuarios();
+      await cargarUsuarios();
+      cerrarModal();
+    });
+
+    async function eliminarUsuario() {
+      if (!usuarioEditando) return;
+      if (!confirm('¿Eliminar este usuario?')) return;
+      var { error } = await DB.usuarios.eliminar(usuarioEditando.id);
+      if (error) {
+        alert('Error al eliminar usuario: ' + error.message);
+        return;
       }
+      await cargarUsuarios();
+      cerrarModal();
     }
 
-    function eliminarUsuario(id) {
-      if (!confirm('¿Eliminar este usuario permanentemente?')) return;
-      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
-      usuarios = usuarios.filter(function(u) { return u.id !== id; });
-      localStorage.setItem('usuarios', JSON.stringify(usuarios));
-      renderUsuarios();
-    }
+    window.addEventListener('click', function(e) {
+      var modal = document.getElementById('modalUsuario');
+      if (e.target === modal) cerrarModal();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!window.SESION || !window.esAdmin || !window.esAdmin()) {
+        alert('Solo los administradores pueden acceder a esta página.');
+        window.location.href = 'dashboard.html';
+        return;
+      }
+      cargarUsuarios();
+    });
+  </script>
+
+  <script src="auth-guard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent =
+          '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+      }
+    });
   </script>
 </body>
 </html>
+
