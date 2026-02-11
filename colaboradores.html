@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Red de Colaboradores · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-bg: #f8fafb;
+      --color-card: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 14px;
+      --chip-bg: #e8f4e8;
+      --chip-text: #256029;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 3fr 1.3fr;
+      gap: 24px;
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      color: var(--color-primary);
+    }
+
+    .btn {
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+
+    .btn:hover { opacity: 0.92; }
+
+    /* Filtros */
+    .filters {
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+      min-width: 140px;
+    }
+
+    /* Grid colaboradores */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #e5e7eb;
+    }
+
+    .card-name {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .card-role {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .badge-tipo {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e0f2f1;
+      color: #00695c;
+      margin-left: auto;
+    }
+
+    .meta-row {
+      display: flex;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: var(--chip-bg);
+      color: var(--chip-text);
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .card-footer small {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    /* Matching panel */
+    .matching-panel {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: fit-content;
+    }
+
+    .matching-panel h2 {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .matching-panel textarea {
+      width: 100%;
+      min-height: 60px;
+      resize: vertical;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+    }
+
+    .matching-panel select,
+    .matching-panel input {
+      width: 100%;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+    }
+
+    .matching-results {
+      margin-top: 10px;
+      max-height: 260px;
+      overflow-y: auto;
+      border-top: 1px solid #eceff4;
+      padding-top: 8px;
+    }
+
+    .matching-item {
+      padding: 6px 4px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .matching-item strong { font-size: 0.9rem; }
+    .matching-score { font-weight: 700; color: #4caf50; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 700px;
+      margin: 20px auto;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 24px 24px 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h2 { font-size: 1.3rem; }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 9px;
+      border-radius: 8px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+    }
+
+    .form-group textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    .tags-input {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 5px;
+      border-radius: 8px;
+      border: 1px solid #dde2eb;
+      background: #fafbff;
+    }
+
+    .tags-input input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 100px;
+      padding: 4px;
+      font-size: 0.9rem;
+      background: transparent;
+    }
+
+    .tag-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tag-pill button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 960px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .header { flex-direction: column; gap: 10px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <h1>🤝 Red de Colaboradores</h1>
+      <div>
+        <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+        <button class="btn" onclick="abrirModalColaborador()">+ Agregar colaborador</button>
+      </div>
+    </header>
+
+    <!-- Columna izquierda: filtros + grid -->
+    <section>
+      <div class="filters">
+        <div class="filter-group">
+          <label>Buscar por nombre</label>
+          <input type="text" id="filtroNombre" oninput="renderColaboradores()">
+        </div>
+        <div class="filter-group">
+          <label>Especialidad</label>
+          <select id="filtroEspecialidad" onchange="renderColaboradores()">
+            <option value="">Todas</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Área fuerte</label>
+          <select id="filtroAreaFuerte" onchange="renderColaboradores()">
+            <option value="">Todas</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Tipo</label>
+          <select id="filtroTipo" onchange="renderColaboradores()">
+            <option value="">Todos</option>
+            <option value="interno">Interno</option>
+            <option value="externo">Externo</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Experiencia</label>
+          <select id="filtroExperiencia" onchange="renderColaboradores()">
+            <option value="">Todos</option>
+            <option value="0-5">0–5 años</option>
+            <option value="6-10">6–10 años</option>
+            <option value="10+">10+ años</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="gridColaboradores" class="grid"></div>
+    </section>
+
+    <!-- Columna derecha: matching -->
+    <aside class="matching-panel">
+      <h2>Encontrar colaboradores para un proyecto</h2>
+      <div class="form-group">
+        <label>Tema / problema</label>
+        <textarea id="matchTema" placeholder="Ej: Reducción de uso de fungicidas en cítricos"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Área principal</label>
+        <select id="matchArea">
+          <option value="">Cualquiera</option>
+          <option value="Manejo de plagas">Manejo de plagas</option>
+          <option value="Rendimiento de cultivo">Rendimiento de cultivo</option>
+          <option value="Tratamientos de suelo">Tratamientos de suelo</option>
+          <option value="Calidad de fruto">Calidad de fruto</option>
+          <option value="Postcosecha">Postcosecha</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Palabras clave (separadas por comas)</label>
+        <input type="text" id="matchKeywords" placeholder="suelos, biocontrol, sensores...">
+      </div>
+      <button class="btn" onclick="buscarMatching()">Buscar colaboradores</button>
+
+      <div class="matching-results" id="matchingResults"></div>
+    </aside>
+  </div>
+
+  <!-- Modal crear / editar colaborador -->
+  <div class="modal" id="modalColaborador">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitulo">Nuevo colaborador</h2>
+        <button class="close-btn" onclick="cerrarModalColaborador()">×</button>
+      </div>
+
+      <form id="formColaborador">
+        <input type="hidden" id="colabId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Cargo *</label>
+            <input type="text" id="cargo" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Foto (URL)</label>
+            <input type="text" id="fotoUrl" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label>Años de experiencia *</label>
+            <input type="number" id="aniosExperiencia" min="0" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Especialidad principal *</label>
+          <input type="text" id="especialidadPrincipal" required>
+        </div>
+
+        <div class="form-group">
+          <label>Áreas fuertes (Enter para añadir)</label>
+          <div class="tags-input" id="areasFuertesContainer">
+            <input type="text" id="areasFuertesInput" placeholder="Manejo de plagas, Postcosecha...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Intereses (Enter para añadir)</label>
+          <div class="tags-input" id="interesesContainer">
+            <input type="text" id="interesesInput" placeholder="suelos, bioinsumos...">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>N.º de aportes</label>
+            <input type="number" id="aportes" min="0" value="0">
+          </div>
+          <div class="form-group">
+            <label>Ensayos exitosos</label>
+            <input type="number" id="ensayosExitosos" min="0" value="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Proyectos activos (IDs de ensayos, separados por coma)</label>
+          <input type="text" id="proyectosActivos" placeholder="ensayo_123, ensayo_456">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de colaborador</label>
+            <select id="tipoColaborador">
+              <option value="interno">Interno</option>
+              <option value="externo">Externo</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Contacto</label>
+            <input type="text" id="contacto" placeholder="correo@empresa.com">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="cerrarModalColaborador()">Cancelar</button>
+          <button type="button" class="btn-danger" id="btnEliminar" style="display:none" onclick="eliminarColaborador()">Eliminar</button>
+          <button type="submit" class="btn">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let colaboradores = [];
+    let areasFuertesTemp = [];
+    let interesesTemp = [];
+    let colaboradorEditandoId = null;
+
+    function loadColaboradores() {
+      const raw = localStorage.getItem('colaboradores');
+      colaboradores = raw ? JSON.parse(raw) : [];
+    }
+
+    function saveColaboradores() {
+      localStorage.setItem('colaboradores', JSON.stringify(colaboradores));
+      // aquí podrías notificar al dashboard
+      window.parent.postMessage({ tipo: 'actualizarDashboard' }, '*');
+    }
+
+    function init() {
+      loadColaboradores();
+      initTagsInputs();
+      actualizarSelectsFiltro();
+      renderColaboradores();
+    }
+
+    function initTagsInputs() {
+      const areasInput = document.getElementById('areasFuertesInput');
+      const interesesInput = document.getElementById('interesesInput');
+
+      areasInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const val = areasInput.value.trim();
+          if (val && !areasFuertesTemp.includes(val)) {
+            areasFuertesTemp.push(val);
+            areasInput.value = '';
+            renderTags('areasFuertesContainer', areasFuertesTemp, 'areas');
+          }
+        }
+      });
+
+      interesesInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const val = interesesInput.value.trim();
+          if (val && !interesesTemp.includes(val)) {
+            interesesTemp.push(val);
+            interesesInput.value = '';
+            renderTags('interesesContainer', interesesTemp, 'intereses');
+          }
+        }
+      });
+    }
+
+    function renderTags(containerId, items, tipo) {
+      const container = document.getElementById(containerId);
+      const input = container.querySelector('input');
+      container.innerHTML = '';
+      items.forEach((item, index) => {
+        const pill = document.createElement('span');
+        pill.className = 'tag-pill';
+        pill.innerHTML = `${item}<button type="button" onclick="removeTag('${tipo}', ${index})">×</button>`;
+        container.appendChild(pill);
+      });
+      container.appendChild(input);
+    }
+
+    function removeTag(tipo, index) {
+      if (tipo === 'areas') {
+        areasFuertesTemp.splice(index, 1);
+        renderTags('areasFuertesContainer', areasFuertesTemp, 'areas');
+      } else {
+        interesesTemp.splice(index, 1);
+        renderTags('interesesContainer', interesesTemp, 'intereses');
+      }
+    }
+
+    function actualizarSelectsFiltro() {
+      const especialidades = [...new Set(colaboradores.map(c => c.especialidad_principal).filter(Boolean))];
+      const areas = [...new Set(colaboradores.flatMap(c => c.areas_fuertes || []))];
+
+      const espSel = document.getElementById('filtroEspecialidad');
+      const areaSel = document.getElementById('filtroAreaFuerte');
+      espSel.innerHTML = '<option value="">Todas</option>';
+      areaSel.innerHTML = '<option value="">Todas</option>';
+
+      especialidades.forEach(e => {
+        const opt = document.createElement('option');
+        opt.value = e;
+        opt.textContent = e;
+        espSel.appendChild(opt);
+      });
+
+      areas.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        areaSel.appendChild(opt);
+      });
+    }
+
+    function renderColaboradores() {
+      const grid = document.getElementById('gridColaboradores');
+      grid.innerHTML = '';
+
+      const nombreFiltro = document.getElementById('filtroNombre').value.toLowerCase();
+      const espFiltro = document.getElementById('filtroEspecialidad').value;
+      const areaFiltro = document.getElementById('filtroAreaFuerte').value;
+      const tipoFiltro = document.getElementById('filtroTipo').value;
+      const expFiltro = document.getElementById('filtroExperiencia').value;
+
+      let lista = colaboradores.slice();
+
+      lista = lista.filter(c => {
+        if (nombreFiltro && !c.nombre.toLowerCase().includes(nombreFiltro)) return false;
+        if (espFiltro && c.especialidad_principal !== espFiltro) return false;
+        if (areaFiltro && !(c.areas_fuertes || []).includes(areaFiltro)) return false;
+        if (tipoFiltro && c.tipo_colaborador !== tipoFiltro) return false;
+        if (expFiltro) {
+          const ae = c.anios_experiencia || 0;
+          if (expFiltro === '0-5' && ae > 5) return false;
+          if (expFiltro === '6-10' && (ae < 6 || ae > 10)) return false;
+          if (expFiltro === '10+' && ae < 10) return false;
+        }
+        return true;
+      });
+
+      if (lista.length === 0) {
+        grid.innerHTML = '<p>No hay colaboradores que cumplan los filtros.</p>';
+        return;
+      }
+
+      lista.forEach(c => {
+        const card = document.createElement('article');
+        card.className = 'card';
+
+        const header = document.createElement('div');
+        header.className = 'card-header';
+
+        const img = document.createElement('img');
+        img.className = 'avatar';
+        img.src = c.foto_url || 'https://via.placeholder.com/80x80?text=Foto';
+        img.alt = c.nombre;
+
+        const text = document.createElement('div');
+        const nameEl = document.createElement('div');
+        nameEl.className = 'card-name';
+        nameEl.textContent = c.nombre;
+        const roleEl = document.createElement('div');
+        roleEl.className = 'card-role';
+        roleEl.textContent = c.cargo + (c.especialidad_principal ? ' · ' + c.especialidad_principal : '');
+
+        text.appendChild(nameEl);
+        text.appendChild(roleEl);
+
+        const tipo = document.createElement('span');
+        tipo.className = 'badge-tipo';
+        tipo.textContent = c.tipo_colaborador === 'externo' ? 'Externo' : 'Interno';
+
+        header.appendChild(img);
+        header.appendChild(text);
+        header.appendChild(tipo);
+
+        const meta = document.createElement('div');
+        meta.className = 'meta-row';
+        meta.innerHTML = `<span>${c.anios_experiencia || 0} años exp.</span>
+                          <span>🧩 ${c.aportes || 0} aportes</span>
+                          <span>✅ ${c.ensayos_exitosos || 0} éxitos</span>`;
+
+        const chips = document.createElement('div');
+        chips.className = 'chips';
+        (c.areas_fuertes || []).forEach(a => {
+          const chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.textContent = a;
+          chips.appendChild(chip);
+        });
+
+        const footer = document.createElement('div');
+        footer.className = 'card-footer';
+        const small = document.createElement('small');
+        small.textContent = c.contacto || '';
+        const btn = document.createElement('button');
+        btn.className = 'btn btn-secondary';
+        btn.style.padding = '6px 12px';
+        btn.style.fontSize = '0.8rem';
+        btn.textContent = 'Ver / Editar';
+        btn.onclick = () => abrirModalColaborador(c.id);
+
+        footer.appendChild(small);
+        footer.appendChild(btn);
+
+        card.appendChild(header);
+        card.appendChild(meta);
+        card.appendChild(chips);
+        card.appendChild(footer);
+        grid.appendChild(card);
+      });
+    }
+
+    function abrirModalColaborador(id) {
+      colaboradorEditandoId = id || null;
+      areasFuertesTemp = [];
+      interesesTemp = [];
+
+      const form = document.getElementById('formColaborador');
+      form.reset();
+      document.getElementById('btnEliminar').style.display = id ? 'inline-flex' : 'none';
+
+      if (id) {
+        document.getElementById('modalTitulo').textContent = 'Editar colaborador';
+        const c = colaboradores.find(col => col.id === id);
+        if (c) {
+          document.getElementById('colabId').value = c.id;
+          document.getElementById('nombre').value = c.nombre || '';
+          document.getElementById('cargo').value = c.cargo || '';
+          document.getElementById('fotoUrl').value = c.foto_url || '';
+          document.getElementById('aniosExperiencia').value = c.anios_experiencia || 0;
+          document.getElementById('especialidadPrincipal').value = c.especialidad_principal || '';
+          document.getElementById('aportes').value = c.aportes || 0;
+          document.getElementById('ensayosExitosos').value = c.ensayos_exitosos || 0;
+          document.getElementById('tipoColaborador').value = c.tipo_colaborador || 'interno';
+          document.getElementById('contacto').value = c.contacto || '';
+          document.getElementById('proyectosActivos').value = (c.proyectos_activos || []).join(', ');
+          areasFuertesTemp = c.areas_fuertes || [];
+          interesesTemp = c.intereses || [];
+          renderTags('areasFuertesContainer', areasFuertesTemp, 'areas');
+          renderTags('interesesContainer', interesesTemp, 'intereses');
+        }
+      } else {
+        document.getElementById('modalTitulo').textContent = 'Nuevo colaborador';
+        areasFuertesTemp = [];
+        interesesTemp = [];
+        renderTags('areasFuertesContainer', areasFuertesTemp, 'areas');
+        renderTags('interesesContainer', interesesTemp, 'intereses');
+      }
+
+      document.getElementById('modalColaborador').style.display = 'block';
+    }
+
+    function cerrarModalColaborador() {
+      document.getElementById('modalColaborador').style.display = 'none';
+      colaboradorEditandoId = null;
+    }
+
+    document.getElementById('formColaborador').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('nombre').value.trim();
+      const cargo = document.getElementById('cargo').value.trim();
+      const especialidad = document.getElementById('especialidadPrincipal').value.trim();
+      const anios = parseInt(document.getElementById('aniosExperiencia').value, 10);
+
+      if (!nombre || !cargo || !especialidad || isNaN(anios)) {
+        alert('Completa los campos obligatorios.');
+        return;
+      }
+
+      const colab = {
+        id: colaboradorEditandoId || ('colab_' + Date.now()),
+        nombre,
+        cargo,
+        foto_url: document.getElementById('fotoUrl').value.trim(),
+        anios_experiencia: anios,
+        areas_fuertes: areasFuertesTemp.slice(),
+        especialidad_principal: especialidad,
+        aportes: parseInt(document.getElementById('aportes').value, 10) || 0,
+        ensayos_exitosos: parseInt(document.getElementById('ensayosExitosos').value, 10) || 0,
+        proyectos_activos: document.getElementById('proyectosActivos').value
+          .split(',')
+          .map(p => p.trim())
+          .filter(p => p),
+        tipo_colaborador: document.getElementById('tipoColaborador').value,
+        contacto: document.getElementById('contacto').value.trim(),
+        intereses: interesesTemp.slice()
+      };
+
+      if (colaboradorEditandoId) {
+        const idx = colaboradores.findIndex(c => c.id === colaboradorEditandoId);
+        if (idx !== -1) colaboradores[idx] = colab;
+      } else {
+        colaboradores.push(colab);
+      }
+
+      saveColaboradores();
+      actualizarSelectsFiltro();
+      renderColaboradores();
+      cerrarModalColaborador();
+    });
+
+    function eliminarColaborador() {
+      if (!colaboradorEditandoId) return;
+      if (!confirm('¿Eliminar este colaborador?')) return;
+      colaboradores = colaboradores.filter(c => c.id !== colaboradorEditandoId);
+      saveColaboradores();
+      actualizarSelectsFiltro();
+      renderColaboradores();
+      cerrarModalColaborador();
+    }
+
+    // Matching simple por puntos de coincidencia
+    function buscarMatching() {
+      const area = document.getElementById('matchArea').value;
+      const keywords = document.getElementById('matchKeywords').value
+        .split(',')
+        .map(k => k.trim().toLowerCase())
+        .filter(k => k);
+
+      const resultados = colaboradores.map(c => {
+        let score = 0;
+        if (area && (c.areas_fuertes || []).includes(area)) score += 2;
+        if (keywords.length) {
+          const intereses = (c.intereses || []).map(i => i.toLowerCase());
+          keywords.forEach(k => {
+            if (intereses.includes(k)) score += 1;
+          });
+        }
+        // pequeño bonus por ensayos exitosos
+        score += (c.ensayos_exitosos || 0) * 0.1;
+        return { colaborador: c, score };
+      }).filter(r => r.score > 0)
+        .sort((a,b) => b.score - a.score);
+
+      const container = document.getElementById('matchingResults');
+      container.innerHTML = '';
+      if (resultados.length === 0) {
+        container.innerHTML = '<p>Sin coincidencias todavía. Ajusta área o palabras clave.</p>';
+        return;
+      }
+
+      resultados.slice(0, 15).forEach(r => {
+        const c = r.colaborador;
+        const item = document.createElement('div');
+        item.className = 'matching-item';
+        item.innerHTML = `
+          <div>
+            <strong>${c.nombre}</strong><br>
+            <span style="font-size:0.8rem;">${c.especialidad_principal || ''}</span><br>
+            <span style="font-size:0.8rem; color:#555;">Áreas: ${(c.areas_fuertes || []).join(', ')}</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="matching-score">${r.score.toFixed(1)}</div>
+            <button class="btn btn-secondary" style="padding:4px 8px;font-size:0.75rem;margin-top:4px;"
+              onclick="abrirModalColaborador('${c.id}')">Ver perfil</button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Cerrar modal clicando fuera
+    window.addEventListener('click', e => {
+      const modal = document.getElementById('modalColaborador');
+      if (e.target === modal) cerrarModalColaborador();
+    });
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
