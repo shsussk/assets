@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -332,30 +333,34 @@
     </div>
   </div>
 
+  <script src="supabase-config.js"></script>
   <script>
     var tablaEnsayos;
     var editandoId = null;
 
     $(document).ready(function() {
       cargarEnsayos();
-      actualizarFiltros();
     });
 
-    function cargarEnsayos() {
-      var ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
-      
+    async function cargarEnsayos() {
+      var { data: ensayos, error } = await DB.ensayos.listar();
+      if (error) {
+        alert('Error al cargar ensayos: ' + error.message);
+        return;
+      }
+
       tablaEnsayos = $('#ensayosTable').DataTable({
-        data: ensayos,
+        data: ensayos || [],
         columns: [
           { data: 'id' },
           { data: 'area' },
-          { data: 'reportadoPor' },
+          { data: 'reportado_por' },
           { data: 'prioridad' },
-          { data: 'responsableId' },
-          { data: 'metricaObjetivo' },
-          { data: 'fechaInicio', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
-          { data: 'fechaFinEstimado', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
-          { data: 'porcentajeAvance', render: function(data) { return (data || 0) + '%'; } },
+          { data: 'responsable_id' },
+          { data: 'metrica_objetivo' },
+          { data: 'fecha_inicio', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
+          { data: 'fecha_fin_estimado', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
+          { data: 'porcentaje_avance', render: function(data) { return (data || 0) + '%'; } },
           { 
             data: 'estado',
             render: function(data) {
@@ -363,7 +368,7 @@
               return '<span class="status-badge ' + (clases[data] || '') + '">' + data + '</span>';
             }
           },
-          { data: 'roiEstimado', render: function(data) { return (data || 0) + '%'; } },
+          { data: 'roi_estimado', render: function(data) { return (data || 0) + '%'; } },
           {
             data: null,
             orderable: false,
@@ -378,71 +383,72 @@
           url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
         }
       });
+
+      actualizarFiltros(ensayos);
     }
 
-    document.getElementById('formEnsayo').addEventListener('submit', function(e) {
+    document.getElementById('formEnsayo').addEventListener('submit', async function(e) {
       e.preventDefault();
       
       var ensayo = {
         id: editandoId || 'ensayo_' + Date.now(),
         area: document.getElementById('area').value,
-        reportadoPor: document.getElementById('reportadoPor').value,
-        fechaInicio: document.getElementById('fechaInicio').value,
-        fechaFinEstimado: document.getElementById('fechaFinEstimado').value,
+        reportado_por: document.getElementById('reportadoPor').value,
+        fecha_inicio: document.getElementById('fechaInicio').value,
+        fecha_fin_estimado: document.getElementById('fechaFinEstimado').value,
         fecha_final_real: document.getElementById('fechaFinalReal').value || null,
         prioridad: document.getElementById('prioridad').value,
-        responsableId: document.getElementById('responsableId').value,
-        metricaObjetivo: document.getElementById('metricaObjetivo').value,
+        responsable_id: document.getElementById('responsableId').value,
+        metrica_objetivo: document.getElementById('metricaObjetivo').value,
         estado: document.getElementById('estado').value,
-        roiEstimado: parseFloat(document.getElementById('roiEstimado').value) || 0,
-        validadorCampo: document.getElementById('validadorCampo').value,
-        porcentajeAvance: parseInt(document.getElementById('porcentajeAvance').value) || 0,
+        roi_estimado: parseFloat(document.getElementById('roiEstimado').value) || 0,
+        validador_campo: document.getElementById('validadorCampo').value,
+        porcentaje_avance: parseInt(document.getElementById('porcentajeAvance').value) || 0,
         exito: document.getElementById('exito').checked,
         publicaciones: document.getElementById('publicaciones').value.split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; })
       };
 
-      var ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
-      
+      var result;
       if (editandoId) {
-        var index = ensayos.findIndex(function(e) { return e.id === editandoId; });
-        if (index !== -1) ensayos[index] = ensayo;
+        result = await DB.ensayos.actualizar(editandoId, ensayo);
       } else {
-        ensayos.push(ensayo);
+        result = await DB.ensayos.crear(ensayo);
       }
 
-      localStorage.setItem('ensayos', JSON.stringify(ensayos));
-      tablaEnsayos.clear().rows.add(ensayos).draw();
-      actualizarFiltros();
-      cerrarModal();
-      alert(editandoId ? 'Ensayo actualizado' : 'Ensayo creado');
+      if (result.error) {
+        alert('Error: ' + result.error.message);
+      } else {
+        alert(editandoId ? 'Ensayo actualizado' : 'Ensayo creado');
+        window.location.reload();
+      }
     });
 
     function abrirModal(accion) {
       editandoId = null;
-      document.getElementById('modalTitulo').textContent = accion === 'crear' ? 'Crear Nuevo Ensayo' : 'Editar Ensayo';
+      document.getElementById('modalTitulo').textContent = 'Crear Nuevo Ensayo';
       document.getElementById('formEnsayo').reset();
       document.getElementById('modalEnsayo').style.display = 'block';
     }
 
-    function editarEnsayo(id) {
-      var ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
+    async function editarEnsayo(id) {
+      var { data: ensayos } = await DB.ensayos.listar();
       var ensayo = ensayos.find(function(e) { return e.id === id; });
       
       if (ensayo) {
         editandoId = id;
         document.getElementById('modalTitulo').textContent = 'Editar Ensayo';
         document.getElementById('area').value = ensayo.area || '';
-        document.getElementById('reportadoPor').value = ensayo.reportadoPor || '';
-        document.getElementById('fechaInicio').value = ensayo.fechaInicio || '';
-        document.getElementById('fechaFinEstimado').value = ensayo.fechaFinEstimado || '';
+        document.getElementById('reportadoPor').value = ensayo.reportado_por || '';
+        document.getElementById('fechaInicio').value = ensayo.fecha_inicio || '';
+        document.getElementById('fechaFinEstimado').value = ensayo.fecha_fin_estimado || '';
         document.getElementById('fechaFinalReal').value = ensayo.fecha_final_real || '';
         document.getElementById('prioridad').value = ensayo.prioridad || '';
-        document.getElementById('responsableId').value = ensayo.responsableId || '';
-        document.getElementById('metricaObjetivo').value = ensayo.metricaObjetivo || '';
+        document.getElementById('responsableId').value = ensayo.responsable_id || '';
+        document.getElementById('metricaObjetivo').value = ensayo.metrica_objetivo || '';
         document.getElementById('estado').value = ensayo.estado || 'activo';
-        document.getElementById('roiEstimado').value = ensayo.roiEstimado || '';
-        document.getElementById('validadorCampo').value = ensayo.validadorCampo || '';
-        document.getElementById('porcentajeAvance').value = ensayo.porcentajeAvance || '';
+        document.getElementById('roiEstimado').value = ensayo.roi_estimado || '';
+        document.getElementById('validadorCampo').value = ensayo.validador_campo || '';
+        document.getElementById('porcentajeAvance').value = ensayo.porcentaje_avance || '';
         document.getElementById('exito').checked = ensayo.exito || false;
         document.getElementById('publicaciones').value = ensayo.publicaciones ? ensayo.publicaciones.join(', ') : '';
         
@@ -450,14 +456,14 @@
       }
     }
 
-    function eliminarEnsayo(id) {
+    async function eliminarEnsayo(id) {
       if (confirm('¿Eliminar este ensayo?')) {
-        var ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
-        ensayos = ensayos.filter(function(e) { return e.id !== id; });
-        localStorage.setItem('ensayos', JSON.stringify(ensayos));
-        
-        tablaEnsayos.clear().rows.add(ensayos).draw();
-        actualizarFiltros();
+        var { error } = await DB.ensayos.eliminar(id);
+        if (error) {
+          alert('Error: ' + error.message);
+        } else {
+          window.location.reload();
+        }
       }
     }
 
@@ -466,8 +472,7 @@
       editandoId = null;
     }
 
-    function actualizarFiltros() {
-      var ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
+    function actualizarFiltros(ensayos) {
       var areas = [];
       ensayos.forEach(function(e) {
         if (e.area && areas.indexOf(e.area) === -1) areas.push(e.area);
@@ -512,4 +517,5 @@
   </script>
 </body>
 </html>
+
 
