@@ -19,11 +19,7 @@
       --radius-pill: 999px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -122,15 +118,8 @@
       margin-bottom: 2px;
     }
 
-    .value-card h3 {
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-
-    .value-card p {
-      font-size: 0.78rem;
-      color: #4b5b4b;
-    }
+    .value-card h3 { font-size: 0.9rem; font-weight: 700; }
+    .value-card p { font-size: 0.78rem; color: #4b5b4b; }
 
     .logo-cta-section {
       flex: 2;
@@ -153,18 +142,9 @@
       justify-content: center;
     }
 
-    .company-logo img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
+    .company-logo img { width: 100%; height: auto; display: block; }
 
-    .logo-caption {
-      margin-top: 8px;
-      font-size: 0.85rem;
-      color: #777;
-      text-align: center;
-    }
+    .logo-caption { margin-top: 8px; font-size: 0.85rem; color: #777; text-align: center; }
 
     .btn-enter {
       margin-top: 12px;
@@ -183,61 +163,24 @@
       transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
     }
 
-    .btn-enter span.icon {
-      font-size: 1.1rem;
-    }
+    .btn-enter span.icon { font-size: 1.1rem; }
+    .btn-enter:hover { background-color: #43a047; box-shadow: 0 6px 16px rgba(76, 175, 80, 0.45); transform: translateY(-1px); }
+    .btn-enter:active { transform: translateY(0); box-shadow: 0 3px 8px rgba(76, 175, 80, 0.35); }
+    .btn-enter:focus { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 
-    .btn-enter:hover {
-      background-color: #43a047;
-      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.45);
-      transform: translateY(-1px);
-    }
-
-    .btn-enter:active {
-      transform: translateY(0);
-      box-shadow: 0 3px 8px rgba(76, 175, 80, 0.35);
-    }
-
-    .btn-enter:focus {
-      outline: 2px solid var(--color-accent);
-      outline-offset: 2px;
-    }
-
-    .cta-helper {
-      font-size: 0.85rem;
-      color: #777;
-      text-align: center;
-      margin-top: -6px;
-    }
+    .cta-helper { font-size: 0.85rem; color: #777; text-align: center; margin-top: -6px; }
 
     @media (max-width: 960px) {
-      .landing-wrapper {
-        flex-direction: column;
-        padding: 16px;
-      }
-      .philosophy-section,
-      .logo-cta-section {
-        min-height: auto;
-      }
-      .values-row {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      .landing-wrapper { flex-direction: column; padding: 16px; }
+      .philosophy-section, .logo-cta-section { min-height: auto; }
+      .values-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 640px) {
-      .philosophy-section {
-        padding: 22px 18px 20px;
-      }
-      .logo-cta-section {
-        padding: 22px 18px;
-      }
-      .values-row {
-        grid-template-columns: 1fr;
-      }
-      .btn-enter {
-        width: 100%;
-        justify-content: center;
-      }
+      .philosophy-section { padding: 22px 18px 20px; }
+      .logo-cta-section { padding: 22px 18px; }
+      .values-row { grid-template-columns: 1fr; }
+      .btn-enter { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -285,8 +228,7 @@
 
     <aside class="logo-cta-section">
       <div class="company-logo">
-        <!-- Usa la ruta absoluta de tu GitHub Pages -->
-        <img src="https://shsussk.github.io/Activos/logo.png" alt="Logo de Plantaciones del Norte">
+        <img src="https://shsussk.github.io/assets/logo.png" alt="Logo de Plantaciones del Norte">
       </div>
       <p class="logo-caption">Ecosistema de Investigación y Desarrollo · Plantaciones del Norte</p>
 
@@ -299,3 +241,4 @@
   </div>
 </body>
 </html>
+
