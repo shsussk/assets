@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Acceso · Ecosistema I+D · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-primary-light: #dcf4dc;
+      --color-accent: #f9a825;
+      --color-bg: #f5f9f5;
+      --shadow: 0 8px 24px rgba(0,0,0,0.1);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--color-bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-wrapper {
+      display: flex;
+      gap: 0;
+      max-width: 820px;
+      width: 95%;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .auth-brand {
+      flex: 1;
+      background: var(--color-primary);
+      color: white;
+      padding: 40px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+    }
+    .auth-brand img { width: 120px; border-radius: 12px; background: white; padding: 8px; }
+    .auth-brand h1 { font-size: 1.4rem; }
+    .auth-brand p { font-size: 0.9rem; opacity: 0.9; line-height: 1.5; }
+    .auth-form-section {
+      flex: 1.2;
+      background: white;
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .tabs { display: flex; gap: 0; margin-bottom: 24px; }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: #666;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--color-primary); color: white; }
+    .tab-btn:first-child { border-radius: 8px 0 0 8px; }
+    .tab-btn:last-child { border-radius: 0 8px 8px 0; }
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.9rem; font-weight: 500; }
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #dde2eb;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+    .form-group input:focus { outline: 2px solid var(--color-primary); border-color: transparent; }
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .btn-submit:hover { background: #43a047; }
+    .msg { margin-top: 12px; padding: 10px; border-radius: 8px; font-size: 0.85rem; display: none; }
+    .msg-error { background: #f8d7da; color: #721c24; }
+    .msg-success { background: #d4edda; color: #155724; }
+    .msg-warning { background: #fff3cd; color: #856404; }
+    @media (max-width: 640px) {
+      .auth-wrapper { flex-direction: column; }
+      .auth-brand { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-brand">
+      <img src="https://shsussk.github.io/assets/logo.png" alt="Logo">
+      <h1>Ecosistema de I+D</h1>
+      <p>Plantaciones del Norte<br>Departamento de Investigación y Desarrollo</p>
+    </div>
+    <div class="auth-form-section">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="mostrarTab('login')">Iniciar sesión</button>
+        <button class="tab-btn" onclick="mostrarTab('registro')">Registrarse</button>
+      </div>
+
+      <!-- Login -->
+      <div id="panel-login" class="form-panel active">
+        <form id="formLogin" onsubmit="return iniciarSesion(event)">
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" id="loginEmail" required placeholder="tucorreo@empresa.com">
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="loginPassword" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn-submit">Entrar</button>
+          <div id="loginMsg" class="msg"></div>
+        </form>
+      </div>
+
+      <!-- Registro -->
+      <div id="panel-registro" class="form-panel">
+        <form id="formRegistro" onsubmit="return registrarUsuario(event)">
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" id="regNombre" required placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" id="regEmail" required placeholder="tucorreo@empresa.com">
+          </div>
+          <div class="form-group">
+            <label>Contraseña (mín. 6 caracteres)</label>
+            <input type="password" id="regPassword" required minlength="6" placeholder="••••••••">
+          </div>
+          <div class="form-group">
+            <label>Confirmar contraseña</label>
+            <input type="password" id="regPassword2" required minlength="6" placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn-submit">Crear cuenta</button>
+          <div id="regMsg" class="msg"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Inicializar admin por defecto si no existe ningún usuario
+    (function initAdmin() {
+      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      if (usuarios.length === 0) {
+        usuarios.push({
+          id: 'user_admin',
+          nombre: 'Administrador',
+          email: 'admin@plantaciones.com',
+          password: 'admin123',
+          rol: 'admin',
+          estado: 'aprobado',
+          fechaRegistro: new Date().toISOString()
+        });
+        localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      }
+    })();
+
+    function mostrarTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.form-panel').forEach(function(p) { p.classList.remove('active'); });
+      if (tab === 'login') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('panel-login').classList.add('active');
+      } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('panel-registro').classList.add('active');
+      }
+    }
+
+    function mostrarMensaje(elementId, texto, tipo) {
+      var el = document.getElementById(elementId);
+      el.textContent = texto;
+      el.className = 'msg msg-' + tipo;
+      el.style.display = 'block';
+      setTimeout(function() { el.style.display = 'none'; }, 5000);
+    }
+
+    function registrarUsuario(e) {
+      e.preventDefault();
+      var nombre = document.getElementById('regNombre').value.trim();
+      var email = document.getElementById('regEmail').value.trim().toLowerCase();
+      var pass = document.getElementById('regPassword').value;
+      var pass2 = document.getElementById('regPassword2').value;
+
+      if (pass !== pass2) {
+        mostrarMensaje('regMsg', 'Las contraseñas no coinciden.', 'error');
+        return false;
+      }
+
+      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      var existe = usuarios.find(function(u) { return u.email === email; });
+      if (existe) {
+        mostrarMensaje('regMsg', 'Ya existe una cuenta con este correo.', 'error');
+        return false;
+      }
+
+      usuarios.push({
+        id: 'user_' + Date.now(),
+        nombre: nombre,
+        email: email,
+        password: pass,
+        rol: 'pendiente',
+        estado: 'pendiente',
+        fechaRegistro: new Date().toISOString()
+      });
+
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      document.getElementById('formRegistro').reset();
+      mostrarMensaje('regMsg', '¡Cuenta creada! Un administrador debe aprobar tu acceso.', 'warning');
+      return false;
+    }
+
+    function iniciarSesion(e) {
+      e.preventDefault();
+      var email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      var pass = document.getElementById('loginPassword').value;
+
+      var usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+      var usuario = usuarios.find(function(u) { return u.email === email && u.password === pass; });
+
+      if (!usuario) {
+        mostrarMensaje('loginMsg', 'Correo o contraseña incorrectos.', 'error');
+        return false;
+      }
+
+      if (usuario.estado === 'pendiente') {
+        mostrarMensaje('loginMsg', 'Tu cuenta aún no ha sido aprobada por el administrador.', 'warning');
+        return false;
+      }
+
+      if (usuario.estado === 'bloqueado') {
+        mostrarMensaje('loginMsg', 'Tu cuenta ha sido bloqueada. Contacta al administrador.', 'error');
+        return false;
+      }
+
+      // Guardar sesión activa
+      localStorage.setItem('sesion_activa', JSON.stringify({
+        id: usuario.id,
+        nombre: usuario.nombre,
+        email: usuario.email,
+        rol: usuario.rol
+      }));
+
+      window.location.href = 'index.html';
+      return false;
+    }
+
+    // Si ya hay sesión activa, ir directo al index
+    (function checkSesion() {
+      var sesion = localStorage.getItem('sesion_activa');
+      if (sesion) {
+        window.location.href = 'index.html';
+      }
+    })();
+  </script>
+</body>
+</html>
