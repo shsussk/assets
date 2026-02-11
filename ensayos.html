@@ -28,26 +28,36 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .header h1 { color: var(--color-primary); font-size: 2rem; }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
     .btn {
       background: var(--color-primary);
       color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: var(--radius);
+      padding: 10px 18px;
+      border-radius: 999px;
       cursor: pointer;
       font-weight: 600;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      font-size: 0.9rem;
       transition: all 0.2s;
     }
 
-    .btn:hover { background: #43a047; transform: translateY(-1px); }
+    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
     .btn-secondary { background: #6c757d; }
     .btn-danger { background: #f44336; }
 
@@ -158,9 +168,12 @@
   <div class="container">
     <header class="header">
       <h1>🧪 Ensayos del Departamento de I+D</h1>
-      <div>
+      <div class="header-buttons">
+        <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
+        <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
         <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
         <button onclick="abrirModal('crear')" class="btn">+ Crear Ensayo</button>
+        <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
 
@@ -296,6 +309,11 @@
         </div>
 
         <div class="form-group">
+          <label>Fecha Final Real (si ya finalizó)</label>
+          <input type="date" id="fechaFinalReal">
+        </div>
+
+        <div class="form-group">
           <label>Publicaciones (separadas por coma)</label>
           <input type="text" id="publicaciones" placeholder="Ej: Informe plagas 2026, Artículo HLB">
         </div>
@@ -315,8 +333,8 @@
   </div>
 
   <script>
-    let tablaEnsayos;
-    let editandoId = null;
+    var tablaEnsayos;
+    var editandoId = null;
 
     $(document).ready(function() {
       cargarEnsayos();
@@ -324,7 +342,7 @@
     });
 
     function cargarEnsayos() {
-      const ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
+      var ensayos = JSON.parse(localStorage.getItem('ensayos')) || [];
       
       tablaEnsayos = $('#ensayosTable').DataTable({
         data: ensayos,
@@ -335,22 +353,17 @@
           { data: 'prioridad' },
           { data: 'responsableId' },
           { data: 'metricaObjetivo' },
-          { data: 'fechaInicio', render: data => data ? new Date(data).toLocaleDateString('es-DO') : '' },
-          { data: 'fechaFinEstimado', render: data => data ? new Date(data).toLocaleDateString('es-DO') : '' },
-          { data: 'porcentajeAvance', render: data => (data || 0) + '%' },
+          { data: 'fechaInicio', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
+          { data: 'fechaFinEstimado', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
+          { data: 'porcentajeAvance', render: function(data) { return (data || 0) + '%'; } },
           { 
             data: 'estado',
-            render: data => {
-              const clases = {
-                'activo': 'status-activo',
-                'finalizado': 'status-finalizado',
-                'suspendido': 'status-suspendido',
-                'fallido': 'status-fallido'
-              };
+            render: function(data) {
+              var clases = { 'activo': 'status-activo', 'finalizado': 'status-finalizado', 'suspendido': 'status-suspendido', 'fallido': 'status-fallido' };
               return '<span class="status-badge ' + (clases[data] || '') + '">' + data + '</span>';
             }
           },
-          { data: 'roiEstimado', render: data => (data || 0) + '%' },
+          { data: 'roiEstimado', render: function(data) { return (data || 0) + '%'; } },
           {
             data: null,
             orderable: false,
@@ -370,12 +383,13 @@
     document.getElementById('formEnsayo').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      const ensayo = {
+      var ensayo = {
         id: editandoId || 'ensayo_' + Date.now(),
         area: document.getElementById('area').value,
         reportadoPor: document.getElementById('reportadoPor').value,
         fechaInicio: document.getElementById('fechaInicio').value,
         fechaFinEstimado: document.getElementById('fechaFinEstimado').value,
+        fecha_final_real: document.getElementById('fechaFinalReal').value || null,
         prioridad: document.getElementById('prioridad').value,
         responsableId: document.getElementById('responsableId').value,
         metricaObjetivo: document.getElementById('metricaObjetivo').value,
@@ -421,6 +435,7 @@
         document.getElementById('reportadoPor').value = ensayo.reportadoPor || '';
         document.getElementById('fechaInicio').value = ensayo.fechaInicio || '';
         document.getElementById('fechaFinEstimado').value = ensayo.fechaFinEstimado || '';
+        document.getElementById('fechaFinalReal').value = ensayo.fecha_final_real || '';
         document.getElementById('prioridad').value = ensayo.prioridad || '';
         document.getElementById('responsableId').value = ensayo.responsableId || '';
         document.getElementById('metricaObjetivo').value = ensayo.metricaObjetivo || '';
@@ -482,7 +497,19 @@
       var modal = document.getElementById('modalEnsayo');
       if (event.target === modal) cerrarModal();
     };
+  </script>
+
   <script src="auth-guard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        if (window.esAdmin()) {
+          document.getElementById('btnAdmin').style.display = 'inline-flex';
+        }
+      }
+    });
+  </script>
 </body>
 </html>
 
