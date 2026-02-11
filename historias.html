@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Historias de Éxito · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-bg: #f8fafb;
+      --color-card: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 14px;
+      --chip-bg: #e8f4e8;
+      --chip-text: #256029;
+      --impact-rend: #4caf50;
+      --impact-costos: #f9a825;
+      --impact-calidad: #2196f3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 2.2fr 1.4fr;
+      gap: 24px;
+    }
+
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .header h1 {
+      color: var(--color-primary);
+      font-size: 2rem;
+    }
+
+    .btn {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+    .btn:hover { opacity: 0.93; }
+
+    /* Filtros */
+    .filters {
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .filter-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+      min-width: 140px;
+    }
+
+    .filter-group input[type="checkbox"] {
+      width: auto;
+      margin-right: 4px;
+    }
+
+    .filter-inline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 18px;
+      font-size: 0.85rem;
+    }
+
+    /* Cards listado */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .card-meta {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .highlight-badge {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #fff3cd;
+      color: #856404;
+      align-self: flex-start;
+    }
+
+    .card-body {
+      font-size: 0.85rem;
+      color: #444;
+    }
+
+    .impact-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .impact-pill {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #1e293b;
+    }
+
+    .impact-rend { border: 1px solid var(--impact-rend); color: var(--impact-rend); }
+    .impact-costos { border: 1px solid var(--impact-costos); color: var(--impact-costos); }
+    .impact-calidad { border: 1px solid var(--impact-calidad); color: var(--impact-calidad); }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .equipo-text {
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    .card-footer-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-mini {
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      border-radius: 999px;
+    }
+
+    /* Detalle */
+    .detalle {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .detalle h2 {
+      font-size: 1.25rem;
+    }
+
+    .detalle-meta {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-top: 10px;
+      margin-bottom: 2px;
+    }
+
+    .detalle p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .detalle-impact {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .impact-card {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.85rem;
+      min-width: 120px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      font-size: 0.75rem;
+    }
+
+    .detalle-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      gap: 8px;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 720px;
+      margin: 20px auto;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 24px 24px 18px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.2rem;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 9px;
+      border-radius: 8px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+    }
+
+    .form-group textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    .tags-input {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 5px;
+      border-radius: 8px;
+      border: 1px solid #dde2eb;
+      background: #fafbff;
+    }
+
+    .tags-input input {
+      border: none;
+      outline: none;
+      flex: 1;
+      min-width: 100px;
+      padding: 4px;
+      font-size: 0.9rem;
+      background: transparent;
+    }
+
+    .tag-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tag-pill button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 960px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <h1>🌱 Historias de Éxito</h1>
+      <div>
+        <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+        <button class="btn" onclick="abrirModalHistoria()">+ Nueva historia de éxito</button>
+      </div>
+    </header>
+
+    <!-- Columna izquierda: filtros + cards -->
+    <section>
+      <div class="filters">
+        <div class="filter-group">
+          <label>Buscar</label>
+          <input type="text" id="filtroTexto" placeholder="Título, problema, solución, tags..." oninput="renderHistorias()">
+        </div>
+        <div class="filter-group">
+          <label>Área</label>
+          <select id="filtroArea" onchange="renderHistorias()">
+            <option value="">Todas</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Año</label>
+          <select id="filtroAnio" onchange="renderHistorias()">
+            <option value="">Todos</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Foco impacto (por tags)</label>
+          <select id="filtroFoco" onchange="renderHistorias()">
+            <option value="">Todos</option>
+            <option value="economico">Económico</option>
+            <option value="agronomico">Agronómico</option>
+            <option value="social">Social</option>
+          </select>
+        </div>
+        <div class="filter-inline">
+          <input type="checkbox" id="filtroHome" onchange="renderHistorias()">
+          <label for="filtroHome">Solo destacadas en home</label>
+        </div>
+      </div>
+
+      <div id="cardsHistorias" class="cards"></div>
+    </section>
+
+    <!-- Columna derecha: detalle -->
+    <aside class="detalle" id="detallePanel">
+      <h2>Selecciona una historia</h2>
+      <p style="font-size:0.9rem;color:#666;">
+        Aquí verás el detalle completo: problema original, solución, impacto y equipo colaborador.
+      </p>
+    </aside>
+  </div>
+
+  <!-- Modal crear / editar historia -->
+  <div class="modal" id="modalHistoria">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitulo">Nueva historia de éxito</h2>
+        <button class="close-btn" onclick="cerrarModalHistoria()">×</button>
+      </div>
+
+      <form id="formHistoria">
+        <input type="hidden" id="historiaId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Título *</label>
+            <input type="text" id="titulo" required>
+          </div>
+          <div class="form-group">
+            <label>Área *</label>
+            <select id="area" required></select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Problema original *</label>
+          <textarea id="problemaOriginal" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Ensayo relacionado</label>
+          <select id="ensayoRelacionado">
+            <option value="">Sin ensayo asociado</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Solución aplicada *</label>
+          <textarea id="solucion" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Testimonio</label>
+          <textarea id="testimonio" placeholder="Cita de productor, técnico, gerente..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha de resolución *</label>
+            <input type="date" id="fechaResolucion" required>
+          </div>
+          <div class="form-group">
+            <label>Equipo colaborador (mantén Ctrl para multi‑selección)</label>
+            <select id="equipoColaborador" multiple size="4"></select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Incremento de rendimiento (%)</label>
+            <input type="number" id="impactoRendimiento" min="0" step="0.1">
+          </div>
+          <div class="form-group">
+            <label>Reducción de costos (%)</label>
+            <input type="number" id="impactoCostos" min="0" step="0.1">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Mejora en calidad (%)</label>
+          <input type="number" id="impactoCalidad" min="0" step="0.1">
+        </div>
+
+        <div class="form-group">
+          <label>Impacto cualitativo</label>
+          <textarea id="impactoCualitativo" placeholder="Lecciones, cambios en manejo, aceptación del productor..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Tags (Enter para añadir)</label>
+          <div class="tags-input" id="tagsContainer">
+            <input type="text" id="tagsInput" placeholder="regenerativo, bioinsumos, cítricos...">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="visibleHome">
+            Visible en home / dashboard
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="cerrarModalHistoria()">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="btnEliminarHistoria" style="display:none" onclick="eliminarHistoria()">Eliminar</button>
+          <button type="submit" class="btn">Guardar historia</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let historias = [];
+    let tagsTemp = [];
+    let historiaEditandoId = null;
+    let colaboradores = [];
+    let ensayos = [];
+
+    function loadHistoriasExito() {
+      const raw = localStorage.getItem('historias_exito');
+      return raw ? JSON.parse(raw) : [];
+    }
+
+    function saveHistoriasExito(items) {
+      localStorage.setItem('historias_exito', JSON.stringify(items));
+      window.parent.postMessage({ tipo: 'actualizarDashboard' }, '*');
+    }
+
+    function loadColaboradores() {
+      const raw = localStorage.getItem('colaboradores');
+      colaboradores = raw ? JSON.parse(raw) : [];
+    }
+
+    function loadEnsayos() {
+      const raw = localStorage.getItem('ensayos');
+      ensayos = raw ? JSON.parse(raw) : [];
+    }
+
+    function initTagsInput() {
+      const input = document.getElementById('tagsInput');
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const val = input.value.trim();
+          if (val && !tagsTemp.includes(val)) {
+            tagsTemp.push(val);
+            input.value = '';
+            renderTags();
+          }
+        }
+      });
+    }
+
+    function renderTags() {
+      const container = document.getElementById('tagsContainer');
+      const input = document.getElementById('tagsInput');
+      container.innerHTML = '';
+      tagsTemp.forEach((t, idx) => {
+        const pill = document.createElement('span');
+        pill.className = 'tag-pill';
+        pill.innerHTML = `${t}<button type="button" onclick="removeTag(${idx})">×</button>`;
+        container.appendChild(pill);
+      });
+      container.appendChild(input);
+    }
+
+    function removeTag(idx) {
+      tagsTemp.splice(idx, 1);
+      renderTags();
+    }
+
+    function initSelectsFormulario() {
+      // Área: desde ensayos y/o lista fija
+      const areaSelect = document.getElementById('area');
+      areaSelect.innerHTML = '';
+      const areas = new Set();
+      ensayos.forEach(e => {
+        if (e.area) areas.add(e.area);
+      });
+      ['Manejo de plagas','Rendimiento de cultivo','Tratamientos de suelo','Calidad de fruto','Postcosecha']
+        .forEach(a => areas.add(a));
+      areas.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        areaSelect.appendChild(opt);
+      });
+
+      // Ensayos relacionados
+      const ensayoSel = document.getElementById('ensayoRelacionado');
+      ensayoSel.innerHTML = '<option value="">Sin ensayo asociado</option>';
+      ensayos.forEach(e => {
+        const opt = document.createElement('option');
+        opt.value = e.id;
+        opt.textContent = e.metricaObjetivo ? `${e.metricaObjetivo} (${e.area})` : e.id;
+        ensayoSel.appendChild(opt);
+      });
+
+      // Equipo colaborador
+      const colabSel = document.getElementById('equipoColaborador');
+      colabSel.innerHTML = '';
+      colaboradores.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.nombre;
+        colabSel.appendChild(opt);
+      });
+    }
+
+    function actualizarSelectsFiltros() {
+      const areaSel = document.getElementById('filtroArea');
+      const anioSel = document.getElementById('filtroAnio');
+      areaSel.innerHTML = '<option value="">Todas</option>';
+      anioSel.innerHTML = '<option value="">Todos</option>';
+
+      const areas = new Set();
+      const anios = new Set();
+
+      historias.forEach(h => {
+        if (h.area) areas.add(h.area);
+        if (h.fecha_resolucion) {
+          const anio = h.fecha_resolucion.substring(0,4);
+          anios.add(anio);
+        }
+      });
+
+      Array.from(areas).sort().forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        areaSel.appendChild(opt);
+      });
+
+      Array.from(anios).sort().forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        anioSel.appendChild(opt);
+      });
+    }
+
+    function renderHistorias() {
+      const cont = document.getElementById('cardsHistorias');
+      cont.innerHTML = '';
+
+      const texto = document.getElementById('filtroTexto').value.toLowerCase();
+      const areaF = document.getElementById('filtroArea').value;
+      const anioF = document.getElementById('filtroAnio').value;
+      const focoF = document.getElementById('filtroFoco').value;
+      const soloHome = document.getElementById('filtroHome').checked;
+
+      let lista = historias.slice();
+
+      lista = lista.filter(h => {
+        if (texto) {
+          const blob = (h.titulo + ' ' + h.problema_original + ' ' + h.solucion + ' ' + (h.tags || []).join(' ')).toLowerCase();
+          if (!blob.includes(texto)) return false;
+        }
+        if (areaF && h.area !== areaF) return false;
+        if (anioF && (!h.fecha_resolucion || !h.fecha_resolucion.startsWith(anioF))) return false;
+        if (soloHome && !h.visible_en_home) return false;
+        if (focoF) {
+          const tags = (h.tags || []).map(t => t.toLowerCase());
+          if (focoF === 'economico' && !tags.includes('economico')) return false;
+          if (focoF === 'agronomico' && !tags.includes('agronomico')) return false;
+          if (focoF === 'social' && !tags.includes('social')) return false;
+        }
+        return true;
+      });
+
+      if (lista.length === 0) {
+        cont.innerHTML = '<p>No hay historias aún o los filtros son muy restrictivos.</p>';
+        return;
+      }
+
+      lista.sort((a,b) => (b.fecha_resolucion || '').localeCompare(a.fecha_resolucion || ''));
+
+      lista.forEach(h => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.onclick = (e) => {
+          if (e.target.tagName.toLowerCase() === 'button') return;
+          mostrarDetalle(h.id);
+        };
+
+        const header = document.createElement('div');
+        header.className = 'card-header';
+
+        const titleBox = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'card-title';
+        title.textContent = h.titulo;
+        const meta = document.createElement('div');
+        meta.className = 'card-meta';
+        meta.textContent = `${h.area || ''} · ${h.fecha_resolucion || ''}`;
+        titleBox.appendChild(title);
+        titleBox.appendChild(meta);
+
+        header.appendChild(titleBox);
+
+        if (h.visible_en_home) {
+          const badge = document.createElement('div');
+          badge.className = 'highlight-badge';
+          badge.textContent = 'Destacada';
+          header.appendChild(badge);
+        }
+
+        const body = document.createElement('div');
+        body.className = 'card-body';
+        const resumen = (h.solucion || h.testimonio || '').slice(0,140);
+        body.textContent = resumen + (resumen.length === 140 ? '…' : '');
+
+        const impactRow = document.createElement('div');
+        impactRow.className = 'impact-row';
+        const iq = h.impacto_cuantitativo || {};
+        if (iq.incremento_rendimiento) {
+          const pill = document.createElement('span');
+          pill.className = 'impact-pill impact-rend';
+          pill.textContent = `+${iq.incremento_rendimiento}% rendimiento`;
+          impactRow.appendChild(pill);
+        }
+        if (iq.reduccion_costos) {
+          const pill = document.createElement('span');
+          pill.className = 'impact-pill impact-costos';
+          pill.textContent = `-${iq.reduccion_costos}% costos`;
+          impactRow.appendChild(pill);
+        }
+        if (iq.mejora_calidad) {
+          const pill = document.createElement('span');
+          pill.className = 'impact-pill impact-calidad';
+          pill.textContent = `+${iq.mejora_calidad}% calidad`;
+          impactRow.appendChild(pill);
+        }
+
+        const footer = document.createElement('div');
+        footer.className = 'card-footer';
+
+        const equipoText = document.createElement('div');
+        equipoText.className = 'equipo-text';
+        const nombres = (h.equipo_colaborador || [])
+          .map(id => {
+            const c = colaboradores.find(col => col.id === id);
+            return c ? c.nombre : null;
+          })
+          .filter(Boolean);
+        if (nombres.length > 0) {
+          const primeros = nombres.slice(0,3).join(', ');
+          const extra = nombres.length > 3 ? ` +${nombres.length - 3} más` : '';
+          equipoText.textContent = `Equipo: ${primeros}${extra}`;
+        } else {
+          equipoText.textContent = 'Equipo: —';
+        }
+
+        const btns = document.createElement('div');
+        btns.className = 'card-footer-buttons';
+        const btnVer = document.createElement('button');
+        btnVer.className = 'btn btn-secondary btn-mini';
+        btnVer.textContent = 'Ver detalle';
+        btnVer.onclick = (e) => {
+          e.stopPropagation();
+          mostrarDetalle(h.id);
+        };
+        const btnEdit = document.createElement('button');
+        btnEdit.className = 'btn btn-mini';
+        btnEdit.textContent = 'Editar';
+        btnEdit.onclick = (e) => {
+          e.stopPropagation();
+          abrirModalHistoria(h.id);
+        };
+
+        btns.appendChild(btnVer);
+        btns.appendChild(btnEdit);
+
+        footer.appendChild(equipoText);
+        footer.appendChild(btns);
+
+        card.appendChild(header);
+        card.appendChild(body);
+        card.appendChild(impactRow);
+        card.appendChild(footer);
+
+        cont.appendChild(card);
+      });
+    }
+
+    function mostrarDetalle(id) {
+      const panel = document.getElementById('detallePanel');
+      const h = historias.find(x => x.id === id);
+      if (!h) return;
+
+      const ensayo = ensayos.find(e => e.id === h.ensayo_relacionado);
+      const iq = h.impacto_cuantitativo || {};
+
+      const nombresEquipo = (h.equipo_colaborador || [])
+        .map(cid => {
+          const c = colaboradores.find(col => col.id === cid);
+          return c ? c.nombre : null;
+        })
+        .filter(Boolean);
+
+      panel.innerHTML = '';
+      const title = document.createElement('h2');
+      title.textContent = h.titulo;
+
+      const meta = document.createElement('div');
+      meta.className = 'detalle-meta';
+      meta.textContent = `${h.area || ''} · ${h.fecha_resolucion || ''}`;
+
+      const probTitle = document.createElement('div');
+      probTitle.className = 'section-title';
+      probTitle.textContent = 'Problema original';
+      const probText = document.createElement('p');
+      probText.textContent = h.problema_original || '';
+
+      const solTitle = document.createElement('div');
+      solTitle.className = 'section-title';
+      solTitle.textContent = 'Solución aplicada';
+      const solText = document.createElement('p');
+      solText.textContent = h.solucion || '';
+
+      const impactTitle = document.createElement('div');
+      impactTitle.className = 'section-title';
+      impactTitle.textContent = 'Impacto';
+      const impactCont = document.createElement('div');
+      impactCont.className = 'detalle-impact';
+
+      if (iq.incremento_rendimiento) {
+        const c = document.createElement('div');
+        c.className = 'impact-card';
+        c.innerHTML = `<strong>Rendimiento</strong><br>+${iq.incremento_rendimiento}%`;
+        impactCont.appendChild(c);
+      }
+      if (iq.reduccion_costos) {
+        const c = document.createElement('div');
+        c.className = 'impact-card';
+        c.innerHTML = `<strong>Costos</strong><br>-${iq.reduccion_costos}%`;
+        impactCont.appendChild(c);
+      }
+      if (iq.mejora_calidad) {
+        const c = document.createElement('div');
+        c.className = 'impact-card';
+        c.innerHTML = `<strong>Calidad</strong><br>+${iq.mejora_calidad}%`;
+        impactCont.appendChild(c);
+      }
+
+      const impactQualTitle = document.createElement('div');
+      impactQualTitle.className = 'section-title';
+      impactQualTitle.textContent = 'Impacto cualitativo';
+      const impactQualText = document.createElement('p');
+      impactQualText.textContent = h.impacto_cualitativo || '—';
+
+      const testTitle = document.createElement('div');
+      testTitle.className = 'section-title';
+      testTitle.textContent = 'Testimonio';
+      const testText = document.createElement('p');
+      testText.textContent = h.testimonio || '—';
+
+      const eqTitle = document.createElement('div');
+      eqTitle.className = 'section-title';
+      eqTitle.textContent = 'Equipo colaborador';
+      const eqText = document.createElement('p');
+      eqText.textContent = nombresEquipo.length ? nombresEquipo.join(', ') : '—';
+
+      const ensTitle = document.createElement('div');
+      ensTitle.className = 'section-title';
+      ensTitle.textContent = 'Ensayo relacionado';
+      const ensText = document.createElement('p');
+      ensText.textContent = ensayo ? (ensayo.metricaObjetivo || ensayo.id) : '—';
+
+      const tagsTitle = document.createElement('div');
+      tagsTitle.className = 'section-title';
+      tagsTitle.textContent = 'Tags';
+      const tagsCont = document.createElement('div');
+      tagsCont.className = 'tags';
+      (h.tags || []).forEach(t => {
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.textContent = t;
+        tagsCont.appendChild(tag);
+      });
+      if ((h.tags || []).length === 0) {
+        const p = document.createElement('p');
+        p.textContent = '—';
+        p.style.fontSize = '0.85rem';
+        p.style.color = '#666';
+        tagsCont.appendChild(p);
+      }
+
+      const footer = document.createElement('div');
+      footer.className = 'detalle-footer';
+      const info = document.createElement('small');
+      info.style.color = '#666';
+      info.textContent = h.visible_en_home ? 'Marcada como destacada en el dashboard.' : '';
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-secondary btn-mini';
+      btn.textContent = 'Editar historia';
+      btn.onclick = () => abrirModalHistoria(h.id);
+
+      footer.appendChild(info);
+      footer.appendChild(btn);
+
+      panel.appendChild(title);
+      panel.appendChild(meta);
+      panel.appendChild(probTitle);
+      panel.appendChild(probText);
+      panel.appendChild(solTitle);
+      panel.appendChild(solText);
+      panel.appendChild(impactTitle);
+      panel.appendChild(impactCont);
+      panel.appendChild(impactQualTitle);
+      panel.appendChild(impactQualText);
+      panel.appendChild(testTitle);
+      panel.appendChild(testText);
+      panel.appendChild(eqTitle);
+      panel.appendChild(eqText);
+      panel.appendChild(ensTitle);
+      panel.appendChild(ensText);
+      panel.appendChild(tagsTitle);
+      panel.appendChild(tagsCont);
+      panel.appendChild(footer);
+    }
+
+    function abrirModalHistoria(id) {
+      historiaEditandoId = id || null;
+      tagsTemp = [];
+
+      const form = document.getElementById('formHistoria');
+      form.reset();
+      document.getElementById('btnEliminarHistoria').style.display = id ? 'inline-flex' : 'none';
+
+      // Fecha por defecto
+      if (!id) document.getElementById('fechaResolucion').valueAsDate = new Date();
+
+      initSelectsFormulario();
+
+      if (id) {
+        document.getElementById('modalTitulo').textContent = 'Editar historia';
+        const h = historias.find(x => x.id === id);
+        if (h) {
+          document.getElementById('historiaId').value = h.id;
+          document.getElementById('titulo').value = h.titulo || '';
+          document.getElementById('area').value = h.area || '';
+          document.getElementById('problemaOriginal').value = h.problema_original || '';
+          document.getElementById('ensayoRelacionado').value = h.ensayo_relacionado || '';
+          document.getElementById('solucion').value = h.solucion || '';
+          document.getElementById('testimonio').value = h.testimonio || '';
+          document.getElementById('fechaResolucion').value = h.fecha_resolucion || '';
+          const iq = h.impacto_cuantitativo || {};
+          document.getElementById('impactoRendimiento').value = iq.incremento_rendimiento || '';
+          document.getElementById('impactoCostos').value = iq.reduccion_costos || '';
+          document.getElementById('impactoCalidad').value = iq.mejora_calidad || '';
+          document.getElementById('impactoCualitativo').value = h.impacto_cualitativo || '';
+          document.getElementById('visibleHome').checked = !!h.visible_en_home;
+
+          // equipo colaborador
+          const select = document.getElementById('equipoColaborador');
+          (h.equipo_colaborador || []).forEach(idc => {
+            const opt = Array.from(select.options).find(o => o.value === idc);
+            if (opt) opt.selected = true;
+          });
+
+          tagsTemp = h.tags || [];
+          renderTags();
+        }
+      } else {
+        document.getElementById('modalTitulo').textContent = 'Nueva historia de éxito';
+        tagsTemp = [];
+        renderTags();
+      }
+
+      document.getElementById('modalHistoria').style.display = 'block';
+    }
+
+    function cerrarModalHistoria() {
+      document.getElementById('modalHistoria').style.display = 'none';
+      historiaEditandoId = null;
+    }
+
+    document.getElementById('formHistoria').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const titulo = document.getElementById('titulo').value.trim();
+      const area = document.getElementById('area').value;
+      const problema = document.getElementById('problemaOriginal').value.trim();
+      const solucion = document.getElementById('solucion').value.trim();
+      const fecha = document.getElementById('fechaResolucion').value;
+
+      if (!titulo || !area || !problema || !solucion || !fecha) {
+        alert('Completa los campos obligatorios.');
+        return;
+      }
+
+      const ensayoId = document.getElementById('ensayoRelacionado').value || '';
+      const iq = {
+        incremento_rendimiento: parseFloat(document.getElementById('impactoRendimiento').value) || 0,
+        reduccion_costos: parseFloat(document.getElementById('impactoCostos').value) || 0,
+        mejora_calidad: parseFloat(document.getElementById('impactoCalidad').value) || 0
+      };
+
+      const selectColab = document.getElementById('equipoColaborador');
+      const equipoIds = Array.from(selectColab.selectedOptions).map(o => o.value);
+
+      const historia = {
+        id: historiaEditandoId || ('historia_' + Date.now()),
+        titulo,
+        problema_original: problema,
+        area,
+        ensayo_relacionado: ensayoId,
+        solucion,
+        testimonio: document.getElementById('testimonio').value.trim(),
+        fecha_resolucion: fecha,
+        equipo_colaborador: equipoIds,
+        impacto_cuantitativo: iq,
+        impacto_cualitativo: document.getElementById('impactoCualitativo').value.trim(),
+        tags: tagsTemp.slice(),
+        visible_en_home: document.getElementById('visibleHome').checked
+      };
+
+      if (historiaEditandoId) {
+        const idx = historias.findIndex(x => x.id === historiaEditandoId);
+        if (idx !== -1) historias[idx] = historia;
+      } else {
+        historias.push(historia);
+      }
+
+      saveHistoriasExito(historias);
+      actualizarSelectsFiltros();
+      renderHistorias();
+      mostrarDetalle(historia.id);
+      cerrarModalHistoria();
+    });
+
+    function eliminarHistoria() {
+      if (!historiaEditandoId) return;
+      if (!confirm('¿Eliminar esta historia?')) return;
+      historias = historias.filter(h => h.id !== historiaEditandoId);
+      saveHistoriasExito(historias);
+      actualizarSelectsFiltros();
+      renderHistorias();
+      document.getElementById('detallePanel').innerHTML = `
+        <h2>Selecciona una historia</h2>
+        <p style="font-size:0.9rem;color:#666;">
+          Aquí verás el detalle completo: problema original, solución, impacto y equipo colaborador.
+        </p>`;
+      cerrarModalHistoria();
+    }
+
+    window.addEventListener('click', e => {
+      const modal = document.getElementById('modalHistoria');
+      if (e.target === modal) cerrarModalHistoria();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      historias = loadHistoriasExito();
+      loadColaboradores();
+      loadEnsayos();
+      initTagsInput();
+      actualizarSelectsFiltros();
+      renderHistorias();
+    });
+  </script>
+</body>
+</html>
