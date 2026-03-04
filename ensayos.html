@@ -1,170 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Ensayos I+D · Plantaciones del Norte</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- … todo tu <head> y estilos igual … -->
 
-  <style>
-    :root {
-      --color-primary: #4caf50;
-      --color-bg: #f8fafb;
-      --color-card: white;
-      --shadow: 0 8px 24px rgba(0,0,0,0.12);
-      --radius: 12px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
-    
-    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-    
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .header h1 { color: var(--color-primary); font-size: 2rem; }
-
-    .header-buttons {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: var(--color-primary);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-    }
-
-    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
-    .btn-secondary { background: #6c757d; }
-    .btn-danger { background: #f44336; }
-
-    .table-container {
-      background: var(--color-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      margin-bottom: 24px;
-      padding: 16px;
-    }
-
-    #ensayosTable { width: 100%; }
-    #ensayosTable th { background: #f8fafc; font-weight: 600; padding: 16px; }
-    #ensayosTable td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
-    #ensayosTable tr:hover { background: #f8fafc; }
-
-    .status-badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    .status-activo { background: #dcf4dc; color: #4caf50; }
-    .status-finalizado { background: #d1ecf1; color: #17a2b8; }
-    .status-suspendido { background: #fff3cd; color: #ffc107; }
-    .status-fallido { background: #f8d7da; color: #dc3545; }
-
-    .filters {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .filter-group label { font-size: 0.9rem; font-weight: 500; }
-    .filter-group select, .filter-group input {
-      padding: 8px 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 0.95rem;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-    }
-
-    .modal-content {
-      background: white;
-      margin: 5% auto;
-      padding: 32px;
-      border-radius: var(--radius);
-      width: 90%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow);
-    }
-
-    .form-group { margin-bottom: 20px; }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
-
-    .form-group input, .form-group select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-
-    @media (max-width: 768px) {
-      .form-row { grid-template-columns: 1fr; }
-      .filters { flex-direction: column; }
-    }
-  </style>
-</head>
 <body>
   <div class="container">
     <header class="header">
@@ -178,33 +13,7 @@
       </div>
     </header>
 
-    <div class="filters">
-      <div class="filter-group">
-        <label>Área</label>
-        <select id="filtroArea" onchange="aplicarFiltros()">
-          <option value="">Todas</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>Estado</label>
-        <select id="filtroEstado" onchange="aplicarFiltros()">
-          <option value="">Todos</option>
-          <option value="activo">Activo</option>
-          <option value="finalizado">Finalizado</option>
-          <option value="suspendido">Suspendido</option>
-          <option value="fallido">Fallido</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>Prioridad</label>
-        <select id="filtroPrioridad" onchange="aplicarFiltros()">
-          <option value="">Todas</option>
-          <option value="Baja">Baja</option>
-          <option value="Media">Media</option>
-          <option value="Alta">Alta</option>
-        </select>
-      </div>
-    </div>
+    <!-- filtros y tabla igual que antes -->
 
     <div class="table-container">
       <table id="ensayosTable" class="display">
@@ -228,110 +37,7 @@
     </div>
   </div>
 
-  <div id="modalEnsayo" class="modal">
-    <div class="modal-content">
-      <h2 id="modalTitulo">Crear Nuevo Ensayo</h2>
-      <form id="formEnsayo">
-        <input type="hidden" id="editId">
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Área *</label>
-            <select id="area" required>
-              <option value="">Seleccionar área</option>
-              <option value="Manejo de plagas">Manejo de plagas</option>
-              <option value="Rendimiento de cultivo">Rendimiento de cultivo</option>
-              <option value="Tratamientos de suelo">Tratamientos de suelo</option>
-              <option value="Calidad de fruto">Calidad de fruto</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Prioridad *</label>
-            <select id="prioridad" required>
-              <option value="Baja">Baja</option>
-              <option value="Media">Media</option>
-              <option value="Alta">Alta</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Reportado por *</label>
-            <input type="text" id="reportadoPor" required>
-          </div>
-          <div class="form-group">
-            <label>Responsable I+D *</label>
-            <input type="text" id="responsableId" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Métrica objetivo *</label>
-          <input type="text" id="metricaObjetivo" required placeholder="Ej: % reducción de plagas">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Fecha Inicio *</label>
-            <input type="date" id="fechaInicio" required>
-          </div>
-          <div class="form-group">
-            <label>Fecha Fin Estimado *</label>
-            <input type="date" id="fechaFinEstimado" required>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>% Avance (0-100)</label>
-            <input type="number" id="porcentajeAvance" min="0" max="100" value="0">
-          </div>
-          <div class="form-group">
-            <label>ROI Estimado (%)</label>
-            <input type="number" id="roiEstimado" min="0" step="0.1">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Validador Campo</label>
-            <input type="text" id="validadorCampo">
-          </div>
-          <div class="form-group">
-            <label>Estado</label>
-            <select id="estado">
-              <option value="activo">Activo</option>
-              <option value="finalizado">Finalizado</option>
-              <option value="suspendido">Suspendido</option>
-              <option value="fallido">Fallido</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Fecha Final Real (si ya finalizó)</label>
-          <input type="date" id="fechaFinalReal">
-        </div>
-
-        <div class="form-group">
-          <label>Publicaciones (separadas por coma)</label>
-          <input type="text" id="publicaciones" placeholder="Ej: Informe plagas 2026, Artículo HLB">
-        </div>
-
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="exito"> Éxito
-          </label>
-        </div>
-
-        <div class="modal-buttons">
-          <button type="button" onclick="cerrarModal()" class="btn btn-secondary">Cancelar</button>
-          <button type="submit" class="btn">Guardar Ensayo</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <!-- modal igual que ya lo tienes -->
 
   <script src="supabase-config.js"></script>
   <script>
@@ -373,8 +79,14 @@
             data: null,
             orderable: false,
             render: function(data, type, row) {
-              return '<button onclick="editarEnsayo(\'' + row.id + '\')" class="btn btn-secondary" style="padding:6px 12px;font-size:0.8rem;">Editar</button> ' +
-                     '<button onclick="eliminarEnsayo(\'' + row.id + '\')" class="btn btn-danger" style="padding:6px 12px;font-size:0.8rem;">Eliminar</button>';
+              return `
+                <button onclick="verEnsayo('${row.id}')" class="btn" 
+                        style="padding:6px 12px;font-size:0.8rem;">Ver</button>
+                <button onclick="editarEnsayo('${row.id}')" class="btn btn-secondary" 
+                        style="padding:6px 12px;font-size:0.8rem;">Editar</button>
+                <button onclick="eliminarEnsayo('${row.id}')" class="btn btn-danger" 
+                        style="padding:6px 12px;font-size:0.8rem;">Eliminar</button>
+              `;
             }
           }
         ],
@@ -387,41 +99,7 @@
       actualizarFiltros(ensayos);
     }
 
-    document.getElementById('formEnsayo').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      var ensayo = {
-        id: editandoId || 'ensayo_' + Date.now(),
-        area: document.getElementById('area').value,
-        reportado_por: document.getElementById('reportadoPor').value,
-        fecha_inicio: document.getElementById('fechaInicio').value,
-        fecha_fin_estimado: document.getElementById('fechaFinEstimado').value,
-        fecha_final_real: document.getElementById('fechaFinalReal').value || null,
-        prioridad: document.getElementById('prioridad').value,
-        responsable_id: document.getElementById('responsableId').value,
-        metrica_objetivo: document.getElementById('metricaObjetivo').value,
-        estado: document.getElementById('estado').value,
-        roi_estimado: parseFloat(document.getElementById('roiEstimado').value) || 0,
-        validador_campo: document.getElementById('validadorCampo').value,
-        porcentaje_avance: parseInt(document.getElementById('porcentajeAvance').value) || 0,
-        exito: document.getElementById('exito').checked,
-        publicaciones: document.getElementById('publicaciones').value.split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; })
-      };
-
-      var result;
-      if (editandoId) {
-        result = await DB.ensayos.actualizar(editandoId, ensayo);
-      } else {
-        result = await DB.ensayos.crear(ensayo);
-      }
-
-      if (result.error) {
-        alert('Error: ' + result.error.message);
-      } else {
-        alert(editandoId ? 'Ensayo actualizado' : 'Ensayo creado');
-        window.location.reload();
-      }
-    });
+    // Formulario crear/editar igual que ya lo tenías…
 
     function abrirModal(accion) {
       editandoId = null;
@@ -433,27 +111,25 @@
     async function editarEnsayo(id) {
       var { data: ensayos } = await DB.ensayos.listar();
       var ensayo = ensayos.find(function(e) { return e.id === id; });
-      
-      if (ensayo) {
-        editandoId = id;
-        document.getElementById('modalTitulo').textContent = 'Editar Ensayo';
-        document.getElementById('area').value = ensayo.area || '';
-        document.getElementById('reportadoPor').value = ensayo.reportado_por || '';
-        document.getElementById('fechaInicio').value = ensayo.fecha_inicio || '';
-        document.getElementById('fechaFinEstimado').value = ensayo.fecha_fin_estimado || '';
-        document.getElementById('fechaFinalReal').value = ensayo.fecha_final_real || '';
-        document.getElementById('prioridad').value = ensayo.prioridad || '';
-        document.getElementById('responsableId').value = ensayo.responsable_id || '';
-        document.getElementById('metricaObjetivo').value = ensayo.metrica_objetivo || '';
-        document.getElementById('estado').value = ensayo.estado || 'activo';
-        document.getElementById('roiEstimado').value = ensayo.roi_estimado || '';
-        document.getElementById('validadorCampo').value = ensayo.validador_campo || '';
-        document.getElementById('porcentajeAvance').value = ensayo.porcentaje_avance || '';
-        document.getElementById('exito').checked = ensayo.exito || false;
-        document.getElementById('publicaciones').value = ensayo.publicaciones ? ensayo.publicaciones.join(', ') : '';
-        
-        document.getElementById('modalEnsayo').style.display = 'block';
-      }
+      if (!ensayo) return;
+
+      editandoId = id;
+      document.getElementById('modalTitulo').textContent = 'Editar Ensayo';
+      document.getElementById('area').value = ensayo.area || '';
+      document.getElementById('reportadoPor').value = ensayo.reportado_por || '';
+      document.getElementById('fechaInicio').value = ensayo.fecha_inicio || '';
+      document.getElementById('fechaFinEstimado').value = ensayo.fecha_fin_estimado || '';
+      document.getElementById('fechaFinalReal').value = ensayo.fecha_final_real || '';
+      document.getElementById('prioridad').value = ensayo.prioridad || '';
+      document.getElementById('responsableId').value = ensayo.responsable_id || '';
+      document.getElementById('metricaObjetivo').value = ensayo.metrica_objetivo || '';
+      document.getElementById('estado').value = ensayo.estado || 'activo';
+      document.getElementById('roiEstimado').value = ensayo.roi_estimado || '';
+      document.getElementById('validadorCampo').value = ensayo.validador_campo || '';
+      document.getElementById('porcentajeAvance').value = ensayo.porcentaje_avance || '';
+      document.getElementById('exito').checked = ensayo.exito || false;
+      document.getElementById('publicaciones').value = ensayo.publicaciones ? ensayo.publicaciones.join(', ') : '';
+      document.getElementById('modalEnsayo').style.display = 'block';
     }
 
     async function eliminarEnsayo(id) {
@@ -477,7 +153,6 @@
       ensayos.forEach(function(e) {
         if (e.area && areas.indexOf(e.area) === -1) areas.push(e.area);
       });
-      
       var selectArea = document.getElementById('filtroArea');
       selectArea.innerHTML = '<option value="">Todas</option>';
       areas.forEach(function(area) {
@@ -492,10 +167,14 @@
       var area = document.getElementById('filtroArea').value;
       var estado = document.getElementById('filtroEstado').value;
       var prioridad = document.getElementById('filtroPrioridad').value;
-
       tablaEnsayos.column(1).search(area).draw();
       tablaEnsayos.column(9).search(estado).draw();
       tablaEnsayos.column(3).search(prioridad).draw();
+    }
+
+    // NUEVO: navegar al detalle
+    function verEnsayo(id) {
+      window.location.href = `ensayo-detalle.html?id=${encodeURIComponent(id)}`;
     }
 
     window.onclick = function(event) {
@@ -508,7 +187,8 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (window.SESION) {
-        document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        document.getElementById('userInfo').textContent =
+          '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
         if (window.esAdmin()) {
           document.getElementById('btnAdmin').style.display = 'inline-flex';
         }
