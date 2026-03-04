@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalle de Ensayo · Plantaciones del Norte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-bg: #f8fafb;
+      --color-card: white;
+      --shadow: 0 8px 24px rgba(0,0,0,0.12);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header h1 { color: var(--color-primary); font-size: 1.8rem; }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+
+    .card {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px 24px;
+      font-size: 0.9rem;
+    }
+
+    .meta-item span {
+      display: block;
+      color: #6b7280;
+      margin-bottom: 2px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    /* Tabs */
+    .tabs {
+      margin-top: 16px;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid #e5e7eb;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      color: #6b7280;
+    }
+
+    .tab-button.active {
+      border-bottom-color: var(--color-primary);
+      color: #111827;
+    }
+
+    .tab-content {
+      display: none;
+      padding-top: 16px;
+    }
+
+    .tab-content.active { display: block; }
+
+    h2 { font-size: 1.2rem; margin-bottom: 12px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+
+    th { background: #f9fafb; font-weight: 600; }
+
+    .status-badge {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-block;
+    }
+
+    .status-activo { background: #dcf4dc; color: #4caf50; }
+    .status-finalizado { background: #d1ecf1; color: #17a2b8; }
+    .status-suspendido { background: #fff3cd; color: #ffc107; }
+    .status-fallido { background: #f8d7da; color: #dc3545; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 0.75rem;
+      margin-right: 4px;
+      margin-bottom: 4px;
+    }
+
+    .form-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .form-inline input[type="file"],
+    .form-inline select {
+      font-size: 0.85rem;
+      padding: 6px 8px;
+    }
+
+    .small {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    @media (max-width: 640px) {
+      .header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div>
+        <h1 id="tituloEnsayo">Detalle de ensayo</h1>
+        <div id="idEnsayo" class="small"></div>
+      </div>
+      <div class="header-buttons">
+        <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
+        <a href="ensayos.html" class="btn btn-secondary">← Volver a ensayos</a>
+        <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+      </div>
+    </header>
+
+    <!-- Resumen / meta del ensayo -->
+    <section class="card">
+      <h2>Resumen del ensayo</h2>
+      <div class="meta-grid" id="metaEnsayo">
+        <!-- Se llena por JS -->
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <section class="card">
+      <div class="tabs">
+        <div class="tab-buttons">
+          <button class="tab-button active" data-tab="protocolo">Protocolo</button>
+          <button class="tab-button" data-tab="datos">Datos</button>
+          <button class="tab-button" data-tab="problemas">Problemas</button>
+          <button class="tab-button" data-tab="resultados">Resultados</button>
+          <button class="tab-button" data-tab="archivos">Todos los archivos</button>
+        </div>
+
+        <!-- PROTOCOLO -->
+        <div id="tab-protocolo" class="tab-content active">
+          <h2>Protocolo del ensayo</h2>
+          <p class="small">
+            Aquí se almacena la versión final aprobada del protocolo (PDF, Word, etc.).
+          </p>
+
+          <form id="formProtocolo" class="form-inline">
+            <input type="file" id="fileProtocolo" accept=".pdf,.doc,.docx" required>
+            <button type="submit" class="btn">Subir protocolo final</button>
+          </form>
+
+          <div id="protocoloActual" class="small">
+            Cargando información de protocolo...
+          </div>
+        </div>
+
+        <!-- DATOS -->
+        <div id="tab-datos" class="tab-content">
+          <h2>Bases de datos del ensayo</h2>
+          <p class="small">
+            Sube y gestiona las hojas de datos asociadas (Excel, CSV).
+          </p>
+
+          <form id="formData" class="form-inline">
+            <input type="file" id="fileData" accept=".xlsx,.xls,.csv" required>
+            <select id="tipoData">
+              <option value="crudo">Datos crudos</option>
+              <option value="limpio">Datos procesados</option>
+              <option value="analisis">Análisis</option>
+            </select>
+            <button type="submit" class="btn">Subir base de datos</button>
+          </form>
+
+          <table id="tablaDatos">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Archivo</th>
+                <th>Fecha</th>
+                <th>Subido por</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- PROBLEMAS -->
+        <div id="tab-problemas" class="tab-content">
+          <h2>Problemas vinculados</h2>
+          <p class="small">
+            Problemas de campo o laboratorio asociados a este ensayo.
+          </p>
+
+          <table id="tablaProblemas">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Resumen</th>
+                <th>Fecha</th>
+                <th>Severidad</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <p class="small" id="msgProblemas"></p>
+        </div>
+
+        <!-- RESULTADOS -->
+        <div id="tab-resultados" class="tab-content">
+          <h2>Resultados y publicaciones</h2>
+          <div id="resultadosContenido" class="small">
+            <!-- Se llena con datos del ensayo (porcentaje avance, éxito, publicaciones) -->
+          </div>
+        </div>
+
+        <!-- TODOS LOS ARCHIVOS -->
+        <div id="tab-archivos" class="tab-content">
+          <h2>Todos los archivos del ensayo</h2>
+          <table id="tablaArchivos">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Archivo</th>
+                <th>Fecha</th>
+                <th>Subido por</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="supabase-config.js"></script>
+  <script src="auth-guard.js"></script>
+  <script>
+    const bucket = 'ensayos'; // nombre de tu bucket en Storage
+    let ensayoId = null;
+    let ensayo = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Info de usuario
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent =
+          '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+      }
+
+      // Obtener id de la URL
+      const params = new URLSearchParams(window.location.search);
+      ensayoId = params.get('id');
+      if (!ensayoId) {
+        alert('No se especificó un ID de ensayo');
+        window.location.href = 'ensayos.html';
+        return;
+      }
+      document.getElementById('idEnsayo').textContent = 'ID: ' + ensayoId;
+
+      await cargarEnsayo();
+      inicializarTabs();
+      inicializarFormularios();
+    });
+
+    async function cargarEnsayo() {
+      // Puedes optimizar esto con un DB.ensayos.obtenerPorId(ensayoId) si lo creas.
+      const { data: ensayos, error } = await DB.ensayos.listar();
+      if (error || !ensayos) {
+        alert('Error al cargar ensayo');
+        return;
+      }
+
+      ensayo = ensayos.find(e => e.id === ensayoId);
+      if (!ensayo) {
+        alert('Ensayo no encontrado');
+        window.location.href = 'ensayos.html';
+        return;
+      }
+
+      // Título
+      document.getElementById('tituloEnsayo').textContent =
+        ensayo.area + ' · ' + (ensayo.metrica_objetivo || 'Ensayo I+D');
+
+      // Meta
+      const meta = document.getElementById('metaEnsayo');
+      const estadoClase = {
+        'activo': 'status-activo',
+        'finalizado': 'status-finalizado',
+        'suspendido': 'status-suspendido',
+        'fallido': 'status-fallido'
+      }[ensayo.estado] || '';
+
+      meta.innerHTML = `
+        <div class="meta-item">
+          <span>Área</span>
+          ${ensayo.area || '-'}
+        </div>
+        <div class="meta-item">
+          <span>Prioridad</span>
+          ${ensayo.prioridad || '-'}
+        </div>
+        <div class="meta-item">
+          <span>Estado</span>
+          <span class="status-badge ${estadoClase}">
+            ${ensayo.estado || 'sin estado'}
+          </span>
+        </div>
+        <div class="meta-item">
+          <span>Reportado por</span>
+          ${ensayo.reportado_por || '-'}
+        </div>
+        <div class="meta-item">
+          <span>Responsable I+D</span>
+          ${ensayo.responsable_id || '-'}
+        </div>
+        <div class="meta-item">
+          <span>Validador campo</span>
+          ${ensayo.validador_campo || '-'}
+        </div>
+        <div class="meta-item">
+          <span>Fecha inicio</span>
+          ${ensayo.fecha_inicio || '-'}
+        </div>
+        <div class="meta-item">
+          <span>Fecha fin estimada</span>
+          ${ensayo.fecha_fin_estimado || '-'}
+        </div>
+        <div class="meta-item">
+          <span>Fecha final real</span>
+          ${ensayo.fecha_final_real || '-'}
+        </div>
+        <div class="meta-item">
+          <span>% avance</span>
+          ${(ensayo.porcentaje_avance || 0) + '%'}
+        </div>
+        <div class="meta-item">
+          <span>ROI estimado</span>
+          ${(ensayo.roi_estimado || 0) + '%'}
+        </div>
+      `;
+
+      // Resultados
+      const contResultados = document.getElementById('resultadosContenido');
+      const publicaciones = (ensayo.publicaciones || []).map(
+        p => `<span class="pill">${p}</span>`
+      ).join(' ') || 'Sin publicaciones registradas.';
+
+      contResultados.innerHTML = `
+        <p><strong>Éxito:</strong> ${ensayo.exito ? 'Sí' : 'No / en evaluación'}</p>
+        <p><strong>% de avance:</strong> ${(ensayo.porcentaje_avance || 0) + '%'}</p>
+        <p style="margin-top:8px;"><strong>Publicaciones / informes:</strong></p>
+        <div style="margin-top:4px;">${publicaciones}</div>
+      `;
+
+      await cargarArchivos();
+      await cargarProblemas();
+      await cargarProtocoloActual();
+    }
+
+    /* ---------- Tabs ---------- */
+
+    function inicializarTabs() {
+      const buttons = document.querySelectorAll('.tab-button');
+      const contents = document.querySelectorAll('.tab-content');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.getAttribute('data-tab');
+          buttons.forEach(b => b.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+
+          btn.classList.add('active');
+          document.getElementById('tab-' + tab).classList.add('active');
+        });
+      });
+    }
+
+    /* ---------- Formularios de subida ---------- */
+
+    function inicializarFormularios() {
+      const formProtocolo = document.getElementById('formProtocolo');
+      const formData = document.getElementById('formData');
+
+      formProtocolo.addEventListener('submit', async e => {
+        e.preventDefault();
+        const file = document.getElementById('fileProtocolo').files[0];
+        if (!file) return alert('Selecciona un archivo');
+
+        const path = `${ensayoId}/protocolo/${Date.now()}_${file.name}`;
+        const { data, error } = await supabase.storage.from(bucket).upload(path, file);
+        if (error) return alert('Error subiendo protocolo: ' + error.message);
+
+        await DB.ensayos_archivos.crear({
+          ensayo_id: ensayoId,
+          tipo: 'protocolo',
+          nombre: file.name,
+          path: data.path,
+          creado_por: window.SESION ? window.SESION.email : null
+        });
+
+        alert('Protocolo subido');
+        document.getElementById('fileProtocolo').value = '';
+        await cargarArchivos();
+        await cargarProtocoloActual();
+      });
+
+      formData.addEventListener('submit', async e => {
+        e.preventDefault();
+        const file = document.getElementById('fileData').files[0];
+        const tipo = document.getElementById('tipoData').value;
+        if (!file) return alert('Selecciona un archivo');
+
+        const path = `${ensayoId}/datos/${Date.now()}_${file.name}`;
+        const { data, error } = await supabase.storage.from(bucket).upload(path, file);
+        if (error) return alert('Error subiendo datos: ' + error.message);
+
+        await DB.ensayos_archivos.crear({
+          ensayo_id: ensayoId,
+          tipo,
+          nombre: file.name,
+          path: data.path,
+          creado_por: window.SESION ? window.SESION.email : null
+        });
+
+        alert('Base de datos subida');
+        document.getElementById('fileData').value = '';
+        await cargarArchivos();
+      });
+    }
+
+    /* ---------- Protocolo actual ---------- */
+
+    async function cargarProtocoloActual() {
+      const div = document.getElementById('protocoloActual');
+      const { data, error } = await DB.ensayos_archivos.listarPorEnsayo(ensayoId);
+      if (error || !data) {
+        div.textContent = 'No se pudo cargar la información de protocolos.';
+        return;
+      }
+
+      const protocolos = data.filter(a => a.tipo === 'protocolo');
+      if (!protocolos.length) {
+        div.textContent = 'Aún no se ha subido protocolo final.';
+        return;
+      }
+
+      // Último protocolo (por fecha)
+      protocolos.sort((a, b) => new Date(b.creado_el) - new Date(a.creado_el));
+      const p = protocolos[0];
+
+      const publicUrl = supabase.storage.from(bucket)
+        .getPublicUrl(p.path).data.publicUrl;
+
+      div.innerHTML = `
+        <p><strong>Protocolo actual:</strong> ${p.nombre}</p>
+        <p>Subido el: ${p.creado_el ? new Date(p.creado_el).toLocaleString('es-DO') : '-'}</p>
+        <p>
+          <a href="${publicUrl}" target="_blank">Ver / descargar protocolo</a>
+        </p>
+      `;
+    }
+
+    /* ---------- Archivos ---------- */
+
+    async function cargarArchivos() {
+      const { data, error } = await DB.ensayos_archivos.listarPorEnsayo(ensayoId);
+      if (error || !data) {
+        console.error(error);
+        return;
+      }
+
+      const tbodyDatos = document.querySelector('#tablaDatos tbody');
+      const tbodyArchivos = document.querySelector('#tablaArchivos tbody');
+      tbodyDatos.innerHTML = '';
+      tbodyArchivos.innerHTML = '';
+
+      data.forEach(a => {
+        const url = supabase.storage.from(bucket).getPublicUrl(a.path).data.publicUrl;
+        const fecha = a.creado_el ? new Date(a.creado_el).toLocaleString('es-DO') : '-';
+        const filaArchivos = `
+          <tr>
+            <td>${a.tipo}</td>
+            <td>${a.nombre}</td>
+            <td>${fecha}</td>
+            <td>${a.creado_por || '-'}</td>
+            <td>
+              <a href="${url}" target="_blank" class="btn btn-secondary" style="padding:4px 10px;font-size:0.75rem;">Ver</a>
+            </td>
+          </tr>
+        `;
+        tbodyArchivos.insertAdjacentHTML('beforeend', filaArchivos);
+
+        if (a.tipo === 'crudo' || a.tipo === 'limpio' || a.tipo === 'analisis') {
+          tbodyDatos.insertAdjacentHTML('beforeend', filaArchivos);
+        }
+      });
+    }
+
+    /* ---------- Problemas ---------- */
+
+    async function cargarProblemas() {
+      // Asume que DB.problemas.listar() devuelve todos y tienen campo ensayo_id
+      if (!DB.problemas || !DB.problemas.listar) {
+        document.getElementById('msgProblemas').textContent =
+          'El módulo de problemas aún no está conectado a este detalle.';
+        return;
+      }
+
+      const { data: problemas, error } = await DB.problemas.listar();
+      if (error || !problemas) {
+        document.getElementById('msgProblemas').textContent =
+          'Error al cargar problemas.';
+        return;
+      }
+
+      const relacionados = problemas.filter(p => p.ensayo_id === ensayoId);
+      const tbody = document.querySelector('#tablaProblemas tbody');
+      tbody.innerHTML = '';
+
+      if (!relacionados.length) {
+        document.getElementById('msgProblemas').textContent =
+          'No hay problemas vinculados a este ensayo.';
+        return;
+      }
+
+      document.getElementById('msgProblemas').textContent = '';
+
+      relacionados.forEach(p => {
+        const fecha = p.fecha || p.fecha_reporte || '';
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.titulo || p.descripcion_corta || ''}</td>
+            <td>${fecha}</td>
+            <td>${p.severidad || '-'}</td>
+            <td>${p.estado || '-'}</td>
+          </tr>
+        `);
+      });
+    }
+  </script>
+</body>
+</html>
