@@ -144,7 +144,12 @@
 
     .company-logo img { width: 100%; height: auto; display: block; }
 
-    .logo-caption { margin-top: 8px; font-size: 0.85rem; color: #777; text-align: center; }
+    .logo-caption {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: #777;
+      text-align: center;
+    }
 
     .btn-enter {
       margin-top: 12px;
@@ -164,9 +169,19 @@
     }
 
     .btn-enter span.icon { font-size: 1.1rem; }
-    .btn-enter:hover { background-color: #43a047; box-shadow: 0 6px 16px rgba(76, 175, 80, 0.45); transform: translateY(-1px); }
-    .btn-enter:active { transform: translateY(0); box-shadow: 0 3px 8px rgba(76, 175, 80, 0.35); }
-    .btn-enter:focus { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+    .btn-enter:hover {
+      background-color: #43a047;
+      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.45);
+      transform: translateY(-1px);
+    }
+    .btn-enter:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 8px rgba(76, 175, 80, 0.35);
+    }
+    .btn-enter:focus {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 2px;
+    }
 
     .btn-logout {
       padding: 10px 20px;
@@ -187,7 +202,12 @@
       text-align: center;
     }
 
-    .cta-helper { font-size: 0.85rem; color: #777; text-align: center; margin-top: -6px; }
+    .cta-helper {
+      font-size: 0.85rem;
+      color: #777;
+      text-align: center;
+      margin-top: -6px;
+    }
 
     @media (max-width: 960px) {
       .landing-wrapper { flex-direction: column; padding: 16px; }
@@ -209,14 +229,17 @@
       <div>
         <header class="philosophy-header">
           <h1>Donde la ciencia se encuentra con la sabiduría del campo</h1>
-          <p class="subtitle">Departamento de Investigación y Desarrollo – Plantaciones del Norte</p>
+          <p class="subtitle">
+            Departamento de Investigación y Desarrollo – Plantaciones del Norte
+          </p>
         </header>
 
         <div class="philosophy-body">
           <h2>Nuestra filosofía</h2>
           <p>
-            Creemos que las mejores soluciones nacen cuando combinamos el rigor científico con la experiencia práctica del campo.
-            Aquí cada voz importa, cada observación cuenta, y cada éxito se celebra en conjunto.
+            Creemos que las mejores soluciones nacen cuando combinamos el rigor científico
+            con la experiencia práctica del campo. Aquí cada voz importa, cada observación
+            cuenta, y cada éxito se celebra en conjunto.
           </p>
         </div>
 
@@ -247,9 +270,12 @@
 
     <aside class="logo-cta-section">
       <div class="company-logo">
-        <img src="https://shsussk.github.io/assets/logo.png" alt="Logo de Plantaciones del Norte">
+        <img src="https://shsussk.github.io/assets/logo.png"
+             alt="Logo de Plantaciones del Norte">
       </div>
-      <p class="logo-caption">Ecosistema de Investigación y Desarrollo · Plantaciones del Norte</p>
+      <p class="logo-caption">
+        Ecosistema de Investigación y Desarrollo · Plantaciones del Norte
+      </p>
 
       <!-- Info del usuario logueado -->
       <div id="userInfo" class="user-info"></div>
@@ -258,21 +284,27 @@
         <span class="icon">🚪</span>
         <span>Entrar al Ecosistema</span>
       </button>
-      <p class="cta-helper">Un solo clic para entrar al ecosistema interno del departamento.</p>
+      <p class="cta-helper">
+        Un solo clic para entrar al ecosistema interno del departamento.
+      </p>
 
       <!-- Botón cerrar sesión -->
       <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
     </aside>
   </div>
 
+  <!-- protección / sesión -->
   <script src="auth-guard.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (window.SESION) {
-        document.getElementById('userInfo').textContent = '👤 Bienvenido/a, ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        document.getElementById('userInfo').textContent =
+          '👤 Bienvenido/a, ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+      } else {
+        // si no hay sesión, redirige al login
+        window.location.href = 'login.html';
       }
     });
   </script>
 </body>
 </html>
-
