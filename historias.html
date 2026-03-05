@@ -2,423 +2,84 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Historias de Éxito · Plantaciones del Norte</title>
+  <title>Historias de Éxito · I+D</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
-    :root {
-      --color-primary: #4caf50;
-      --color-bg: #f8fafb;
-      --color-card: #ffffff;
-      --shadow: 0 8px 24px rgba(0,0,0,0.08);
-      --radius: 14px;
-      --tag-bg: #e3f2fd;
-      --tag-text: #0d47a1;
-    }
-
+    :root { --color-primary: #4caf50; --color-bg: #f8fafb; --color-card: #fff; --shadow: 0 8px 24px rgba(0,0,0,0.1); --radius: 14px; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
-
-    .page {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .header h1 { font-size: 2rem; color: var(--color-primary); }
-
-    .header-buttons {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      padding: 9px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    .header h1 { font-size: 1.9rem; color: #f9a825; }
+    .header-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn { background: var(--color-primary); color: #fff; border: none; padding: 9px 16px; border-radius: 999px; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
     .btn-secondary { background: #6c757d; }
     .btn-danger { background: #f44336; }
+    .btn-accent { background: #f9a825; }
     .btn:hover { opacity: 0.92; }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .filter-group label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: #555;
-    }
-
-    .filter-group input,
-    .filter-group select {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid #dde2eb;
-      font-size: 0.9rem;
-      min-width: 140px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
-    }
-
-    .card {
-      background: var(--color-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px 16px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      position: relative;
-      border-top: 4px solid #c8e6c9;
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: flex-start;
-    }
-
-    .card-title {
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .badge-home {
-      font-size: 0.75rem;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .card-meta {
-      font-size: 0.8rem;
-      color: #666;
-    }
-
-    .problem {
-      font-size: 0.85rem;
-      color: #b71c1c;
-    }
-
-    .solution {
-      font-size: 0.86rem;
-      color: #1b5e20;
-    }
-
-    .impact {
-      font-size: 0.82rem;
-      color: #444;
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .tag {
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      font-size: 0.75rem;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 6px;
-    }
-
-    .card-footer small { font-size: 0.78rem; color: #777; }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 1000;
-      padding: 20px;
-    }
-
-    .modal-content {
-      background: white;
-      max-width: 750px;
-      margin: 20px auto;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 24px 24px 20px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .modal-header h2 { font-size: 1.3rem; }
-
-    .close-btn {
-      background: transparent;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .form-group { margin-bottom: 14px; }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 9px;
-      border-radius: 8px;
-      border: 1px solid #dde2eb;
-      font-size: 0.9rem;
-    }
-
-    .form-group textarea { min-height: 70px; resize: vertical; }
-
-    .tags-input {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 5px;
-      border-radius: 8px;
-      border: 1px solid #dde2eb;
-      background: #fafbff;
-    }
-
-    .tags-input input {
-      border: none;
-      outline: none;
-      flex: 1;
-      min-width: 100px;
-      padding: 4px;
-      font-size: 0.9rem;
-      background: transparent;
-    }
-
-    .tag-pill {
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      font-size: 0.75rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .tag-pill button {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 0.8rem;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 700px) {
-      .form-row { grid-template-columns: 1fr; }
-      .header { flex-direction: column; align-items: flex-start; }
-    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+    .card { background: var(--color-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; }
+    .card h3 { font-size: 1.1rem; margin-bottom: 6px; color: var(--color-primary); }
+    .card p { font-size: 0.85rem; color: #666; margin-bottom: 4px; line-height: 1.5; }
+    .card-badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; background: #dcf4dc; color: #2e7d32; }
+    .card-actions { display: flex; gap: 6px; margin-top: 10px; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; padding: 20px; }
+    .modal-content { background: white; max-width: 600px; margin: 30px auto; border-radius: 16px; box-shadow: var(--shadow); padding: 22px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .close-btn { background: transparent; border: none; font-size: 1.4rem; cursor: pointer; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.9rem; font-weight: 500; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #dde2eb; font-size: 0.9rem; }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="container">
     <header class="header">
-      <h1>🌱 Historias de Éxito</h1>
+      <h1>🏆 Historias de Éxito</h1>
       <div class="header-buttons">
         <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
-        <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
         <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
-        <button class="btn" onclick="abrirModalHistoria()">+ Nueva historia</button>
+        <button onclick="abrirModal()" class="btn btn-accent">+ Nueva Historia</button>
         <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
-
-    <section class="filters">
-      <div class="filter-group">
-        <label>Buscar título</label>
-        <input type="text" id="filtroTitulo" oninput="renderHistorias()">
-      </div>
-      <div class="filter-group">
-        <label>Área</label>
-        <select id="filtroArea" onchange="renderHistorias()">
-          <option value="">Todas</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>Tag</label>
-        <input type="text" id="filtroTag" oninput="renderHistorias()">
-      </div>
-      <div class="filter-group">
-        <label>Visibles en home</label>
-        <select id="filtroHome" onchange="renderHistorias()">
-          <option value="">Todas</option>
-          <option value="si">Solo visibles</option>
-          <option value="no">Solo ocultas</option>
-        </select>
-      </div>
-    </section>
-
-    <section>
-      <div id="cardsHistorias" class="cards"></div>
-    </section>
+    <div class="grid" id="listaHistorias">
+      <p style="color:#aaa;">Cargando...</p>
+    </div>
   </div>
 
   <div class="modal" id="modalHistoria">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 id="modalTitulo">Nueva historia de éxito</h2>
-        <button class="close-btn" onclick="cerrarModalHistoria()">×</button>
+        <h2 id="modalTitulo">Nueva Historia de Éxito</h2>
+        <button class="close-btn" onclick="cerrarModal()">×</button>
       </div>
-
-      <form id="formHistoria">
-        <input type="hidden" id="historiaId">
-
+      <form id="formHistoria" name="formHistoria">
         <div class="form-group">
-          <label>Título *</label>
-          <input type="text" id="titulo" required>
+          <label for="h_titulo">Título *</label>
+          <input type="text" id="h_titulo" name="h_titulo" required>
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Área *</label>
-            <select id="area" required>
-              <option value="">Seleccionar área</option>
-              <option value="Manejo de plagas">Manejo de plagas</option>
-              <option value="Rendimiento de cultivo">Rendimiento de cultivo</option>
-              <option value="Tratamientos de suelo">Tratamientos de suelo</option>
-              <option value="Calidad de fruto">Calidad de fruto</option>
-              <option value="Postcosecha">Postcosecha</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Ensayo relacionado (ID opcional)</label>
-            <input type="text" id="ensayoRelacionado" placeholder="ensayo_123">
-          </div>
-        </div>
-
         <div class="form-group">
-          <label>Problema original *</label>
-          <textarea id="problemaOriginal" required placeholder="¿Qué problema había?"></textarea>
+          <label for="h_area">Área</label>
+          <input type="text" id="h_area" name="h_area">
         </div>
-
         <div class="form-group">
-          <label>Solución implementada *</label>
-          <textarea id="solucion" required placeholder="¿Qué se hizo para resolverlo?"></textarea>
+          <label for="h_descripcion">Descripción</label>
+          <textarea id="h_descripcion" name="h_descripcion"></textarea>
         </div>
-
         <div class="form-group">
-          <label>Testimonio / relato</label>
-          <textarea id="testimonio" placeholder="Resumen narrativo, comentarios de campo, etc."></textarea>
+          <label for="h_impacto">Impacto</label>
+          <textarea id="h_impacto" name="h_impacto"></textarea>
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Fecha de resolución</label>
-            <input type="date" id="fechaResolucion">
-          </div>
-          <div class="form-group">
-            <label>Visible en portada</label>
-            <select id="visibleHome">
-              <option value="false">No</option>
-              <option value="true">Sí</option>
-            </select>
-          </div>
+        <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="h_visible" name="h_visible">
+          <label for="h_visible" style="margin:0;">Visible en Dashboard</label>
         </div>
-
-        <div class="form-group">
-          <label>Equipo colaborador (nombres separados por coma)</label>
-          <input type="text" id="equipoColaborador" placeholder="Nombre 1, Nombre 2...">
-        </div>
-
-        <div class="form-group">
-          <label>Impacto cuantitativo (ej: % reducción incidencia, kg/ha, etc.)</label>
-          <textarea id="impactoCuantitativo" placeholder='Ejemplo: {"reduccion_inc":25, "aumento_rendimiento":1200}'></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Impacto cualitativo</label>
-          <textarea id="impactoCualitativo" placeholder="Percepción de productores, mejoras en procesos, etc."></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Tags (Enter para añadir)</label>
-          <div class="tags-input" id="tagsContainer">
-            <input type="text" id="tagsInput" placeholder="HLB, biocontrol, poscosecha...">
-          </div>
-        </div>
-
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="cerrarModalHistoria()">Cancelar</button>
-          <button type="button" class="btn btn-danger" id="btnEliminarHistoria" style="display:none" onclick="eliminarHistoria()">Eliminar</button>
-          <button type="submit" class="btn">Guardar historia</button>
+          <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn">Guardar</button>
         </div>
       </form>
     </div>
@@ -426,290 +87,94 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
+
   <script>
-    var historias = [];
-    var historiaEditandoId = null;
-    var tagsTemp = [];
+    var editandoId = null;
+    var historiasData = [];
 
-    async function loadHistorias() {
+    document.addEventListener('DOMContentLoaded', function() {
+      cargarHistorias();
+
+      document.getElementById('formHistoria').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var datos = {
+          titulo: document.getElementById('h_titulo').value.trim(),
+          area: document.getElementById('h_area').value.trim(),
+          descripcion: document.getElementById('h_descripcion').value.trim(),
+          impacto: document.getElementById('h_impacto').value.trim(),
+          visible_en_home: document.getElementById('h_visible').checked
+        };
+        var resultado;
+        if (editandoId) {
+          resultado = await DB.historias.actualizar(editandoId, datos);
+        } else {
+          datos.id = 'hist_' + Date.now();
+          resultado = await DB.historias.crear(datos);
+        }
+        if (resultado.error) { alert('Error: ' + resultado.error.message); }
+        else { cerrarModal(); cargarHistorias(); }
+      });
+    });
+
+    async function cargarHistorias() {
       var { data, error } = await DB.historias.listar();
-      if (error) {
-        alert('Error al cargar historias: ' + error.message);
-        historias = [];
-      } else {
-        historias = data || [];
-      }
+      if (error) { alert('Error: ' + error.message); return; }
+      historiasData = data || [];
+      renderizar();
     }
 
-    function initTagsInput() {
-      var tagsInput = document.getElementById('tagsInput');
-      tagsInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          var val = tagsInput.value.trim();
-          if (val && tagsTemp.indexOf(val) === -1) {
-            tagsTemp.push(val);
-            tagsInput.value = '';
-            renderTags();
-          }
-        }
-      });
-    }
-
-    function renderTags() {
-      var container = document.getElementById('tagsContainer');
-      var input = container.querySelector('input');
-      container.innerHTML = '';
-      tagsTemp.forEach(function(tag, idx) {
-        var pill = document.createElement('span');
-        pill.className = 'tag-pill';
-        pill.innerHTML = tag + '<button type="button" onclick="removeTag(' + idx + ')">×</button>';
-        container.appendChild(pill);
-      });
-      container.appendChild(input);
-    }
-
-    function removeTag(idx) {
-      tagsTemp.splice(idx, 1);
-      renderTags();
-    }
-
-    function actualizarFiltrosAreas() {
-      var areas = [];
-      historias.forEach(function(h) {
-        if (h.area && areas.indexOf(h.area) === -1) areas.push(h.area);
-      });
-      var sel = document.getElementById('filtroArea');
-      sel.innerHTML = '<option value=\"\">Todas</option>';
-      areas.forEach(function(a) {
-        var opt = document.createElement('option');
-        opt.value = a;
-        opt.textContent = a;
-        sel.appendChild(opt);
-      });
-    }
-
-    function renderHistorias() {
-      var cont = document.getElementById('cardsHistorias');
-      cont.innerHTML = '';
-
-      var fTitulo = document.getElementById('filtroTitulo').value.toLowerCase();
-      var fArea = document.getElementById('filtroArea').value;
-      var fTag = document.getElementById('filtroTag').value.toLowerCase();
-      var fHome = document.getElementById('filtroHome').value;
-
-      var lista = historias.filter(function(h) {
-        if (fTitulo && (!h.titulo || h.titulo.toLowerCase().indexOf(fTitulo) === -1)) return false;
-        if (fArea && h.area !== fArea) return false;
-        if (fTag) {
-          var tags = (h.tags || []).map(function(t) { return t.toLowerCase(); });
-          if (!tags.some(function(t) { return t.indexOf(fTag) !== -1; })) return false;
-        }
-        if (fHome === 'si' && !h.visible_en_home) return false;
-        if (fHome === 'no' && h.visible_en_home) return false;
-        return true;
-      });
-
-      if (lista.length === 0) {
-        cont.innerHTML = '<p>No hay historias que cumplan los filtros.</p>';
+    function renderizar() {
+      var container = document.getElementById('listaHistorias');
+      if (historiasData.length === 0) {
+        container.innerHTML = '<p style="color:#aaa;">No hay historias de éxito registradas.</p>';
         return;
       }
-
-      lista.forEach(function(h) {
-        var card = document.createElement('article');
-        card.className = 'card';
-
-        var header = document.createElement('div');
-        header.className = 'card-header';
-
-        var title = document.createElement('div');
-        title.className = 'card-title';
-        title.textContent = h.titulo;
-
-        var badge = document.createElement('span');
-        if (h.visible_en_home) {
-          badge.className = 'badge-home';
-          badge.textContent = 'Destacada en home';
-        }
-
-        header.appendChild(title);
-        if (h.visible_en_home) header.appendChild(badge);
-
-        var meta = document.createElement('div');
-        meta.className = 'card-meta';
-        var fechaTxt = h.fecha_resolucion ? new Date(h.fecha_resolucion).toLocaleDateString('es-DO') : 'Fecha no definida';
-        meta.textContent = (h.area || '') + ' · ' + fechaTxt;
-
-        var problem = document.createElement('div');
-        problem.className = 'problem';
-        problem.textContent = 'Problema: ' + (h.problema_original || '');
-
-        var solution = document.createElement('div');
-        solution.className = 'solution';
-        solution.textContent = 'Solución: ' + (h.solucion || '');
-
-        var impact = document.createElement('div');
-        impact.className = 'impact';
-        var impactoTxt = '';
-        if (h.impacto_cualitativo) impactoTxt += h.impacto_cualitativo;
-        if (h.impacto_cuantitativo) impactoTxt += (impactoTxt ? ' | ' : '') + JSON.stringify(h.impacto_cuantitativo);
-        impact.textContent = impactoTxt || 'Impacto pendiente de documentar.';
-
-        var tagsDiv = document.createElement('div');
-        tagsDiv.className = 'tags';
-        (h.tags || []).forEach(function(t) {
-          var tag = document.createElement('span');
-          tag.className = 'tag';
-          tag.textContent = t;
-          tagsDiv.appendChild(tag);
-        });
-
-        var footer = document.createElement('div');
-        footer.className = 'card-footer';
-        var small = document.createElement('small');
-        small.textContent = (h.equipo_colaborador || []).join(', ');
-        var btn = document.createElement('button');
-        btn.className = 'btn btn-secondary';
-        btn.style.padding = '6px 12px';
-        btn.style.fontSize = '0.8rem';
-        btn.textContent = 'Ver / Editar';
-        btn.onclick = function() { abrirModalHistoria(h.id); };
-
-        footer.appendChild(small);
-        footer.appendChild(btn);
-
-        card.appendChild(header);
-        card.appendChild(meta);
-        card.appendChild(problem);
-        card.appendChild(solution);
-        card.appendChild(impact);
-        card.appendChild(tagsDiv);
-        card.appendChild(footer);
-        cont.appendChild(card);
-      });
+      container.innerHTML = historiasData.map(function(h) {
+        var badge = h.visible_en_home ? '<span class="card-badge">⭐ Destacada</span>' : '';
+        return '<div class="card">' +
+          '<h3>🏆 ' + h.titulo + '</h3>' + badge +
+          '<p><strong>Área:</strong> ' + (h.area || '—') + '</p>' +
+          '<p>' + (h.descripcion || '') + '</p>' +
+          (h.impacto ? '<p><strong>Impacto:</strong> ' + h.impacto + '</p>' : '') +
+          '<div class="card-actions">' +
+          '<button onclick="editarHistoria(\'' + h.id + '\')" class="btn btn-secondary" style="padding:5px 10px;font-size:0.78rem;">Editar</button>' +
+          '<button onclick="eliminarHistoria(\'' + h.id + '\')" class="btn btn-danger" style="padding:5px 10px;font-size:0.78rem;">Eliminar</button>' +
+          '</div></div>';
+      }).join('');
     }
 
-    function abrirModalHistoria(id) {
-      historiaEditandoId = id || null;
-      tagsTemp = [];
-      var form = document.getElementById('formHistoria');
-      form.reset();
-      document.getElementById('btnEliminarHistoria').style.display = id ? 'inline-flex' : 'none';
-
-      if (id) {
-        document.getElementById('modalTitulo').textContent = 'Editar historia de éxito';
-        var h = historias.find(function(x) { return x.id === id; });
-        if (h) {
-          document.getElementById('historiaId').value = h.id;
-          document.getElementById('titulo').value = h.titulo || '';
-          document.getElementById('area').value = h.area || '';
-          document.getElementById('ensayoRelacionado').value = h.ensayo_relacionado || '';
-          document.getElementById('problemaOriginal').value = h.problema_original || '';
-          document.getElementById('solucion').value = h.solucion || '';
-          document.getElementById('testimonio').value = h.testimonio || '';
-          document.getElementById('fechaResolucion').value = h.fecha_resolucion || '';
-          document.getElementById('visibleHome').value = h.visible_en_home ? 'true' : 'false';
-          document.getElementById('equipoColaborador').value = (h.equipo_colaborador || []).join(', ');
-          document.getElementById('impactoCualitativo').value = h.impacto_cualitativo || '';
-          document.getElementById('impactoCuantitativo').value = h.impacto_cuantitativo ? JSON.stringify(h.impacto_cuantitativo) : '';
-          tagsTemp = (h.tags || []).slice();
-          renderTags();
-        }
-      } else {
-        document.getElementById('modalTitulo').textContent = 'Nueva historia de éxito';
-        renderTags();
-      }
-
+    function abrirModal() {
+      editandoId = null;
+      document.getElementById('modalTitulo').textContent = 'Nueva Historia de Éxito';
+      document.getElementById('formHistoria').reset();
       document.getElementById('modalHistoria').style.display = 'block';
     }
 
-    function cerrarModalHistoria() {
-      document.getElementById('modalHistoria').style.display = 'none';
-      historiaEditandoId = null;
+    function editarHistoria(id) {
+      var h = historiasData.find(function(x) { return x.id === id; });
+      if (!h) return;
+      editandoId = id;
+      document.getElementById('modalTitulo').textContent = 'Editar Historia';
+      document.getElementById('h_titulo').value = h.titulo || '';
+      document.getElementById('h_area').value = h.area || '';
+      document.getElementById('h_descripcion').value = h.descripcion || '';
+      document.getElementById('h_impacto').value = h.impacto || '';
+      document.getElementById('h_visible').checked = !!h.visible_en_home;
+      document.getElementById('modalHistoria').style.display = 'block';
     }
 
-    document.getElementById('formHistoria').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      var titulo = document.getElementById('titulo').value.trim();
-      var area = document.getElementById('area').value;
-      var problema = document.getElementById('problemaOriginal').value.trim();
-      var solucion = document.getElementById('solucion').value.trim();
-
-      if (!titulo || !area || !problema || !solucion) {
-        alert('Completa los campos obligatorios.');
-        return;
-      }
-
-      var impactoCuant;
-      var txtImpactoCuant = document.getElementById('impactoCuantitativo').value.trim();
-      if (txtImpactoCuant) {
-        try {
-          impactoCuant = JSON.parse(txtImpactoCuant);
-        } catch (e) {
-          alert('Impacto cuantitativo debe ser un JSON válido (ejemplo en el placeholder).');
-          return;
-        }
-      }
-
-      var historia = {
-        id: historiaEditandoId || ('hist_' + Date.now()),
-        titulo: titulo,
-        area: area,
-        ensayo_relacionado: document.getElementById('ensayoRelacionado').value.trim(),
-        problema_original: problema,
-        solucion: solucion,
-        testimonio: document.getElementById('testimonio').value.trim(),
-        fecha_resolucion: document.getElementById('fechaResolucion').value || null,
-        equipo_colaborador: document.getElementById('equipoColaborador').value
-          .split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; }),
-        impacto_cuantitativo: impactoCuant || null,
-        impacto_cualitativo: document.getElementById('impactoCualitativo').value.trim(),
-        tags: tagsTemp.slice(),
-        visible_en_home: document.getElementById('visibleHome').value === 'true'
-      };
-
-      var result;
-      if (historiaEditandoId) {
-        result = await DB.historias.actualizar(historiaEditandoId, historia);
-      } else {
-        result = await DB.historias.crear(historia);
-      }
-
-      if (result.error) {
-        alert('Error: ' + result.error.message);
-      } else {
-        await loadHistorias();
-        actualizarFiltrosAreas();
-        renderHistorias();
-        cerrarModalHistoria();
-      }
-    });
-
-    async function eliminarHistoria() {
-      if (!historiaEditandoId) return;
+    async function eliminarHistoria(id) {
       if (!confirm('¿Eliminar esta historia?')) return;
-      var { error } = await DB.historias.eliminar(historiaEditandoId);
-      if (error) {
-        alert('Error: ' + error.message);
-        return;
-      }
-      await loadHistorias();
-      actualizarFiltrosAreas();
-      renderHistorias();
-      cerrarModalHistoria();
+      var { error } = await DB.historias.eliminar(id);
+      if (error) { alert('Error: ' + error.message); } else { cargarHistorias(); }
     }
 
-    window.addEventListener('click', function(e) {
-      var modal = document.getElementById('modalHistoria');
-      if (e.target === modal) cerrarModalHistoria();
-    });
+    function cerrarModal() {
+      document.getElementById('modalHistoria').style.display = 'none';
+      editandoId = null;
+    }
 
-    document.addEventListener('DOMContentLoaded', async function() {
-      await loadHistorias();
-      initTagsInput();
-      actualizarFiltrosAreas();
-      renderHistorias();
-    });
+    window.onclick = function(e) { if (e.target === document.getElementById('modalHistoria')) cerrarModal(); };
   </script>
 
   <script src="auth-guard.js"></script>
@@ -717,12 +182,8 @@
     document.addEventListener('DOMContentLoaded', function() {
       if (window.SESION) {
         document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
-        if (window.esAdmin()) {
-          document.getElementById('btnAdmin').style.display = 'inline-flex';
-        }
       }
     });
   </script>
 </body>
 </html>
-
