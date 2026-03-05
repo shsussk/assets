@@ -319,7 +319,9 @@
     </div>
   </div>
 
+  <!-- Supabase config -->
   <script src="supabase-config.js"></script>
+
   <script>
     var tabla;
     var usuarios = [];
@@ -369,7 +371,8 @@
                 pendiente: 'badge badge-estado-pendiente',
                 bloqueado: 'badge badge-estado-bloqueado'
               };
-              return '<span class="' + (clases[data] || 'badge') + '">' + data + '</span>';
+              var text = data || 'pendiente';
+              return '<span class="' + (clases[data] || 'badge') + '">' + text + '</span>';
             }
           },
           { 
@@ -384,21 +387,24 @@
             render: function(data, type, row) {
               var botones = '';
               if (row.estado === 'pendiente') {
-                botones += '<button class="btn btn-small" onclick="cambiarEstado(\'' + row.id + '\', \'aprobado\')">Aprobar</button> ';
+                botones += '<button class="btn btn-small" onclick="cambiarEstado(\\'' + row.id + '\\', \\'aprobado\\')">Aprobar</button> ';
               }
               if (row.estado !== 'bloqueado') {
-                botones += '<button class="btn btn-secondary btn-small" onclick="cambiarEstado(\'' + row.id + '\', \'bloqueado\')">Bloquear</button> ';
+                botones += '<button class="btn btn-secondary btn-small" onclick="cambiarEstado(\\'' + row.id + '\\', \\'bloqueado\\')">Bloquear</button> ';
               } else {
-                botones += '<button class="btn btn-secondary btn-small" onclick="cambiarEstado(\'' + row.id + '\', \'aprobado\')">Desbloquear</button> ';
+                botones += '<button class="btn btn-secondary btn-small" onclick="cambiarEstado(\\'' + row.id + '\\', \\'aprobado\\')">Desbloquear</button> ';
               }
-              botones += '<button class="btn btn-secondary btn-small" onclick="abrirModal(\'' + row.id + '\')">Editar</button>';
+              botones += '<button class="btn btn-secondary btn-small" onclick="abrirModal(\\'' + row.id + '\\')">Editar</button>';
               return botones;
             }
           }
         ],
         pageLength: 25,
         language: {
- }
+          url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+        }
+      });
+    }
 
     function actualizarResumen() {
       var total = usuarios.length;
@@ -420,7 +426,6 @@
       var est = document.getElementById('filtroEstado').value;
 
       tabla.search(txt).draw();
-
       tabla.column(2).search(rol).draw();
       tabla.column(3).search(est).draw();
     }
