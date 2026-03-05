@@ -4,565 +4,307 @@
   <meta charset="UTF-8">
   <title>Dashboard I+D · Plantaciones del Norte</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Supabase y Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
     :root {
       --color-primary: #4caf50;
+      --color-primary-light: #dcf4dc;
+      --color-accent: #f9a825;
+      --color-success: #4caf50;
+      --color-warning: #ff9800;
+      --color-danger: #f44336;
+      --color-info: #2196f3;
       --color-bg: #f8fafb;
       --color-card: #ffffff;
-      --shadow: 0 10px 30px rgba(15,23,42,0.1);
-      --radius: 16px;
+      --shadow: 0 8px 24px rgba(0,0,0,0.1);
+      --radius: 14px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #111827; }
-
-    .page {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
     }
-
-    .header h1 {
-      font-size: 2rem;
-      color: var(--color-primary);
-    }
-
-    .header-subtitle {
-      font-size: 0.9rem;
-      color: #6b7280;
-      margin-top: 4px;
-    }
-
-    .header-buttons {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .header h1 { font-size: 1.9rem; color: var(--color-primary); }
+    .header-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .btn {
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      padding: 9px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
+      background: var(--color-primary); color: #fff; border: none; padding: 9px 16px;
+      border-radius: 999px; cursor: pointer; font-size: 0.9rem; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
       transition: all 0.2s;
     }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+    .btn:hover { opacity: 0.92; }
 
-    .btn-secondary { background: #6b7280; }
-    .btn-danger { background: #ef4444; }
-    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
-
-    .layout {
+    /* KPIs */
+    .kpi-grid {
       display: grid;
-      grid-template-columns: 2.2fr 1.2fr;
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
     }
-
-    .kpis {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .kpi {
+    .kpi-card {
       background: var(--color-card);
       border-radius: var(--radius);
+      padding: 20px;
       box-shadow: var(--shadow);
-      padding: 14px 14px 12px;
-      position: relative;
-      overflow: hidden;
+      text-align: center;
     }
+    .kpi-card .kpi-icon { font-size: 2rem; margin-bottom: 8px; }
+    .kpi-card .kpi-value { font-size: 2.2rem; font-weight: 800; color: var(--color-primary); }
+    .kpi-card .kpi-label { font-size: 0.85rem; color: #666; margin-top: 4px; }
 
-    .kpi-title {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: #6b7280;
-      letter-spacing: 0.04em;
-      margin-bottom: 4px;
-    }
-
-    .kpi-value {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #111827;
-    }
-
-    .kpi-detail {
-      font-size: 0.8rem;
-      color: #6b7280;
-      margin-top: 2px;
-    }
-
-    .kpi-icon {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      font-size: 1.4rem;
-      opacity: 0.2;
-    }
-
+    /* Grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 24px; }
     .card {
       background: var(--color-card);
       border-radius: var(--radius);
+      padding: 20px;
       box-shadow: var(--shadow);
-      padding: 16px 16px 14px;
-      margin-bottom: 16px;
     }
+    .card h3 { font-size: 1.1rem; margin-bottom: 12px; color: #333; }
 
-    .card h2 {
-      font-size: 1rem;
-      margin-bottom: 10px;
-      color: #111827;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .card h2 span {
-      font-size: 1.1rem;
-    }
-
-    canvas {
-      width: 100%;
-      max-height: 240px;
-    }
-
-    .list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 4px;
-      font-size: 0.85rem;
-    }
-
+    /* Lista items */
     .list-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+      display: block;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      text-decoration: none;
+      color: #333;
+      transition: background 0.15s;
     }
+    .list-item:hover { background: #f8fafc; }
+    .list-item h4 { font-size: 0.95rem; margin-bottom: 2px; }
+    .list-item p { font-size: 0.8rem; color: #888; }
 
-    .list-label {
-      color: #374151;
-    }
-
-    .list-value {
-      font-weight: 600;
-      color: #111827;
-    }
-
-    .badge {
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
+    .ver-mas {
       display: inline-block;
-    }
-
-    .badge-green { background: #dcfce7; color: #166534; }
-    .badge-yellow { background: #fef9c3; color: #854d0e; }
-    .badge-red { background: #fee2e2; color: #b91c1c; }
-    .badge-blue { background: #e0f2fe; color: #1d4ed8; }
-
-    .small {
-      font-size: 0.78rem;
-      color: #6b7280;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-size: 0.75rem;
-      gap: 4px;
-    }
-
-    .section-title {
-      font-size: 0.9rem;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: var(--color-primary);
+      text-decoration: none;
       font-weight: 600;
-      margin-bottom: 6px;
     }
+    .ver-mas:hover { text-decoration: underline; }
 
-    @media (max-width: 1024px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
+    .status-badge {
+      padding: 3px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 600;
     }
+    .status-activo { background: #dcf4dc; color: #2e7d32; }
+    .status-finalizado { background: #e3f2fd; color: #1565c0; }
+    .status-suspendido { background: #fff3cd; color: #ff8f00; }
+    .status-abierto { background: #f8d7da; color: #c62828; }
+    .status-en_proceso { background: #fff3cd; color: #ff8f00; }
+    .status-resuelto { background: #dcf4dc; color: #2e7d32; }
 
-    @media (max-width: 640px) {
-      .kpis {
-        grid-template-columns: repeat(2, minmax(0,1fr));
-      }
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    canvas { max-height: 280px; }
+
+    @media (max-width: 900px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="container">
     <header class="header">
-      <div>
-        <h1>📊 Dashboard I+D</h1>
-        <p class="header-subtitle">Estado general de ensayos, problemas y red de colaboradores</p>
-      </div>
+      <h1>📊 Dashboard I+D</h1>
       <div class="header-buttons">
-        <span id="userInfo" style="font-size:0.85rem;color:#6b7280;"></span>
-        <a href="ensayos.html" class="btn">🧪 Ensayos</a>
-        <a href="problemas.html" class="btn">⚠️ Problemas</a>
-        <a href="colaboradores.html" class="btn">🤝 Colaboradores</a>
-        <a href="historias.html" class="btn">🌱 Historias</a>
-        <a href="analytics.html" class="btn btn-secondary">📈 Analítica</a>
+        <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
         <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
+        <a href="index.html" class="btn btn-secondary">← Inicio</a>
         <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
 
-    <main class="layout">
-      <section>
-        <div class="kpis">
-          <article class="kpi">
-            <div class="kpi-title">Ensayos activos</div>
-            <div class="kpi-value" id="kpiEnsayosActivos">0</div>
-            <div class="kpi-detail" id="kpiEnsayosDetalle">0 totales</div>
-            <div class="kpi-icon">🧪</div>
-          </article>
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon">🧪</div>
+        <div class="kpi-value" id="totalEnsayos">0</div>
+        <div class="kpi-label">Total Ensayos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🔬</div>
+        <div class="kpi-value" id="ensayosActivos">0</div>
+        <div class="kpi-label">Ensayos Activos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-value" id="totalProblemasAbiertos">0</div>
+        <div class="kpi-label">Problemas Abiertos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🏆</div>
+        <div class="kpi-value" id="totalHistorias">0</div>
+        <div class="kpi-label">Historias de Éxito</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-value" id="totalColaboradores">0</div>
+        <div class="kpi-label">Colaboradores</div>
+      </div>
+    </div>
 
-          <article class="kpi">
-            <div class="kpi-title">Problemas abiertos</div>
-            <div class="kpi-value" id="kpiProblemasAbiertos">0</div>
-            <div class="kpi-detail" id="kpiProblemasDetalle">0 hoy</div>
-            <div class="kpi-icon">⚠️</div>
-          </article>
+    <!-- Gráficos -->
+    <div class="grid-2">
+      <div class="card">
+        <h3>📈 Ensayos por Estado</h3>
+        <canvas id="chartEnsayosEstado"></canvas>
+      </div>
+      <div class="card">
+        <h3>📊 Problemas por Estado</h3>
+        <canvas id="chartProblemasEstado"></canvas>
+      </div>
+    </div>
 
-          <article class="kpi">
-            <div class="kpi-title">Historias de éxito</div>
-            <div class="kpi-value" id="kpiHistorias">0</div>
-            <div class="kpi-detail" id="kpiHistoriasDetalle">0 destacadas</div>
-            <div class="kpi-icon">🌱</div>
-          </article>
-        </div>
+    <!-- Navegación rápida -->
+    <div class="kpi-grid" style="margin-bottom:24px;">
+      <a href="ensayos.html" class="btn" style="justify-content:center;padding:14px;">🧪 Ensayos</a>
+      <a href="problemas.html" class="btn" style="justify-content:center;padding:14px;">⚠️ Problemas</a>
+      <a href="colaboradores.html" class="btn" style="justify-content:center;padding:14px;">👥 Colaboradores</a>
+      <a href="historias.html" class="btn" style="justify-content:center;padding:14px;">🏆 Historias</a>
+      <a href="analytics.html" class="btn" style="justify-content:center;padding:14px;">📈 Analíticas</a>
+    </div>
 
-        <article class="card">
-          <h2><span>📈</span> Ensayos por estado</h2>
-          <canvas id="chartEnsayosEstado"></canvas>
-        </article>
-
-        <article class="card">
-          <h2><span>🧪</span> Ensayos por área</h2>
-          <canvas id="chartEnsayosArea"></canvas>
-        </article>
-
-        <article class="card">
-          <h2><span>⚠️</span> Problemas por estado</h2>
-          <canvas id="chartProblemasEstado"></canvas>
-        </article>
-      </section>
-
-      <aside>
-        <article class="card">
-          <h2><span>🧭</span> Panorama rápido</h2>
-          <ul class="list" id="listaPanorama"></ul>
-        </article>
-
-        <article class="card">
-          <h2><span>👥</span> Colaboradores destacados</h2>
-          <ul class="list" id="listaColaboradores"></ul>
-        </article>
-
-        <article class="card">
-          <h2><span>🌟</span> Últimas historias de éxito</h2>
-          <ul class="list" id="listaHistorias"></ul>
-        </article>
-
-        <article class="card">
-          <h2><span>🧑‍💻</span> Actividad de usuarios</h2>
-          <ul class="list" id="listaUsuarios"></ul>
-        </article>
-      </aside>
-    </main>
+    <!-- Listas recientes -->
+    <div class="grid-3">
+      <div class="card">
+        <h3>🧪 Ensayos Recientes</h3>
+        <div id="ensayosRecientes"></div>
+        <a href="ensayos.html" class="ver-mas">Ver todos →</a>
+      </div>
+      <div class="card">
+        <h3>⚠️ Problemas Abiertos</h3>
+        <div id="problemasRecientes"></div>
+        <a href="problemas.html" class="ver-mas">Ver todos →</a>
+      </div>
+      <div class="card">
+        <h3>🏆 Historias Destacadas</h3>
+        <div id="historiasDestacadas"></div>
+        <a href="historias.html" class="ver-mas">Ver todas →</a>
+      </div>
+    </div>
   </div>
 
-  <!-- Supabase config (usa la librería ya cargada arriba) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
-  <!-- Auth / sesión -->
-  <script src="auth-guard.js"></script>
-
   <script>
-    var charts = {};
+    var ensayos = [];
+    var problemas = [];
+    var historias = [];
+    var colaboradores = [];
 
-    document.addEventListener('DOMContentLoaded', function() {
-      if (window.SESION) {
-        document.getElementById('userInfo').textContent =
-          '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
-        if (window.esAdmin && window.esAdmin()) {
-          document.getElementById('btnAdmin').style.display = 'inline-flex';
-        }
-      }
-
-      cargarDashboard();
-    });
-
-    async function cargarDashboard() {
-      var [ensayosRes, problemasRes, colabsRes, historiasRes, usuariosRes] = await Promise.all([
+    async function cargarDatos() {
+      var [e, p, h, c] = await Promise.all([
         DB.ensayos.listar(),
         DB.problemas.listar(),
-        DB.colaboradores.listar(),
         DB.historias.listar(),
-        DB.usuarios.listar()
+        DB.colaboradores.listar()
       ]);
 
-      var ensayos = ensayosRes.data || [];
-      var problemas = problemasRes.data || [];
-      var colaboradores = colabsRes.data || [];
-      var historias = historiasRes.data || [];
-      var usuarios = usuariosRes.data || [];
+      ensayos = e.data || [];
+      problemas = p.data || [];
+      historias = h.data || [];
+      colaboradores = c.data || [];
 
-      actualizarKPIs(ensayos, problemas, historias);
-      actualizarPanorama(ensayos, problemas, historias);
-      actualizarColaboradores(colaboradores);
-      actualizarHistorias(historias);
-      actualizarUsuarios(usuarios);
-      actualizarGraficos(ensayos, problemas);
+      actualizarKPIs();
+      actualizarEnsayosRecientes();
+      actualizarProblemasRecientes();
+      actualizarHistoriasDestacadas();
+      crearGraficos();
     }
 
-    function actualizarKPIs(ensayos, problemas, historias) {
-      var activos = ensayos.filter(function(e) { return e.estado === 'activo'; }).length;
-      var totales = ensayos.length;
-      var finalizados = ensayos.filter(function(e) { return e.estado === 'finalizado'; }).length;
-
-      var abiertos = problemas.filter(function(p) { return p.estado === 'abierto' || p.estado === 'en proceso'; }).length;
-      var hoyStr = new Date().toISOString().slice(0,10);
-      var hoy = problemas.filter(function(p) { return p.fecha === hoyStr; }).length;
-
-      var numHistorias = historias.length;
-      var destacadas = historias.filter(function(h) { return h.visible_en_home; }).length;
-
-      document.getElementById('kpiEnsayosActivos').textContent = activos;
-      document.getElementById('kpiEnsayosDetalle').textContent =
-        totales + ' ensayos (' + finalizados + ' finalizados)';
-
-      document.getElementById('kpiProblemasAbiertos').textContent = abiertos;
-      document.getElementById('kpiProblemasDetalle').textContent =
-        hoy + ' reportados hoy';
-
-      document.getElementById('kpiHistorias').textContent = numHistorias;
-      document.getElementById('kpiHistoriasDetalle').textContent =
-        destacadas + ' destacadas';
+    function actualizarKPIs() {
+      document.getElementById('totalEnsayos').textContent = ensayos.length;
+      document.getElementById('ensayosActivos').textContent =
+        ensayos.filter(function(e) { return e.estado === 'activo'; }).length;
+      document.getElementById('totalProblemasAbiertos').textContent =
+        problemas.filter(function(p) { return p.estado === 'abierto'; }).length;
+      document.getElementById('totalHistorias').textContent = historias.length;
+      document.getElementById('totalColaboradores').textContent = colaboradores.length;
     }
 
-    function actualizarPanorama(ensayos, problemas, historias) {
-      var lista = document.getElementById('listaPanorama');
-      lista.innerHTML = '';
+    function actualizarEnsayosRecientes() {
+      var container = document.getElementById('ensayosRecientes');
+      container.innerHTML = '';
+      var recientes = ensayos.slice(0, 5);
+      if (recientes.length === 0) {
+        container.innerHTML = '<p style="color:#aaa;padding:10px;">No hay ensayos aún.</p>';
+        return;
+      }
+      recientes.forEach(function(e) {
+        var a = document.createElement('a');
+        a.href = 'ensayo-detalle.html?id=' + e.id;
+        a.className = 'list-item';
+        a.innerHTML = '<h4>' + (e.area || 'Sin área') + '</h4>' +
+          '<p>' + (e.responsable_id || '') + ' · <span class="status-badge status-' + e.estado + '">' + e.estado + '</span></p>';
+        container.appendChild(a);
+      });
+    }
 
-      var porEstado = { activo:0, finalizado:0, suspendido:0, fallido:0 };
+    function actualizarProblemasRecientes() {
+      var container = document.getElementById('problemasRecientes');
+      container.innerHTML = '';
+      var abiertos = problemas.filter(function(p) { return p.estado === 'abierto'; }).slice(0, 5);
+      if (abiertos.length === 0) {
+        container.innerHTML = '<p style="color:#aaa;padding:10px;">No hay problemas abiertos.</p>';
+        return;
+      }
+      abiertos.forEach(function(p) {
+        var div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = '<h4>' + (p.area || 'Sin área') + '</h4>' +
+          '<p>' + (p.descripcion || '').substring(0, 80) + '...</p>';
+        container.appendChild(div);
+      });
+    }
+
+    function actualizarHistoriasDestacadas() {
+      var container = document.getElementById('historiasDestacadas');
+      container.innerHTML = '';
+      var destacadas = historias.filter(function(h) { return h.visible_en_home; }).slice(0, 3);
+      if (destacadas.length === 0) {
+        destacadas = historias.slice(0, 3);
+      }
+      if (destacadas.length === 0) {
+        container.innerHTML = '<p style="color:#aaa;padding:10px;">No hay historias aún.</p>';
+        return;
+      }
+      destacadas.forEach(function(h) {
+        var div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = '<h4>' + (h.titulo || 'Sin título') + '</h4><p>' + (h.area || '') + '</p>';
+        container.appendChild(div);
+      });
+    }
+
+    function crearGraficos() {
+      // Ensayos por estado
+      var estadosE = {};
       ensayos.forEach(function(e) {
-        if (porEstado[e.estado] === undefined) porEstado[e.estado] = 0;
-        porEstado[e.estado]++;
+        estadosE[e.estado] = (estadosE[e.estado] || 0) + 1;
       });
-
-      var abiertos = problemas.filter(function(p) { return p.estado === 'abierto'; }).length;
-      var enProceso = problemas.filter(function(p) { return p.estado === 'en proceso'; }).length;
-      var resueltos = problemas.filter(function(p) { return p.estado === 'resuelto'; }).length;
-
-      var item1 = document.createElement('li');
-      item1.className = 'list-item';
-      item1.innerHTML =
-        '<span class="list-label">Ensayos activos / finalizados</span>' +
-        '<span class="list-value">' + porEstado.activo + ' / ' + porEstado.finalizado + '</span>';
-      lista.appendChild(item1);
-
-      var item2 = document.createElement('li');
-      item2.className = 'list-item';
-      item2.innerHTML =
-        '<span class="list-label">Problemas (abiertos / en proceso / resueltos)</span>' +
-        '<span class="list-value">' + abiertos + ' / ' + enProceso + ' / ' + resueltos + '</span>';
-      lista.appendChild(item2);
-
-      var ult = historias.slice().sort(function(a,b){
-        return (b.fecha_resolucion || '').localeCompare(a.fecha_resolucion || '');
-      })[0];
-      var item3 = document.createElement('li');
-      item3.className = 'list-item';
-      item3.innerHTML =
-        '<span class="list-label">Última historia de éxito</span>' +
-        '<span class="list-value small">' + (ult ? ult.titulo : 'Pendiente de documentar') + '</span>';
-      lista.appendChild(item3);
-    }
-
-    function actualizarColaboradores(colaboradores) {
-      var lista = document.getElementById('listaColaboradores');
-      lista.innerHTML = '';
-
-      if (!colaboradores.length) {
-        lista.innerHTML = '<li class="small">Sin colaboradores registrados todavía.</li>';
-        return;
-      }
-
-      var ordenados = colaboradores.slice().sort(function(a,b){
-        return (b.aportes || 0) - (a.aportes || 0);
-      }).slice(0,5);
-
-      ordenados.forEach(function(c) {
-        var li = document.createElement('li');
-        li.className = 'list-item';
-        li.innerHTML =
-          '<div>' +
-            '<div class="list-label">' + c.nombre + '</div>' +
-            '<div class="small">' + (c.especialidad_principal || c.cargo || '') + '</div>' +
-          '</div>' +
-          '<div style="text-align:right;">' +
-            '<div class="pill">🧩 ' + (c.aportes || 0) + ' aportes</div>' +
-            '<div class="small">✅ ' + (c.ensayos_exitosos || 0) + ' éxitos</div>' +
-          '</div>';
-        lista.appendChild(li);
-      });
-    }
-
-    function actualizarHistorias(historias) {
-      var lista = document.getElementById('listaHistorias');
-      lista.innerHTML = '';
-
-      if (!historias.length) {
-        lista.innerHTML = '<li class="small">Aún no hay historias registradas.</li>';
-        return;
-      }
-
-      var ordenadas = historias.slice().sort(function(a,b){
-        return (b.fecha_resolucion || '').localeCompare(a.fecha_resolucion || '');
-      }).slice(0,5);
-
-      ordenadas.forEach(function(h) {
-        var li = document.createElement('li');
-        li.className = 'list-item';
-        var fecha = h.fecha_resolucion ? new Date(h.fecha_resolucion).toLocaleDateString('es-DO') : 'Sin fecha';
-        li.innerHTML =
-          '<div>' +
-            '<div class="list-label">' + h.titulo + '</div>' +
-            '<div class="small">' + (h.area || '') + ' · ' + fecha + '</div>' +
-          '</div>' +
-          '<span class="badge ' + (h.visible_en_home ? 'badge-green' : 'badge-blue') + '">' +
-            (h.visible_en_home ? 'Destacada' : 'Registrada') +
-          '</span>';
-        lista.appendChild(li);
-      });
-    }
-
-    function actualizarUsuarios(usuarios) {
-      var lista = document.getElementById('listaUsuarios');
-      lista.innerHTML = '';
-
-      if (!usuarios.length) {
-        lista.innerHTML = '<li class="small">No hay usuarios registrados.</li>';
-        return;
-      }
-
-      var ordenados = usuarios.slice().sort(function(a,b){
-        return (b.fecha_registro || '').localeCompare(a.fecha_registro || '');
-      }).slice(0,5);
-
-      ordenados.forEach(function(u) {
-        var li = document.createElement('li');
-        li.className = 'list-item';
-        var fecha = u.fecha_registro ? new Date(u.fecha_registro).toLocaleDateString('es-DO') : '';
-        var rolBadge = 'badge-blue';
-        if (u.rol === 'admin') rolBadge = 'badge-red';
-        else if (u.rol === 'editor') rolBadge = 'badge-green';
-        else if (u.rol === 'lector') rolBadge = 'badge-yellow';
-
-        li.innerHTML =
-          '<div>' +
-            '<div class="list-label">' + u.nombre + '</div>' +
-            '<div class="small">' + u.email + ' · ' + fecha + '</div>' +
-          '</div>' +
-          '<span class="badge ' + rolBadge + '">' + (u.rol || 'pendiente') + '</span>';
-        lista.appendChild(li);
-      });
-    }
-
-    function actualizarGraficos(ensayos, problemas) {
-      var ctx1 = document.getElementById('chartEnsayosEstado').getContext('2d');
-      var ctx2 = document.getElementById('chartEnsayosArea').getContext('2d');
-      var ctx3 = document.getElementById('chartProblemasEstado').getContext('2d');
-
-      Object.values(charts).forEach(function(ch){ ch.destroy(); });
-
-      var estados = {};
-      ensayos.forEach(function(e){
-        var est = e.estado || 'sin estado';
-        estados[est] = (estados[est] || 0) + 1;
-      });
-
-      charts.estado = new Chart(ctx1, {
+      new Chart(document.getElementById('chartEnsayosEstado'), {
         type: 'doughnut',
         data: {
-          labels: Object.keys(estados),
+          labels: Object.keys(estadosE),
           datasets: [{
-            data: Object.values(estados),
-            backgroundColor: ['#4caf50','#2196f3','#ff9800','#f44336','#9ca3af']
+            data: Object.values(estadosE),
+            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336']
           }]
         },
-        options: { plugins:{ legend:{ position:'bottom' } } }
+        options: { plugins: { legend: { position: 'bottom' } } }
       });
 
-      var areas = {};
-      ensayos.forEach(function(e){
-        var a = e.area || 'Otro';
-        areas[a] = (areas[a] || 0) + 1;
-      });
-
-      charts.area = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-          labels: Object.keys(areas),
-          datasets: [{
-            label: 'Ensayos',
-            data: Object.values(areas),
-            backgroundColor: '#4caf50'
-          }]
-        },
-        options: {
-          scales: { y: { beginAtZero: true } },
-          plugins: { legend: { display:false } }
-        }
-      });
-
+      // Problemas por estado
       var estadosP = {};
-      problemas.forEach(function(p){
-        var e = p.estado || 'sin estado';
-        estadosP[e] = (estadosP[e] || 0) + 1;
+      problemas.forEach(function(p) {
+        estadosP[p.estado] = (estadosP[p.estado] || 0) + 1;
       });
-
-      charts.problemas = new Chart(ctx3, {
+      new Chart(document.getElementById('chartProblemasEstado'), {
         type: 'bar',
         data: {
           labels: Object.keys(estadosP),
@@ -575,12 +317,27 @@
         options: {
           indexAxis: 'y',
           scales: { x: { beginAtZero: true } },
-          plugins: { legend: { display:false } }
+          plugins: { legend: { display: false } }
         }
       });
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      cargarDatos();
+    });
+  </script>
+
+  <script src="auth-guard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent =
+          '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        if (window.esAdmin && window.esAdmin()) {
+          document.getElementById('btnAdmin').style.display = 'inline-flex';
+        }
+      }
+    });
   </script>
 </body>
 </html>
-
-
