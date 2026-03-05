@@ -2,337 +2,446 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Detalle del Ensayo · I+D</title>
+  <title>Detalle de ensayo · I+D</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
       --color-primary: #4caf50;
       --color-bg: #f8fafb;
       --color-card: #ffffff;
-      --shadow: 0 8px 24px rgba(0,0,0,0.1);
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
       --radius: 14px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
-    .container { max-width: 1000px; margin: 0 auto; padding: 24px; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--color-bg);
+      color: #1f2933;
+      line-height: 1.4;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
     .header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
     }
-    .header h1 { font-size: 1.6rem; color: var(--color-primary); }
-    .header-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .header h1 {
+      font-size: 1.6rem;
+      color: #2c3e50;
+    }
+    .header small {
+      display: block;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+    .header-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
     .btn {
-      background: var(--color-primary); color: #fff; border: none; padding: 9px 16px;
-      border-radius: 999px; cursor: pointer; font-size: 0.9rem; font-weight: 600;
-      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
-      transition: all 0.2s;
+      background: var(--color-primary);
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .btn-secondary { background: #6c757d; }
-    .btn-danger { background: #f44336; }
-    .btn-info { background: #2196f3; }
-    .btn:hover { opacity: 0.92; }
+    .btn-secondary { background: #6b7280; }
+    .btn-danger { background: #ef4444; }
+    .btn:hover { opacity: 0.95; }
 
+    .grid-main {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 18px;
+    }
     .card {
-      background: var(--color-card); border-radius: var(--radius);
-      box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px;
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 18px;
     }
-    .card h2 { font-size: 1.2rem; margin-bottom: 16px; color: var(--color-primary); }
-
-    .info-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
+    .card h2, .card h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #111827;
     }
-    .info-item label {
-      display: block; font-size: 0.8rem; font-weight: 600;
-      text-transform: uppercase; color: #888; margin-bottom: 2px;
+    .card-section {
+      margin-top: 10px;
     }
-    .info-item span { font-size: 1rem; font-weight: 500; }
-
-    .status-badge { padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
-    .status-activo { background: #dcf4dc; color: #2e7d32; }
-    .status-finalizado { background: #e3f2fd; color: #1565c0; }
-    .status-suspendido { background: #fff3cd; color: #ff8f00; }
-    .status-fallido { background: #f8d7da; color: #c62828; }
-
-    /* Upload */
-    .upload-section { margin-top: 12px; }
-    .upload-area {
-      border: 2px dashed #ccc; border-radius: 12px; padding: 20px;
-      text-align: center; background: #fafafa; margin-bottom: 12px;
-      transition: border-color 0.2s;
+    .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+      margin-bottom: 4px;
     }
-    .upload-area:hover { border-color: var(--color-primary); }
-    .upload-area input[type="file"] { margin: 8px 0; }
-    .upload-area p { font-size: 0.85rem; color: #888; }
-
-    /* Archivos lista */
-    .archivo-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 14px; border: 1px solid #eee; border-radius: 10px;
-      margin-bottom: 8px; background: #fafafa;
+    .value {
+      font-size: 0.9rem;
+      color: #111827;
     }
-    .archivo-item .info { flex: 1; }
-    .archivo-item .info strong { font-size: 0.9rem; }
-    .archivo-item .info small { display: block; color: #888; font-size: 0.78rem; }
-    .archivo-item .acciones { display: flex; gap: 6px; }
-    .archivo-item .acciones a,
-    .archivo-item .acciones button {
-      padding: 5px 10px; border-radius: 6px; font-size: 0.78rem;
-      border: none; cursor: pointer; text-decoration: none;
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 6px;
+      margin-bottom: 4px;
+    }
+    .tag-area { background: #e0f2fe; color: #0369a1; }
+    .tag-estado { background: #ecfdf3; color: #166534; }
+    .tag-prioridad { background: #fef3c7; color: #92400e; }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: #4b5563;
+      margin-bottom: 3px;
+    }
+    .form-group select,
+    .form-group input[type="file"],
+    .form-group input[type="text"],
+    .form-group textarea {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 0.85rem;
+    }
+    .form-group textarea {
+      min-height: 60px;
+      resize: vertical;
     }
 
-    .msg-info { background: #e3f2fd; color: #1565c0; padding: 12px; border-radius: 8px; font-size: 0.9rem; }
-    .msg-error { background: #f8d7da; color: #c62828; padding: 12px; border-radius: 8px; font-size: 0.9rem; }
+    .files-section {
+      margin-top: 6px;
+    }
+    .files-section h3 {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    ul.files-list {
+      list-style: none;
+      margin-top: 4px;
+    }
+    ul.files-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px dashed #e5e7eb;
+      font-size: 0.85rem;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    ul.files-list li:last-child {
+      border-bottom: none;
+    }
+    ul.files-list li span {
+      flex: 1 1 auto;
+      word-break: break-all;
+    }
+    ul.files-list li a {
+      color: #2563eb;
+      font-size: 0.8rem;
+      text-decoration: none;
+    }
+    ul.files-list li a:hover {
+      text-decoration: underline;
+    }
 
-    @media (max-width: 640px) {
-      .info-grid { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      .grid-main {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header class="header">
-      <h1 id="tituloPagina">📋 Detalle del Ensayo</h1>
+      <div>
+        <h1 id="tituloEnsayo">Ensayo</h1>
+        <small id="codigoEnsayo"></small>
+      </div>
       <div class="header-buttons">
-        <a href="ensayos.html" class="btn btn-secondary">← Volver a Ensayos</a>
-        <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+        <span id="userInfo" style="font-size:0.8rem;color:#6b7280;"></span>
+        <a href="ensayos.html" class="btn btn-secondary">← Volver a ensayos</a>
+        <a href="dashboard.html" class="btn btn-secondary">🏠 Dashboard</a>
         <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
 
-    <!-- Info del ensayo -->
-    <div class="card" id="cardInfo">
-      <h2>📄 Información del Ensayo</h2>
-      <div id="ensayoInfo">
-        <p style="color:#aaa;">Cargando...</p>
-      </div>
-    </div>
-
-    <!-- Subir Protocolo -->
-    <div class="card">
-      <h2>📑 Protocolo del Ensayo</h2>
-      <div class="upload-section">
-        <form id="formProtocolo" name="formProtocolo">
-          <div class="upload-area">
-            <p>📄 Sube el protocolo del ensayo (PDF, Word)</p>
-            <input type="file" id="archivoProtocolo" name="archivoProtocolo"
-                   accept=".pdf,.doc,.docx">
-            <br>
-            <button type="submit" class="btn" style="margin-top:8px;">📤 Subir Protocolo</button>
+    <div class="grid-main">
+      <!-- DATOS DEL ENSAYO -->
+      <section class="card" id="cardDatos">
+        <h2>Información del ensayo</h2>
+        <div class="card-section">
+          <div class="label">Objetivo</div>
+          <div class="value" id="objetivoEnsayo">-</div>
+        </div>
+        <div class="card-section">
+          <div class="label">Hipótesis</div>
+          <div class="value" id="hipotesisEnsayo">-</div>
+        </div>
+        <div class="card-section">
+          <div class="label">Área / estado / prioridad</div>
+          <div class="value">
+            <span class="tag tag-area" id="tagArea">Sin área</span>
+            <span class="tag tag-estado" id="tagEstado">-</span>
+            <span class="tag tag-prioridad" id="tagPrioridad">-</span>
           </div>
-        </form>
-        <div id="listaProtocolos"></div>
-      </div>
-    </div>
+        </div>
+        <div class="card-section">
+          <div class="label">Fechas</div>
+          <div class="value" id="fechasEnsayo"></div>
+        </div>
+        <div class="card-section">
+          <div class="label">Responsable</div>
+          <div class="value" id="responsableEnsayo"></div>
+        </div>
+        <div class="card-section">
+          <div class="label">Notas</div>
+          <div class="value" id="notasEnsayo"></div>
+        </div>
+      </section>
 
-    <!-- Subir Base de Datos -->
-    <div class="card">
-      <h2>📊 Bases de Datos</h2>
-      <div class="upload-section">
-        <form id="formData" name="formData">
-          <div class="upload-area">
-            <p>📊 Sube bases de datos del ensayo (Excel, CSV)</p>
-            <input type="file" id="archivoData" name="archivoData"
-                   accept=".xlsx,.xls,.csv,.json">
-            <br>
-            <button type="submit" class="btn" style="margin-top:8px;">📤 Subir Base de Datos</button>
-          </div>
-        </form>
-        <div id="listaData"></div>
-      </div>
-    </div>
+      <!-- DOCUMENTOS -->
+      <section class="card" id="cardArchivos">
+        <h2>Documentación del ensayo</h2>
 
-    <div id="mensajes"></div>
+        <!-- FORMULARIO SUBIDA -->
+        <div class="card-section">
+          <form id="formSubirArchivo">
+            <div class="form-group">
+              <label for="tipo">Tipo de archivo</label>
+              <select id="tipo" name="tipo" required>
+                <option value="protocolo">Protocolo</option>
+                <option value="base_datos">Base de datos</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="archivo">Archivo</label>
+              <input type="file" id="archivo" name="archivo" required>
+            </div>
+            <button type="submit" class="btn">Subir archivo</button>
+          </form>
+        </div>
+
+        <!-- LISTAS -->
+        <div class="files-section">
+          <h3>📄 Protocolo</h3>
+          <ul id="listaProtocolo" class="files-list">
+            <li>No hay protocolo cargado.</li>
+          </ul>
+
+          <h3 style="margin-top:10px;">📊 Bases de datos</h3>
+          <ul id="listaBasesDatos" class="files-list">
+            <li>No hay bases de datos cargadas.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
   </div>
 
+  <!-- LIBRERÍAS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
+  <script src="auth-guard.js"></script>
 
   <script>
-    var ensayoId = null;
-    var ensayoActual = null;
+    let ensayoId = null;
 
-    document.addEventListener('DOMContentLoaded', function() {
-      var params = new URLSearchParams(window.location.search);
+    document.addEventListener('DOMContentLoaded', async function () {
+      // user info
+      if (window.SESION) {
+        document.getElementById('userInfo').textContent =
+          '👤 ' + (SESION.nombre || SESION.email) + ' (' + (SESION.rol || '-') + ')';
+      }
+
+      // obtener id de querystring
+      const params = new URLSearchParams(window.location.search);
       ensayoId = params.get('id');
       if (!ensayoId) {
-        mostrarError('No se especificó un ID de ensayo.');
+        alert('No se proporcionó ID de ensayo');
+        window.location.href = 'ensayos.html';
         return;
       }
-      cargarEnsayo();
-      cargarArchivos();
 
-      // Subir protocolo
-      document.getElementById('formProtocolo').addEventListener('submit', function(e) {
-        e.preventDefault();
-        var archivo = document.getElementById('archivoProtocolo').files[0];
-        if (!archivo) { alert('Selecciona un archivo.'); return; }
-        subirArchivo(archivo, 'protocolo');
-      });
+      document.getElementById('formSubirArchivo')
+        .addEventListener('submit', subirArchivo);
 
-      // Subir base de datos
-      document.getElementById('formData').addEventListener('submit', function(e) {
-        e.preventDefault();
-        var archivo = document.getElementById('archivoData').files[0];
-        if (!archivo) { alert('Selecciona un archivo.'); return; }
-        subirArchivo(archivo, 'base_datos');
-      });
+      await cargarEnsayo();
+      await cargarArchivos();
     });
 
+    // ==================== CARGAR DATOS DEL ENSAYO ====================
     async function cargarEnsayo() {
-      var { data, error } = await DB.ensayos.obtener(ensayoId);
-      if (error || !data) {
-        mostrarError('Ensayo no encontrado.');
-        return;
-      }
-      ensayoActual = data;
-      document.getElementById('tituloPagina').textContent = '📋 ' + (data.area || 'Ensayo');
-      renderizarInfo(data);
-    }
-
-    function renderizarInfo(e) {
-      var estadoClase = {
-        activo: 'status-activo', finalizado: 'status-finalizado',
-        suspendido: 'status-suspendido', fallido: 'status-fallido'
-      };
-      var html = '<div class="info-grid">';
-      html += infoItem('Área', e.area);
-      html += infoItem('Reportado por', e.reportado_por);
-      html += infoItem('Prioridad', e.prioridad);
-      html += infoItem('Responsable I+D', e.responsable_id);
-      html += infoItem('Validador de campo', e.validador_campo);
-      html += infoItem('Fecha inicio', formatFecha(e.fecha_inicio));
-      html += infoItem('Fecha fin estimada', formatFecha(e.fecha_fin_estimado));
-      html += infoItem('Fecha final real', formatFecha(e.fecha_final_real));
-      html += infoItem('% Avance', (e.porcentaje_avance || 0) + '%');
-      html += infoItem('Estado', '<span class="status-badge ' + (estadoClase[e.estado] || '') + '">' + (e.estado || '') + '</span>');
-      html += infoItem('ROI estimado', (e.roi_estimado || 0) + '%');
-      html += infoItem('Éxito', e.exito ? '✅ Sí' : '❌ No');
-      html += '</div>';
-
-      if (e.metrica_objetivo) {
-        html += '<div style="margin-top:14px;"><label style="font-size:0.8rem;font-weight:600;color:#888;text-transform:uppercase;">Métrica objetivo</label>';
-        html += '<p style="margin-top:4px;">' + e.metrica_objetivo + '</p></div>';
-      }
-      if (e.publicaciones && e.publicaciones.length > 0) {
-        html += '<div style="margin-top:14px;"><label style="font-size:0.8rem;font-weight:600;color:#888;text-transform:uppercase;">Publicaciones</label>';
-        html += '<p style="margin-top:4px;">' + e.publicaciones.join(', ') + '</p></div>';
-      }
-
-      document.getElementById('ensayoInfo').innerHTML = html;
-    }
-
-    function infoItem(label, value) {
-      return '<div class="info-item"><label>' + label + '</label><span>' + (value || '—') + '</span></div>';
-    }
-
-    function formatFecha(f) {
-      if (!f) return '—';
-      return new Date(f).toLocaleDateString('es-DO');
-    }
-
-    // ====== ARCHIVOS ======
-    async function subirArchivo(archivo, tipo) {
-      var nombreUnico = Date.now() + '_' + archivo.name;
-      var ruta = ensayoId + '/' + tipo + '/' + nombreUnico;
-
-      mostrarMensaje('Subiendo archivo...');
-
-      var { error: errorStorage } = await Storage.subir(ruta, archivo);
-      if (errorStorage) {
-        mostrarError('Error al subir: ' + errorStorage.message);
-        return;
-      }
-
-      var urlPublica = Storage.obtenerUrl(ruta);
-
-      var { error: errorDB } = await DB.ensayos_archivos.crear({
-        id: 'arch_' + Date.now(),
-        ensayo_id: ensayoId,
-        tipo: tipo,
-        nombre: archivo.name,
-        ruta: ruta,
-        url: urlPublica,
-        tamano: archivo.size,
-        subido_por: window.SESION ? window.SESION.nombre : 'desconocido'
-      });
-
-      if (errorDB) {
-        mostrarError('Archivo subido pero error en registro: ' + errorDB.message);
-      } else {
-        mostrarMensaje('✅ Archivo subido correctamente.');
-        cargarArchivos();
-      }
-
-      // Limpiar input
-      if (tipo === 'protocolo') {
-        document.getElementById('archivoProtocolo').value = '';
-      } else {
-        document.getElementById('archivoData').value = '';
-      }
-    }
-
-    async function cargarArchivos() {
-      if (!ensayoId) return;
-      var { data, error } = await DB.ensayos_archivos.listarPorEnsayo(ensayoId);
-      if (error) return;
-
-      var protocolos = (data || []).filter(function(a) { return a.tipo === 'protocolo'; });
-      var bases = (data || []).filter(function(a) { return a.tipo === 'base_datos'; });
-
-      renderizarArchivos('listaProtocolos', protocolos);
-      renderizarArchivos('listaData', bases);
-    }
-
-    function renderizarArchivos(containerId, archivos) {
-      var container = document.getElementById(containerId);
-      if (archivos.length === 0) {
-        container.innerHTML = '<p style="color:#aaa;font-size:0.85rem;padding:8px;">No hay archivos subidos aún.</p>';
-        return;
-      }
-      var html = '';
-      archivos.forEach(function(a) {
-        var tamano = a.tamano ? (a.tamano / 1024).toFixed(1) + ' KB' : '';
-        html += '<div class="archivo-item">';
-        html += '  <div class="info">';
-        html += '    <strong>📄 ' + a.nombre + '</strong>';
-        html += '    <small>' + (a.subido_por || '') + ' · ' + tamano + ' · ' + (a.creado_el ? new Date(a.creado_el).toLocaleDateString('es-DO') : '') + '</small>';
-        html += '  </div>';
-        html += '  <div class="acciones">';
-        html += '    <a href="' + (a.url || '#') + '" target="_blank" class="btn btn-info" style="padding:4px 10px;font-size:0.78rem;">⬇️ Descargar</a>';
-        html += '    <button onclick="eliminarArchivo(\'' + a.id + '\', \'' + a.ruta + '\')" class="btn btn-danger" style="padding:4px 10px;font-size:0.78rem;">🗑️ Eliminar</button>';
-        html += '  </div>';
-        html += '</div>';
-      });
-      container.innerHTML = html;
-    }
-
-    async function eliminarArchivo(id, ruta) {
-      if (!confirm('¿Eliminar este archivo?')) return;
-
-      // Eliminar de Storage
-      await Storage.eliminar([ruta]);
-
-      // Eliminar de DB
-      var { error } = await DB.ensayos_archivos.eliminar(id);
+      const { data, error } = await DB.ensayos.obtener(ensayoId);
       if (error) {
-        mostrarError('Error: ' + error.message);
-      } else {
-        mostrarMensaje('✅ Archivo eliminado.');
-        cargarArchivos();
+        console.error(error);
+        alert('Error al cargar el ensayo');
+        return;
+      }
+      if (!data) {
+        alert('Ensayo no encontrado');
+        window.location.href = 'ensayos.html';
+        return;
+      }
+
+      document.getElementById('tituloEnsayo').textContent =
+        data.nombre || 'Ensayo sin título';
+      document.getElementById('codigoEnsayo').textContent =
+        data.codigo ? 'Código: ' + data.codigo : '';
+
+      document.getElementById('objetivoEnsayo').textContent =
+        data.objetivo || '-';
+      document.getElementById('hipotesisEnsayo').textContent =
+        data.hipotesis || '-';
+
+      document.getElementById('tagArea').textContent =
+        data.area || 'Sin área';
+      document.getElementById('tagEstado').textContent =
+        data.estado || '-';
+      document.getElementById('tagPrioridad').textContent =
+        data.prioridad || '-';
+
+      const fechas = [];
+      if (data.fecha_inicio) fechas.push('Inicio: ' + data.fecha_inicio);
+      if (data.fecha_fin_estimado) fechas.push('Fin estimado: ' + data.fecha_fin_estimado);
+      document.getElementById('fechasEnsayo').textContent =
+        fechas.join(' · ') || '-';
+
+      document.getElementById('responsableEnsayo').textContent =
+        data.responsable || '-';
+
+      document.getElementById('notasEnsayo').textContent =
+        data.notas || '(sin notas)';
+    }
+
+    // ==================== SUBIR ARCHIVO ====================
+    async function subirArchivo(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const tipo = form.tipo.value; // 'protocolo' o 'base_datos'
+      const fileInput = form.archivo;
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('Selecciona un archivo');
+        return;
+      }
+
+      try {
+        // sanitizar nombre para evitar errores en Storage
+        const originalName = file.name;
+        const sanitizedName = originalName
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // tildes
+          .replace(/[^\w.\- ]+/g, '')                      // símbolos raros
+          .replace(/\s+/g, '_');                           // espacios a _
+
+        const timestamp = Date.now();
+        const storagePath = `ens_${ensayoId}/${tipo}/${timestamp}_${sanitizedName}`;
+
+        // subir a Storage (bucket ensayos)
+        const { data: uploadData, error: uploadError } =
+          await Storage.subir(storagePath, file);
+
+        if (uploadError) {
+          console.error(uploadError);
+          alert('Error al subir archivo: ' + uploadError.message);
+          return;
+        }
+
+        // registrar en tabla ensayos_archivos (usa path y creado_por)
+        const registro = {
+          ensayo_id: ensayoId,
+          tipo: tipo,
+          nombre: originalName,
+          path: storagePath,
+          creado_por: window.SESION ? (SESION.email || SESION.nombre) : null
+        };
+
+        const { error: dbError } = await DB.ensayos_archivos.crear(registro);
+        if (dbError) {
+          console.error(dbError);
+          alert('Archivo subido pero error en registro: ' + dbError.message);
+          return;
+        }
+
+        fileInput.value = '';
+        form.reset();
+        await cargarArchivos();
+        alert('Archivo subido correctamente');
+      } catch (err) {
+        console.error(err);
+        alert('Error inesperado al subir archivo');
       }
     }
 
-    function mostrarMensaje(texto) {
-      document.getElementById('mensajes').innerHTML = '<div class="msg-info">' + texto + '</div>';
-      setTimeout(function() { document.getElementById('mensajes').innerHTML = ''; }, 4000);
+    // ==================== LISTAR ARCHIVOS ====================
+    async function cargarArchivos() {
+      const { data, error } = await DB.ensayos_archivos.listarPorEnsayo(ensayoId);
+      if (error) {
+        console.error(error);
+        return;
+      }
+      renderArchivos(data || []);
     }
 
-    function mostrarError(texto) {
-      document.getElementById('mensajes').innerHTML = '<div class="msg-error">' + texto + '</div>';
+    function renderArchivos(archivos) {
+      const contProtocolo = document.getElementById('listaProtocolo');
+      const contBD = document.getElementById('listaBasesDatos');
+
+      contProtocolo.innerHTML = '';
+      contBD.innerHTML = '';
+
+      archivos.forEach(archivo => {
+        const url = Storage.obtenerUrl(archivo.path);
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${archivo.nombre}</span>
+          <a href="${url}" target="_blank">Descargar</a>
+        `;
+
+        if (archivo.tipo === 'protocolo') {
+          contProtocolo.appendChild(li);
+        } else {
+          contBD.appendChild(li);
+        }
+      });
+
+      if (!contProtocolo.children.length) {
+        contProtocolo.innerHTML = '<li>No hay protocolo cargado.</li>';
+      }
+      if (!contBD.children.length) {
+        contBD.innerHTML = '<li>No hay bases de datos cargadas.</li>';
+      }
     }
   </script>
-
-  <script src="auth-guard.js"></script>
 </body>
 </html>
