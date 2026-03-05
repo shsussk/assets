@@ -199,10 +199,20 @@
             }
           },
           {
-            data: null, orderable: false,
+            data: null,
+            orderable: false,
             render: function(data, type, row) {
-              return '<button onclick="editarProblema(\'' + row.id + '\')" class="btn btn-secondary" style="padding:5px 10px;font-size:0.78rem;">Editar</button> ' +
-                     '<button onclick="eliminarProblema(\'' + row.id + '\')" class="btn btn-danger" style="padding:5px 10px;font-size:0.78rem;">Eliminar</button>';
+              return `
+                <button onclick="verProblema('${row.id}')" class="btn btn-warning" style="padding:5px 10px;font-size:0.78rem;">
+                  Ver
+                </button>
+                <button onclick="editarProblema('${row.id}')" class="btn btn-secondary" style="padding:5px 10px;font-size:0.78rem;">
+                  Editar
+                </button>
+                <button onclick="eliminarProblema('${row.id}')" class="btn btn-danger" style="padding:5px 10px;font-size:0.78rem;">
+                  Eliminar
+                </button>
+              `;
             }
           }
         ],
@@ -217,8 +227,21 @@
       inicializarTabla(problemasData);
     }
 
+    function habilitarCampos() {
+      ['p_area','p_reportadoPor','p_descripcion','p_prioridad','p_estado','p_solucion']
+        .forEach(idEl => document.getElementById(idEl).removeAttribute('disabled'));
+      document.getElementById('btnGuardarP').style.display = 'inline-flex';
+    }
+
+    function deshabilitarCampos() {
+      ['p_area','p_reportadoPor','p_descripcion','p_prioridad','p_estado','p_solucion']
+        .forEach(idEl => document.getElementById(idEl).setAttribute('disabled','disabled'));
+      document.getElementById('btnGuardarP').style.display = 'none';
+    }
+
     function abrirModal() {
       editandoId = null;
+      habilitarCampos();
       document.getElementById('modalTitulo').textContent = 'Reportar Problema';
       document.getElementById('formProblema').reset();
       document.getElementById('modalProblema').style.display = 'block';
@@ -228,6 +251,7 @@
       var prob = problemasData.find(function(p) { return p.id === id; });
       if (!prob) return;
       editandoId = id;
+      habilitarCampos();
       document.getElementById('modalTitulo').textContent = 'Editar Problema';
       document.getElementById('p_area').value = prob.area || '';
       document.getElementById('p_reportadoPor').value = prob.reportado_por || '';
@@ -235,6 +259,24 @@
       document.getElementById('p_prioridad').value = prob.prioridad || 'Media';
       document.getElementById('p_estado').value = prob.estado || 'abierto';
       document.getElementById('p_solucion').value = prob.solucion || '';
+      document.getElementById('modalProblema').style.display = 'block';
+    }
+
+    function verProblema(id) {
+      var prob = problemasData.find(function(p) { return p.id === id; });
+      if (!prob) return;
+
+      editandoId = null;
+      deshabilitarCampos();
+      document.getElementById('modalTitulo').textContent = 'Detalle del Problema';
+
+      document.getElementById('p_area').value = prob.area || '';
+      document.getElementById('p_reportadoPor').value = prob.reportado_por || '';
+      document.getElementById('p_descripcion').value = prob.descripcion || '';
+      document.getElementById('p_prioridad').value = prob.prioridad || 'Media';
+      document.getElementById('p_estado').value = prob.estado || 'abierto';
+      document.getElementById('p_solucion').value = prob.solucion || '';
+
       document.getElementById('modalProblema').style.display = 'block';
     }
 
@@ -247,18 +289,23 @@
     function cerrarModal() {
       document.getElementById('modalProblema').style.display = 'none';
       editandoId = null;
+      habilitarCampos();
     }
 
-    window.onclick = function(e) { if (e.target === document.getElementById('modalProblema')) cerrarModal(); };
+    window.onclick = function(e) {
+      if (e.target === document.getElementById('modalProblema')) cerrarModal();
+    };
   </script>
 
   <script src="auth-guard.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (window.SESION) {
-        document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
+        document.getElementById('userInfo').textContent =
+          '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
       }
     });
   </script>
 </body>
 </html>
+
