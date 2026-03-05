@@ -5,6 +5,7 @@
   <title>Dashboard I+D · Plantaciones del Norte</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Supabase y Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -235,15 +236,15 @@
         <p class="header-subtitle">Estado general de ensayos, problemas y red de colaboradores</p>
       </div>
       <div class="header-buttons">
-  <span id="userInfo" style="font-size:0.85rem;color:#6b7280;"></span>
-  <a href="ensayos.html" class="btn">🧪 Ensayos</a>
-  <a href="problemas.html" class="btn">⚠️ Problemas</a>
-  <a href="colaboradores.html" class="btn">🤝 Colaboradores</a>
-  <a href="historias.html" class="btn">🌱 Historias</a>
-  <a href="analytics.html" class="btn btn-secondary">📈 Analítica</a>
-  <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
-  <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
-</div>
+        <span id="userInfo" style="font-size:0.85rem;color:#6b7280;"></span>
+        <a href="ensayos.html" class="btn">🧪 Ensayos</a>
+        <a href="problemas.html" class="btn">⚠️ Problemas</a>
+        <a href="colaboradores.html" class="btn">🤝 Colaboradores</a>
+        <a href="historias.html" class="btn">🌱 Historias</a>
+        <a href="analytics.html" class="btn btn-secondary">📈 Analítica</a>
+        <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
+        <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
+      </div>
     </header>
 
     <main class="layout">
@@ -311,8 +312,11 @@
     </main>
   </div>
 
+  <!-- Supabase config (usa la librería ya cargada arriba) -->
   <script src="supabase-config.js"></script>
+  <!-- Auth / sesión -->
   <script src="auth-guard.js"></script>
+
   <script>
     var charts = {};
 
@@ -320,7 +324,7 @@
       if (window.SESION) {
         document.getElementById('userInfo').textContent =
           '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
-        if (window.esAdmin()) {
+        if (window.esAdmin && window.esAdmin()) {
           document.getElementById('btnAdmin').style.display = 'inline-flex';
         }
       }
@@ -384,11 +388,6 @@
       ensayos.forEach(function(e) {
         if (porEstado[e.estado] === undefined) porEstado[e.estado] = 0;
         porEstado[e.estado]++;
-      });
-
-      var porPrioridad = { Baja:0, Media:0, Alta:0 };
-      ensayos.forEach(function(e) {
-        if (porPrioridad[e.prioridad] === undefined) porPrioridad[e.prioridad] = 0;
       });
 
       var abiertos = problemas.filter(function(p) { return p.estado === 'abierto'; }).length;
@@ -583,6 +582,5 @@
   </script>
 </body>
 </html>
-
 
 
