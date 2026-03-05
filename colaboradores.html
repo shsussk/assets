@@ -2,507 +2,80 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Red de Colaboradores · Plantaciones del Norte</title>
+  <title>Colaboradores · I+D</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
-    :root {
-      --color-primary: #4caf50;
-      --color-bg: #f8fafb;
-      --color-card: #ffffff;
-      --shadow: 0 8px 24px rgba(0,0,0,0.08);
-      --radius: 14px;
-      --chip-bg: #e8f4e8;
-      --chip-text: #256029;
-    }
-
+    :root { --color-primary: #4caf50; --color-bg: #f8fafb; --color-card: #fff; --shadow: 0 8px 24px rgba(0,0,0,0.1); --radius: 14px; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
-
-    .page {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 3fr 1.3fr;
-      gap: 24px;
-    }
-
-    .header {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .header h1 { font-size: 2rem; color: var(--color-primary); }
-
-    .header-buttons {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    .header h1 { font-size: 1.9rem; color: var(--color-primary); }
+    .header-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn { background: var(--color-primary); color: #fff; border: none; padding: 9px 16px; border-radius: 999px; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
     .btn-secondary { background: #6c757d; }
     .btn-danger { background: #f44336; }
     .btn:hover { opacity: 0.92; }
-
-    .filters {
-      margin-bottom: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .filter-group label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: #555;
-    }
-
-    .filter-group input,
-    .filter-group select {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid #dde2eb;
-      font-size: 0.9rem;
-      min-width: 140px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 18px;
-      margin-top: 8px;
-    }
-
-    .card {
-      background: var(--color-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px 16px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #e5e7eb;
-    }
-
-    .card-name { font-weight: 700; font-size: 1rem; }
-    .card-role { font-size: 0.85rem; color: #666; }
-
-    .badge-tipo {
-      font-size: 0.75rem;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #e0f2f1;
-      color: #00695c;
-      margin-left: auto;
-    }
-
-    .meta-row {
-      display: flex;
-      gap: 12px;
-      font-size: 0.8rem;
-      color: #555;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .chip {
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      background: var(--chip-bg);
-      color: var(--chip-text);
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 6px;
-    }
-
-    .card-footer small { font-size: 0.8rem; color: #666; }
-
-    .matching-panel {
-      background: var(--color-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      height: fit-content;
-    }
-
-    .matching-panel h2 { font-size: 1.1rem; margin-bottom: 4px; }
-
-    .matching-panel textarea {
-      width: 100%;
-      min-height: 60px;
-      resize: vertical;
-      padding: 8px;
-      border-radius: 10px;
-      border: 1px solid #dde2eb;
-      font-size: 0.9rem;
-    }
-
-    .matching-panel select,
-    .matching-panel input {
-      width: 100%;
-      padding: 7px 10px;
-      border-radius: 8px;
-      border: 1px solid #dde2eb;
-      font-size: 0.9rem;
-    }
-
-    .matching-results {
-      margin-top: 10px;
-      max-height: 260px;
-      overflow-y: auto;
-      border-top: 1px solid #eceff4;
-      padding-top: 8px;
-    }
-
-    .matching-item {
-      padding: 6px 4px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .matching-item strong { font-size: 0.9rem; }
-    .matching-score { font-weight: 700; color: #4caf50; }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 1000;
-      padding: 20px;
-    }
-
-    .modal-content {
-      background: white;
-      max-width: 700px;
-      margin: 20px auto;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 24px 24px 20px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .modal-header h2 { font-size: 1.3rem; }
-
-    .close-btn {
-      background: transparent;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .form-group { margin-bottom: 14px; }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 9px;
-      border-radius: 8px;
-      border: 1px solid #dde2eb;
-      font-size: 0.9rem;
-    }
-
-    .form-group textarea { min-height: 70px; resize: vertical; }
-
-    .tags-input {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 5px;
-      border-radius: 8px;
-      border: 1px solid #dde2eb;
-      background: #fafbff;
-    }
-
-    .tags-input input {
-      border: none;
-      outline: none;
-      flex: 1;
-      min-width: 100px;
-      padding: 4px;
-      font-size: 0.9rem;
-      background: transparent;
-    }
-
-    .tag-pill {
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: var(--chip-bg);
-      color: var(--chip-text);
-      font-size: 0.75rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .tag-pill button {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 0.8rem;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 960px) {
-      .page { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 640px) {
-      .form-row { grid-template-columns: 1fr; }
-      .header { flex-direction: column; gap: 10px; align-items: flex-start; }
-    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .card { background: var(--color-card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+    .card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+    .card p { font-size: 0.85rem; color: #666; margin-bottom: 4px; }
+    .card-actions { display: flex; gap: 6px; margin-top: 10px; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; padding: 20px; }
+    .modal-content { background: white; max-width: 550px; margin: 40px auto; border-radius: 16px; box-shadow: var(--shadow); padding: 22px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .close-btn { background: transparent; border: none; font-size: 1.4rem; cursor: pointer; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.9rem; font-weight: 500; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #dde2eb; font-size: 0.9rem; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="container">
     <header class="header">
-      <h1>🤝 Red de Colaboradores</h1>
+      <h1>👥 Colaboradores</h1>
       <div class="header-buttons">
         <span id="userInfo" style="font-size:0.85rem;color:#666;"></span>
-        <a href="admin-usuarios.html" class="btn btn-secondary" id="btnAdmin" style="display:none;">🔐 Usuarios</a>
         <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
-        <button class="btn" onclick="abrirModalColaborador()">+ Agregar colaborador</button>
+        <button onclick="abrirModal()" class="btn">+ Agregar Colaborador</button>
         <button onclick="cerrarSesion()" class="btn btn-danger">Cerrar sesión</button>
       </div>
     </header>
-
-    <section>
-      <div class="filters">
-        <div class="filter-group">
-          <label>Buscar por nombre</label>
-          <input type="text" id="filtroNombre" oninput="renderColaboradores()">
-        </div>
-        <div class="filter-group">
-          <label>Especialidad</label>
-          <select id="filtroEspecialidad" onchange="renderColaboradores()">
-            <option value="">Todas</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Área fuerte</label>
-          <select id="filtroAreaFuerte" onchange="renderColaboradores()">
-            <option value="">Todas</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Tipo</label>
-          <select id="filtroTipo" onchange="renderColaboradores()">
-            <option value="">Todos</option>
-            <option value="interno">Interno</option>
-            <option value="externo">Externo</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Experiencia</label>
-          <select id="filtroExperiencia" onchange="renderColaboradores()">
-            <option value="">Todos</option>
-            <option value="0-5">0–5 años</option>
-            <option value="6-10">6–10 años</option>
-            <option value="10+">10+ años</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="gridColaboradores" class="grid"></div>
-    </section>
-
-    <aside class="matching-panel">
-      <h2>Encontrar colaboradores para un proyecto</h2>
-      <div class="form-group">
-        <label>Tema / problema</label>
-        <textarea id="matchTema" placeholder="Ej: Reducción de uso de fungicidas en cítricos"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Área principal</label>
-        <select id="matchArea">
-          <option value="">Cualquiera</option>
-          <option value="Manejo de plagas">Manejo de plagas</option>
-          <option value="Rendimiento de cultivo">Rendimiento de cultivo</option>
-          <option value="Tratamientos de suelo">Tratamientos de suelo</option>
-          <option value="Calidad de fruto">Calidad de fruto</option>
-          <option value="Postcosecha">Postcosecha</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Palabras clave (separadas por comas)</label>
-        <input type="text" id="matchKeywords" placeholder="suelos, biocontrol, sensores...">
-      </div>
-      <button class="btn" onclick="buscarMatching()">Buscar colaboradores</button>
-      <div class="matching-results" id="matchingResults"></div>
-    </aside>
+    <div class="grid" id="listaColaboradores">
+      <p style="color:#aaa;">Cargando...</p>
+    </div>
   </div>
 
-  <div class="modal" id="modalColaborador">
+  <div class="modal" id="modalColab">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 id="modalTitulo">Nuevo colaborador</h2>
-        <button class="close-btn" onclick="cerrarModalColaborador()">×</button>
+        <h2 id="modalTitulo">Agregar Colaborador</h2>
+        <button class="close-btn" onclick="cerrarModal()">×</button>
       </div>
-
-      <form id="formColaborador">
-        <input type="hidden" id="colabId">
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nombre *</label>
-            <input type="text" id="nombre" required>
-          </div>
-          <div class="form-group">
-            <label>Cargo *</label>
-            <input type="text" id="cargo" required>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Foto (URL)</label>
-            <input type="text" id="fotoUrl" placeholder="https://...">
-          </div>
-          <div class="form-group">
-            <label>Años de experiencia *</label>
-            <input type="number" id="aniosExperiencia" min="0" required>
-          </div>
-        </div>
-
+      <form id="formColab" name="formColab">
         <div class="form-group">
-          <label>Especialidad principal *</label>
-          <input type="text" id="especialidadPrincipal" required>
+          <label for="c_nombre">Nombre completo *</label>
+          <input type="text" id="c_nombre" name="c_nombre" required>
         </div>
-
         <div class="form-group">
-          <label>Áreas fuertes (Enter para añadir)</label>
-          <div class="tags-input" id="areasFuertesContainer">
-            <input type="text" id="areasFuertesInput" placeholder="Manejo de plagas, Postcosecha...">
-          </div>
+          <label for="c_rol">Rol / Puesto</label>
+          <input type="text" id="c_rol" name="c_rol">
         </div>
-
         <div class="form-group">
-          <label>Intereses (Enter para añadir)</label>
-          <div class="tags-input" id="interesesContainer">
-            <input type="text" id="interesesInput" placeholder="suelos, bioinsumos...">
-          </div>
+          <label for="c_area">Área</label>
+          <input type="text" id="c_area" name="c_area">
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>N.º de aportes</label>
-            <input type="number" id="aportes" min="0" value="0">
-          </div>
-          <div class="form-group">
-            <label>Ensayos exitosos</label>
-            <input type="number" id="ensayosExitosos" min="0" value="0">
-          </div>
-        </div>
-
         <div class="form-group">
-          <label>Proyectos activos (IDs de ensayos, separados por coma)</label>
-          <input type="text" id="proyectosActivos" placeholder="ensayo_123, ensayo_456">
+          <label for="c_email">Email</label>
+          <input type="email" id="c_email" name="c_email">
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label>Tipo de colaborador</label>
-            <select id="tipoColaborador">
-              <option value="interno">Interno</option>
-              <option value="externo">Externo</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Contacto</label>
-            <input type="text" id="contacto" placeholder="correo@empresa.com">
-          </div>
+        <div class="form-group">
+          <label for="c_telefono">Teléfono</label>
+          <input type="text" id="c_telefono" name="c_telefono">
         </div>
-
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="cerrarModalColaborador()">Cancelar</button>
-          <button type="button" class="btn btn-danger" id="btnEliminar" style="display:none" onclick="eliminarColaborador()">Eliminar</button>
+          <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
           <button type="submit" class="btn">Guardar</button>
         </div>
       </form>
@@ -511,359 +84,94 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
+
   <script>
-    var colaboradores = [];
-    var areasFuertesTemp = [];
-    var interesesTemp = [];
-    var colaboradorEditandoId = null;
+    var editandoId = null;
+    var colabData = [];
 
-    async function loadColaboradores() {
+    document.addEventListener('DOMContentLoaded', function() {
+      cargarColaboradores();
+
+      document.getElementById('formColab').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var datos = {
+          nombre: document.getElementById('c_nombre').value.trim(),
+          rol: document.getElementById('c_rol').value.trim(),
+          area: document.getElementById('c_area').value.trim(),
+          email: document.getElementById('c_email').value.trim(),
+          telefono: document.getElementById('c_telefono').value.trim()
+        };
+        var resultado;
+        if (editandoId) {
+          resultado = await DB.colaboradores.actualizar(editandoId, datos);
+        } else {
+          datos.id = 'col_' + Date.now();
+          resultado = await DB.colaboradores.crear(datos);
+        }
+        if (resultado.error) { alert('Error: ' + resultado.error.message); }
+        else { cerrarModal(); cargarColaboradores(); }
+      });
+    });
+
+    async function cargarColaboradores() {
       var { data, error } = await DB.colaboradores.listar();
-      if (error) {
-        alert('Error al cargar colaboradores: ' + error.message);
-        colaboradores = [];
-      } else {
-        colaboradores = data || [];
-      }
+      if (error) { alert('Error: ' + error.message); return; }
+      colabData = data || [];
+      renderizar();
     }
 
-    function initTagsInputs() {
-      var areasInput = document.getElementById('areasFuertesInput');
-      var interesesInput = document.getElementById('interesesInput');
-
-      areasInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          var val = areasInput.value.trim();
-          if (val && areasFuertesTemp.indexOf(val) === -1) {
-            areasFuertesTemp.push(val);
-            areasInput.value = '';
-            renderTagsList('areasFuertesContainer', areasFuertesTemp, 'areas');
-          }
-        }
-      });
-
-      interesesInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          var val = interesesInput.value.trim();
-          if (val && interesesTemp.indexOf(val) === -1) {
-            interesesTemp.push(val);
-            interesesInput.value = '';
-            renderTagsList('interesesContainer', interesesTemp, 'intereses');
-          }
-        }
-      });
-    }
-
-    function renderTagsList(containerId, items, tipo) {
-      var container = document.getElementById(containerId);
-      var input = container.querySelector('input');
-      container.innerHTML = '';
-      items.forEach(function(item, index) {
-        var pill = document.createElement('span');
-        pill.className = 'tag-pill';
-        pill.innerHTML = item + '<button type="button" onclick="removeTag(\'' + tipo + '\', ' + index + ')">×</button>';
-        container.appendChild(pill);
-      });
-      container.appendChild(input);
-    }
-
-    function removeTag(tipo, index) {
-      if (tipo === 'areas') {
-        areasFuertesTemp.splice(index, 1);
-        renderTagsList('areasFuertesContainer', areasFuertesTemp, 'areas');
-      } else {
-        interesesTemp.splice(index, 1);
-        renderTagsList('interesesContainer', interesesTemp, 'intereses');
-      }
-    }
-
-    function actualizarSelectsFiltro() {
-      var especialidades = [];
-      var areas = [];
-      colaboradores.forEach(function(c) {
-        if (c.especialidad_principal && especialidades.indexOf(c.especialidad_principal) === -1) especialidades.push(c.especialidad_principal);
-        (c.areas_fuertes || []).forEach(function(a) {
-          if (areas.indexOf(a) === -1) areas.push(a);
-        });
-      });
-
-      var espSel = document.getElementById('filtroEspecialidad');
-      var areaSel = document.getElementById('filtroAreaFuerte');
-      espSel.innerHTML = '<option value="">Todas</option>';
-      areaSel.innerHTML = '<option value="">Todas</option>';
-
-      especialidades.forEach(function(e) {
-        var opt = document.createElement('option');
-        opt.value = e;
-        opt.textContent = e;
-        espSel.appendChild(opt);
-      });
-
-      areas.forEach(function(a) {
-        var opt = document.createElement('option');
-        opt.value = a;
-        opt.textContent = a;
-        areaSel.appendChild(opt);
-      });
-    }
-
-    function renderColaboradores() {
-      var grid = document.getElementById('gridColaboradores');
-      grid.innerHTML = '';
-
-      var nombreFiltro = document.getElementById('filtroNombre').value.toLowerCase();
-      var espFiltro = document.getElementById('filtroEspecialidad').value;
-      var areaFiltro = document.getElementById('filtroAreaFuerte').value;
-      var tipoFiltro = document.getElementById('filtroTipo').value;
-      var expFiltro = document.getElementById('filtroExperiencia').value;
-
-      var lista = colaboradores.filter(function(c) {
-        if (nombreFiltro && c.nombre.toLowerCase().indexOf(nombreFiltro) === -1) return false;
-        if (espFiltro && c.especialidad_principal !== espFiltro) return false;
-        if (areaFiltro && (c.areas_fuertes || []).indexOf(areaFiltro) === -1) return false;
-        if (tipoFiltro && c.tipo_colaborador !== tipoFiltro) return false;
-        if (expFiltro) {
-          var ae = c.anios_experiencia || 0;
-          if (expFiltro === '0-5' && ae > 5) return false;
-          if (expFiltro === '6-10' && (ae < 6 || ae > 10)) return false;
-          if (expFiltro === '10+' && ae < 10) return false;
-        }
-        return true;
-      });
-
-      if (lista.length === 0) {
-        grid.innerHTML = '<p>No hay colaboradores que cumplan los filtros.</p>';
+    function renderizar() {
+      var container = document.getElementById('listaColaboradores');
+      if (colabData.length === 0) {
+        container.innerHTML = '<p style="color:#aaa;">No hay colaboradores registrados.</p>';
         return;
       }
-
-      lista.forEach(function(c) {
-        var card = document.createElement('article');
-        card.className = 'card';
-
-        var header = document.createElement('div');
-        header.className = 'card-header';
-
-        var img = document.createElement('img');
-        img.className = 'avatar';
-        img.src = c.foto_url || 'https://via.placeholder.com/80x80?text=Foto';
-        img.alt = c.nombre;
-
-        var text = document.createElement('div');
-        var nameEl = document.createElement('div');
-        nameEl.className = 'card-name';
-        nameEl.textContent = c.nombre;
-        var roleEl = document.createElement('div');
-        roleEl.className = 'card-role';
-        roleEl.textContent = c.cargo + (c.especialidad_principal ? ' · ' + c.especialidad_principal : '');
-
-        text.appendChild(nameEl);
-        text.appendChild(roleEl);
-
-        var tipo = document.createElement('span');
-        tipo.className = 'badge-tipo';
-        tipo.textContent = c.tipo_colaborador === 'externo' ? 'Externo' : 'Interno';
-
-        header.appendChild(img);
-        header.appendChild(text);
-        header.appendChild(tipo);
-
-        var meta = document.createElement('div');
-        meta.className = 'meta-row';
-        meta.innerHTML = '<span>' + (c.anios_experiencia || 0) + ' años exp.</span>' +
-                         '<span>🧩 ' + (c.aportes || 0) + ' aportes</span>' +
-                         '<span>✅ ' + (c.ensayos_exitosos || 0) + ' éxitos</span>';
-
-        var chips = document.createElement('div');
-        chips.className = 'chips';
-        (c.areas_fuertes || []).forEach(function(a) {
-          var chip = document.createElement('span');
-          chip.className = 'chip';
-          chip.textContent = a;
-          chips.appendChild(chip);
-        });
-
-        var footer = document.createElement('div');
-        footer.className = 'card-footer';
-        var small = document.createElement('small');
-        small.textContent = c.contacto || '';
-        var btn = document.createElement('button');
-        btn.className = 'btn btn-secondary';
-        btn.style.padding = '6px 12px';
-        btn.style.fontSize = '0.8rem';
-        btn.textContent = 'Ver / Editar';
-        btn.onclick = function() { abrirModalColaborador(c.id); };
-
-        footer.appendChild(small);
-        footer.appendChild(btn);
-
-        card.appendChild(header);
-        card.appendChild(meta);
-        card.appendChild(chips);
-        card.appendChild(footer);
-        grid.appendChild(card);
-      });
+      container.innerHTML = colabData.map(function(c) {
+        return '<div class="card">' +
+          '<h3>👤 ' + c.nombre + '</h3>' +
+          '<p><strong>Rol:</strong> ' + (c.rol || '—') + '</p>' +
+          '<p><strong>Área:</strong> ' + (c.area || '—') + '</p>' +
+          '<p><strong>Email:</strong> ' + (c.email || '—') + '</p>' +
+          '<p><strong>Tel:</strong> ' + (c.telefono || '—') + '</p>' +
+          '<div class="card-actions">' +
+          '<button onclick="editarColab(\'' + c.id + '\')" class="btn btn-secondary" style="padding:5px 10px;font-size:0.78rem;">Editar</button>' +
+          '<button onclick="eliminarColab(\'' + c.id + '\')" class="btn btn-danger" style="padding:5px 10px;font-size:0.78rem;">Eliminar</button>' +
+          '</div></div>';
+      }).join('');
     }
 
-    function abrirModalColaborador(id) {
-      colaboradorEditandoId = id || null;
-      areasFuertesTemp = [];
-      interesesTemp = [];
-
-      var form = document.getElementById('formColaborador');
-      form.reset();
-      document.getElementById('btnEliminar').style.display = id ? 'inline-flex' : 'none';
-
-      if (id) {
-        document.getElementById('modalTitulo').textContent = 'Editar colaborador';
-        var c = colaboradores.find(function(col) { return col.id === id; });
-        if (c) {
-          document.getElementById('colabId').value = c.id;
-          document.getElementById('nombre').value = c.nombre || '';
-          document.getElementById('cargo').value = c.cargo || '';
-          document.getElementById('fotoUrl').value = c.foto_url || '';
-          document.getElementById('aniosExperiencia').value = c.anios_experiencia || 0;
-          document.getElementById('especialidadPrincipal').value = c.especialidad_principal || '';
-          document.getElementById('aportes').value = c.aportes || 0;
-          document.getElementById('ensayosExitosos').value = c.ensayos_exitosos || 0;
-          document.getElementById('tipoColaborador').value = c.tipo_colaborador || 'interno';
-          document.getElementById('contacto').value = c.contacto || '';
-          document.getElementById('proyectosActivos').value = (c.proyectos_activos || []).join(', ');
-          areasFuertesTemp = (c.areas_fuertes || []).slice();
-          interesesTemp = (c.intereses || []).slice();
-          renderTagsList('areasFuertesContainer', areasFuertesTemp, 'areas');
-          renderTagsList('interesesContainer', interesesTemp, 'intereses');
-        }
-      } else {
-        document.getElementById('modalTitulo').textContent = 'Nuevo colaborador';
-        renderTagsList('areasFuertesContainer', areasFuertesTemp, 'areas');
-        renderTagsList('interesesContainer', interesesTemp, 'intereses');
-      }
-
-      document.getElementById('modalColaborador').style.display = 'block';
+    function abrirModal() {
+      editandoId = null;
+      document.getElementById('modalTitulo').textContent = 'Agregar Colaborador';
+      document.getElementById('formColab').reset();
+      document.getElementById('modalColab').style.display = 'block';
     }
 
-    function cerrarModalColaborador() {
-      document.getElementById('modalColaborador').style.display = 'none';
-      colaboradorEditandoId = null;
+    function editarColab(id) {
+      var c = colabData.find(function(x) { return x.id === id; });
+      if (!c) return;
+      editandoId = id;
+      document.getElementById('modalTitulo').textContent = 'Editar Colaborador';
+      document.getElementById('c_nombre').value = c.nombre || '';
+      document.getElementById('c_rol').value = c.rol || '';
+      document.getElementById('c_area').value = c.area || '';
+      document.getElementById('c_email').value = c.email || '';
+      document.getElementById('c_telefono').value = c.telefono || '';
+      document.getElementById('modalColab').style.display = 'block';
     }
 
-    document.getElementById('formColaborador').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      var nombre = document.getElementById('nombre').value.trim();
-      var cargo = document.getElementById('cargo').value.trim();
-      var especialidad = document.getElementById('especialidadPrincipal').value.trim();
-      var anios = parseInt(document.getElementById('aniosExperiencia').value, 10);
-
-      if (!nombre || !cargo || !especialidad || isNaN(anios)) {
-        alert('Completa los campos obligatorios.');
-        return;
-      }
-
-      var colab = {
-        id: colaboradorEditandoId || ('colab_' + Date.now()),
-        nombre: nombre,
-        cargo: cargo,
-        foto_url: document.getElementById('fotoUrl').value.trim(),
-        anios_experiencia: anios,
-        areas_fuertes: areasFuertesTemp.slice(),
-        especialidad_principal: especialidad,
-        aportes: parseInt(document.getElementById('aportes').value, 10) || 0,
-        ensayos_exitosos: parseInt(document.getElementById('ensayosExitosos').value, 10) || 0,
-        proyectos_activos: document.getElementById('proyectosActivos').value
-          .split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; }),
-        tipo_colaborador: document.getElementById('tipoColaborador').value,
-        contacto: document.getElementById('contacto').value.trim(),
-        intereses: interesesTemp.slice()
-      };
-
-      var result;
-      if (colaboradorEditandoId) {
-        result = await DB.colaboradores.actualizar(colaboradorEditandoId, colab);
-      } else {
-        result = await DB.colaboradores.crear(colab);
-      }
-
-      if (result.error) {
-        alert('Error: ' + result.error.message);
-      } else {
-        await loadColaboradores();
-        actualizarSelectsFiltro();
-        renderColaboradores();
-        cerrarModalColaborador();
-      }
-    });
-
-    async function eliminarColaborador() {
-      if (!colaboradorEditandoId) return;
+    async function eliminarColab(id) {
       if (!confirm('¿Eliminar este colaborador?')) return;
-      var { error } = await DB.colaboradores.eliminar(colaboradorEditandoId);
-      if (error) {
-        alert('Error: ' + error.message);
-        return;
-      }
-      await loadColaboradores();
-      actualizarSelectsFiltro();
-      renderColaboradores();
-      cerrarModalColaborador();
+      var { error } = await DB.colaboradores.eliminar(id);
+      if (error) { alert('Error: ' + error.message); } else { cargarColaboradores(); }
     }
 
-    function buscarMatching() {
-      var area = document.getElementById('matchArea').value;
-      var keywords = document.getElementById('matchKeywords').value
-        .split(',').map(function(k) { return k.trim().toLowerCase(); }).filter(function(k) { return k; });
-
-      var resultados = colaboradores.map(function(c) {
-        var score = 0;
-        if (area && (c.areas_fuertes || []).indexOf(area) !== -1) score += 2;
-        if (keywords.length) {
-          var intereses = (c.intereses || []).map(function(i) { return i.toLowerCase(); });
-          keywords.forEach(function(k) {
-            if (intereses.indexOf(k) !== -1) score += 1;
-          });
-        }
-        score += (c.ensayos_exitosos || 0) * 0.1;
-        return { colaborador: c, score: score };
-      }).filter(function(r) { return r.score > 0; })
-        .sort(function(a,b) { return b.score - a.score; });
-
-      var container = document.getElementById('matchingResults');
-      container.innerHTML = '';
-      if (resultados.length === 0) {
-        container.innerHTML = '<p>Sin coincidencias. Ajusta área o palabras clave.</p>';
-        return;
-      }
-
-      resultados.slice(0, 15).forEach(function(r) {
-        var c = r.colaborador;
-        var item = document.createElement('div');
-        item.className = 'matching-item';
-        item.innerHTML =
-          '<div>' +
-            '<strong>' + c.nombre + '</strong><br>' +
-            '<span style="font-size:0.8rem;">' + (c.especialidad_principal || '') + '</span><br>' +
-            '<span style="font-size:0.8rem; color:#555;">Áreas: ' + (c.areas_fuertes || []).join(', ') + '</span>' +
-          '</div>' +
-          '<div style="text-align:right;">' +
-            '<div class="matching-score">' + r.score.toFixed(1) + '</div>' +
-            '<button class="btn btn-secondary" style="padding:4px 8px;font-size:0.75rem;margin-top:4px;" onclick="abrirModalColaborador(\'' + c.id + '\')">Ver perfil</button>' +
-          '</div>';
-        container.appendChild(item);
-      });
+    function cerrarModal() {
+      document.getElementById('modalColab').style.display = 'none';
+      editandoId = null;
     }
 
-    window.addEventListener('click', function(e) {
-      var modal = document.getElementById('modalColaborador');
-      if (e.target === modal) cerrarModalColaborador();
-    });
-
-    document.addEventListener('DOMContentLoaded', async function() {
-      await loadColaboradores();
-      initTagsInputs();
-      actualizarSelectsFiltro();
-      renderColaboradores();
-    });
+    window.onclick = function(e) { if (e.target === document.getElementById('modalColab')) cerrarModal(); };
   </script>
 
   <script src="auth-guard.js"></script>
@@ -871,13 +179,8 @@
     document.addEventListener('DOMContentLoaded', function() {
       if (window.SESION) {
         document.getElementById('userInfo').textContent = '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
-        if (window.esAdmin()) {
-          document.getElementById('btnAdmin').style.display = 'inline-flex';
-        }
       }
     });
   </script>
 </body>
 </html>
-
-
