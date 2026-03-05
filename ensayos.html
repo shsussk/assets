@@ -1,5 +1,181 @@
-<!-- … todo tu <head> y estilos igual … -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ensayos · Departamento I+D</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+  <style>
+    :root {
+      --color-primary: #4caf50;
+      --color-bg: #f8fafb;
+      --color-card: #ffffff;
+      --shadow: 0 8px 24px rgba(0,0,0,0.1);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header h1 { font-size: 1.9rem; color: var(--color-primary); }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #f44336; }
+    .btn:hover { opacity: 0.92; }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+    .filter-group label {
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #555;
+    }
+    .filter-group select {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+      min-width: 130px;
+    }
+
+    .table-container {
+      background: var(--color-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    #ensayosTable { width: 100%; }
+    #ensayosTable th { background: #f8fafc; font-weight: 600; padding: 12px; }
+    #ensayosTable td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
+    #ensayosTable tr:hover { background: #f8fafc; }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .status-activo { background: #dcf4dc; color: #2e7d32; }
+    .status-finalizado { background: #e3f2fd; color: #1565c0; }
+    .status-suspendido { background: #fff3cd; color: #ff8f00; }
+    .status-fallido { background: #f8d7da; color: #c62828; }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-content {
+      background: white;
+      max-width: 800px;
+      margin: 20px auto;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 22px 22px 18px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .modal-header h2 { font-size: 1.2rem; }
+    .close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #dde2eb;
+      font-size: 0.9rem;
+    }
+    .form-group textarea { min-height: 70px; resize: vertical; }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .form-row { grid-template-columns: 1fr; }
+      .header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
 <body>
   <div class="container">
     <header class="header">
@@ -13,8 +189,36 @@
       </div>
     </header>
 
-    <!-- filtros y tabla igual que antes -->
+    <!-- Filtros -->
+    <div class="filters">
+      <div class="filter-group">
+        <label>Área</label>
+        <select id="filtroArea" onchange="aplicarFiltros()">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Estado</label>
+        <select id="filtroEstado" onchange="aplicarFiltros()">
+          <option value="">Todos</option>
+          <option value="activo">Activo</option>
+          <option value="finalizado">Finalizado</option>
+          <option value="suspendido">Suspendido</option>
+          <option value="fallido">Fallido</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Prioridad</label>
+        <select id="filtroPrioridad" onchange="aplicarFiltros()">
+          <option value="">Todas</option>
+          <option value="Baja">Baja</option>
+          <option value="Media">Media</option>
+          <option value="Alta">Alta</option>
+        </select>
+      </div>
+    </div>
 
+    <!-- Tabla -->
     <div class="table-container">
       <table id="ensayosTable" class="display">
         <thead>
@@ -37,21 +241,116 @@
     </div>
   </div>
 
-  <!-- modal igual que ya lo tienes -->
+  <!-- Modal Ensayo -->
+  <div class="modal" id="modalEnsayo">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitulo">Crear Nuevo Ensayo</h2>
+        <button class="close-btn" onclick="cerrarModal()">×</button>
+      </div>
+      <form id="formEnsayo">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Área *</label>
+            <input type="text" id="area" required>
+          </div>
+          <div class="form-group">
+            <label>Reportado por *</label>
+            <input type="text" id="reportadoPor" required>
+          </div>
+        </div>
 
-  <!-- 1) jQuery -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha inicio *</label>
+            <input type="date" id="fechaInicio" required>
+          </div>
+          <div class="form-group">
+            <label>Fecha fin estimada</label>
+            <input type="date" id="fechaFinEstimado">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Fecha final real</label>
+            <input type="date" id="fechaFinalReal">
+          </div>
+          <div class="form-group">
+            <label>Prioridad *</label>
+            <select id="prioridad" required>
+              <option value="Baja">Baja</option>
+              <option value="Media">Media</option>
+              <option value="Alta">Alta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Responsable I+D</label>
+            <input type="text" id="responsableId">
+          </div>
+          <div class="form-group">
+            <label>Validador de campo</label>
+            <input type="text" id="validadorCampo">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Métrica objetivo</label>
+          <textarea id="metricaObjetivo"></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="estado">
+              <option value="activo">Activo</option>
+              <option value="finalizado">Finalizado</option>
+              <option value="suspendido">Suspendido</option>
+              <option value="fallido">Fallido</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>ROI estimado (%)</label>
+            <input type="number" id="roiEstimado" step="0.1">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>% Avance</label>
+            <input type="number" id="porcentajeAvance" min="0" max="100" step="1">
+          </div>
+          <div class="form-group" style="display:flex;align-items:center;gap:8px;margin-top:20px;">
+            <input type="checkbox" id="exito">
+            <label for="exito" style="margin:0;">Ensayo exitoso</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Publicaciones (separadas por coma)</label>
+          <input type="text" id="publicaciones" placeholder="Artículo 1, Boletín 2...">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+          <button type="submit" class="btn">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-  <!-- 2) DataTables -->
+  <!-- DataTables -->
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-
-  <!-- 3) Supabase -->
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- 4) Tu configuración DB -->
+  <!-- Config DB -->
   <script src="supabase-config.js"></script>
 
-  <!-- 5) Lógica de la página -->
   <script>
     var tablaEnsayos;
     var editandoId = null;
@@ -116,7 +415,7 @@
       actualizarFiltros(ensayos);
     }
 
-    function abrirModal(accion) {
+    function abrirModal() {
       editandoId = null;
       document.getElementById('modalTitulo').textContent = 'Crear Nuevo Ensayo';
       document.getElementById('formEnsayo').reset();
@@ -135,16 +434,17 @@
       document.getElementById('fechaInicio').value = ensayo.fecha_inicio || '';
       document.getElementById('fechaFinEstimado').value = ensayo.fecha_fin_estimado || '';
       document.getElementById('fechaFinalReal').value = ensayo.fecha_final_real || '';
-      document.getElementById('prioridad').value = ensayo.prioridad || '';
+      document.getElementById('prioridad').value = ensayo.prioridad || 'Media';
       document.getElementById('responsableId').value = ensayo.responsable_id || '';
       document.getElementById('metricaObjetivo').value = ensayo.metrica_objetivo || '';
       document.getElementById('estado').value = ensayo.estado || 'activo';
       document.getElementById('roiEstimado').value = ensayo.roi_estimado || '';
       document.getElementById('validadorCampo').value = ensayo.validador_campo || '';
       document.getElementById('porcentajeAvance').value = ensayo.porcentaje_avance || '';
-      document.getElementById('exito').checked = ensayo.exito || false;
+      document.getElementById('exito').checked = !!ensayo.exito;
       document.getElementById('publicaciones').value =
-        ensayo.publicaciones ? ensayo.publicaciones.join(', ') : '';
+        Array.isArray(ensayo.publicaciones) ? ensayo.publicaciones.join(', ') : '';
+
       document.getElementById('modalEnsayo').style.display = 'block';
     }
 
@@ -183,13 +483,14 @@
       var area = document.getElementById('filtroArea').value;
       var estado = document.getElementById('filtroEstado').value;
       var prioridad = document.getElementById('filtroPrioridad').value;
+
       tablaEnsayos.column(1).search(area).draw();
       tablaEnsayos.column(9).search(estado).draw();
       tablaEnsayos.column(3).search(prioridad).draw();
     }
 
     function verEnsayo(id) {
-      window.location.href = `ensayo-detalle.html?id=${encodeURIComponent(id)}`;
+      window.location.href = 'ensayo-detalle.html?id=' + encodeURIComponent(id);
     }
 
     window.onclick = function(event) {
@@ -198,14 +499,14 @@
     };
   </script>
 
-  <!-- 6) Auth/guard que usa DB.SESION ya inicializado -->
+  <!-- Auth guard -->
   <script src="auth-guard.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       if (window.SESION) {
         document.getElementById('userInfo').textContent =
           '👤 ' + window.SESION.nombre + ' (' + window.SESION.rol + ')';
-        if (window.esAdmin()) {
+        if (window.esAdmin && window.esAdmin()) {
           document.getElementById('btnAdmin').style.display = 'inline-flex';
         }
       }
