@@ -85,7 +85,10 @@ var DB = {
   },
   ensayos_archivos: {
     listarPorEnsayo: function(ensayoId) {
-      return _sb.from('ensayos_archivos').select('*').eq('ensayo_id', ensayoId).order('creado_el', { ascending: false });
+      return _sb.from('ensayos_archivos')
+        .select('*')
+        .eq('ensayo_id', ensayoId)
+        .order('creado_el', { ascending: false });
     },
     crear: function(data) {
       return _sb.from('ensayos_archivos').insert(data);
@@ -99,7 +102,7 @@ var DB = {
   }
 };
 
-// Helper para subir archivos al bucket 'ensayos'
+// Helpers de Storage para el bucket 'ensayos'
 var Storage = {
   subir: function(path, file) {
     return _sb.storage.from('ensayos').upload(path, file, {
@@ -108,8 +111,8 @@ var Storage = {
     });
   },
   obtenerUrl: function(path) {
-    var { data } = _sb.storage.from('ensayos').getPublicUrl(path);
-    return data.publicUrl;
+    var result = _sb.storage.from('ensayos').getPublicUrl(path);
+    return result.data.publicUrl;
   },
   eliminar: function(paths) {
     return _sb.storage.from('ensayos').remove(paths);
