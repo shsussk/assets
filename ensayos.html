@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <title>Ensayos · Departamento I+D</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-
   <style>
     :root {
       --color-primary: #4caf50;
@@ -16,159 +13,74 @@
       --shadow: 0 8px 24px rgba(0,0,0,0.1);
       --radius: 14px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: var(--color-bg); color: #333; }
-
     .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
     }
-
     .header h1 { font-size: 1.9rem; color: var(--color-primary); }
-
-    .header-buttons {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .header-buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .btn {
-      background: var(--color-primary);
-      color: #fff;
-      border: none;
-      padding: 9px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
+      background: var(--color-primary); color: #fff; border: none; padding: 9px 16px;
+      border-radius: 999px; cursor: pointer; font-size: 0.9rem; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
       transition: all 0.2s;
     }
     .btn-secondary { background: #6c757d; }
     .btn-danger { background: #f44336; }
+    .btn-info { background: #2196f3; }
     .btn:hover { opacity: 0.92; }
 
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 0.85rem;
-    }
-    .filter-group label {
-      font-weight: 600;
-      text-transform: uppercase;
-      color: #555;
-    }
+    .filters { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+    .filter-group { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; }
+    .filter-group label { font-weight: 600; text-transform: uppercase; color: #555; }
     .filter-group select {
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid #dde2eb;
-      font-size: 0.9rem;
-      min-width: 130px;
+      padding: 6px 10px; border-radius: 999px; border: 1px solid #dde2eb;
+      font-size: 0.9rem; min-width: 130px;
     }
 
     .table-container {
-      background: var(--color-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 16px;
+      background: var(--color-card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 16px; overflow-x: auto;
     }
-
     #ensayosTable { width: 100%; }
     #ensayosTable th { background: #f8fafc; font-weight: 600; padding: 12px; }
     #ensayosTable td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
     #ensayosTable tr:hover { background: #f8fafc; }
 
-    .status-badge {
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
+    .status-badge { padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
     .status-activo { background: #dcf4dc; color: #2e7d32; }
     .status-finalizado { background: #e3f2fd; color: #1565c0; }
     .status-suspendido { background: #fff3cd; color: #ff8f00; }
     .status-fallido { background: #f8d7da; color: #c62828; }
 
+    /* Modal */
     .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 1000;
-      padding: 20px;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 1000; padding: 20px;
     }
     .modal-content {
-      background: white;
-      max-width: 800px;
-      margin: 20px auto;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 22px 22px 18px;
-      max-height: 90vh;
-      overflow-y: auto;
+      background: white; max-width: 800px; margin: 20px auto;
+      border-radius: 16px; box-shadow: var(--shadow);
+      padding: 22px 22px 18px; max-height: 90vh; overflow-y: auto;
     }
     .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
     }
     .modal-header h2 { font-size: 1.2rem; }
-    .close-btn {
-      background: transparent;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .form-group {
-      margin-bottom: 10px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
+    .close-btn { background: transparent; border: none; font-size: 1.4rem; cursor: pointer; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.9rem; font-weight: 500; }
     .form-group input,
     .form-group select,
     .form-group textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #dde2eb;
-      font-size: 0.9rem;
+      width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #dde2eb; font-size: 0.9rem;
     }
     .form-group textarea { min-height: 70px; resize: vertical; }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 10px;
-    }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
 
     @media (max-width: 768px) {
       .form-row { grid-template-columns: 1fr; }
@@ -192,14 +104,14 @@
     <!-- Filtros -->
     <div class="filters">
       <div class="filter-group">
-        <label>Área</label>
-        <select id="filtroArea" onchange="aplicarFiltros()">
+        <label for="filtroArea">Área</label>
+        <select id="filtroArea" name="filtroArea" onchange="aplicarFiltros()">
           <option value="">Todas</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>Estado</label>
-        <select id="filtroEstado" onchange="aplicarFiltros()">
+        <label for="filtroEstado">Estado</label>
+        <select id="filtroEstado" name="filtroEstado" onchange="aplicarFiltros()">
           <option value="">Todos</option>
           <option value="activo">Activo</option>
           <option value="finalizado">Finalizado</option>
@@ -208,8 +120,8 @@
         </select>
       </div>
       <div class="filter-group">
-        <label>Prioridad</label>
-        <select id="filtroPrioridad" onchange="aplicarFiltros()">
+        <label for="filtroPrioridad">Prioridad</label>
+        <select id="filtroPrioridad" name="filtroPrioridad" onchange="aplicarFiltros()">
           <option value="">Todas</option>
           <option value="Baja">Baja</option>
           <option value="Media">Media</option>
@@ -223,7 +135,6 @@
       <table id="ensayosTable" class="display">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Área</th>
             <th>Reportado por</th>
             <th>Prioridad</th>
@@ -248,64 +159,59 @@
         <h2 id="modalTitulo">Crear Nuevo Ensayo</h2>
         <button class="close-btn" onclick="cerrarModal()">×</button>
       </div>
-      <form id="formEnsayo">
+      <form id="formEnsayo" name="formEnsayo">
         <div class="form-row">
           <div class="form-group">
-            <label>Área *</label>
-            <input type="text" id="area" required>
+            <label for="campo_area">Área *</label>
+            <input type="text" id="campo_area" name="campo_area" required>
           </div>
           <div class="form-group">
-            <label>Reportado por *</label>
-            <input type="text" id="reportadoPor" required>
+            <label for="campo_reportadoPor">Reportado por *</label>
+            <input type="text" id="campo_reportadoPor" name="campo_reportadoPor" required>
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label>Fecha inicio *</label>
-            <input type="date" id="fechaInicio" required>
+            <label for="campo_fechaInicio">Fecha inicio *</label>
+            <input type="date" id="campo_fechaInicio" name="campo_fechaInicio" required>
           </div>
           <div class="form-group">
-            <label>Fecha fin estimada</label>
-            <input type="date" id="fechaFinEstimado">
+            <label for="campo_fechaFinEstimado">Fecha fin estimada</label>
+            <input type="date" id="campo_fechaFinEstimado" name="campo_fechaFinEstimado">
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label>Fecha final real</label>
-            <input type="date" id="fechaFinalReal">
+            <label for="campo_fechaFinalReal">Fecha final real</label>
+            <input type="date" id="campo_fechaFinalReal" name="campo_fechaFinalReal">
           </div>
           <div class="form-group">
-            <label>Prioridad *</label>
-            <select id="prioridad" required>
+            <label for="campo_prioridad">Prioridad *</label>
+            <select id="campo_prioridad" name="campo_prioridad" required>
               <option value="Baja">Baja</option>
-              <option value="Media">Media</option>
+              <option value="Media" selected>Media</option>
               <option value="Alta">Alta</option>
             </select>
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label>Responsable I+D</label>
-            <input type="text" id="responsableId">
+            <label for="campo_responsableId">Responsable I+D</label>
+            <input type="text" id="campo_responsableId" name="campo_responsableId">
           </div>
           <div class="form-group">
-            <label>Validador de campo</label>
-            <input type="text" id="validadorCampo">
+            <label for="campo_validadorCampo">Validador de campo</label>
+            <input type="text" id="campo_validadorCampo" name="campo_validadorCampo">
           </div>
         </div>
-
         <div class="form-group">
-          <label>Métrica objetivo</label>
-          <textarea id="metricaObjetivo"></textarea>
+          <label for="campo_metricaObjetivo">Métrica objetivo</label>
+          <textarea id="campo_metricaObjetivo" name="campo_metricaObjetivo"></textarea>
         </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label>Estado</label>
-            <select id="estado">
+            <label for="campo_estado">Estado</label>
+            <select id="campo_estado" name="campo_estado">
               <option value="activo">Activo</option>
               <option value="finalizado">Finalizado</option>
               <option value="suspendido">Suspendido</option>
@@ -313,106 +219,152 @@
             </select>
           </div>
           <div class="form-group">
-            <label>ROI estimado (%)</label>
-            <input type="number" id="roiEstimado" step="0.1">
+            <label for="campo_roiEstimado">ROI estimado (%)</label>
+            <input type="number" id="campo_roiEstimado" name="campo_roiEstimado" step="0.1">
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label>% Avance</label>
-            <input type="number" id="porcentajeAvance" min="0" max="100" step="1">
+            <label for="campo_porcentajeAvance">% Avance</label>
+            <input type="number" id="campo_porcentajeAvance" name="campo_porcentajeAvance" min="0" max="100" step="1">
           </div>
           <div class="form-group" style="display:flex;align-items:center;gap:8px;margin-top:20px;">
-            <input type="checkbox" id="exito">
-            <label for="exito" style="margin:0;">Ensayo exitoso</label>
+            <input type="checkbox" id="campo_exito" name="campo_exito">
+            <label for="campo_exito" style="margin:0;">Ensayo exitoso</label>
           </div>
         </div>
-
         <div class="form-group">
-          <label>Publicaciones (separadas por coma)</label>
-          <input type="text" id="publicaciones" placeholder="Artículo 1, Boletín 2...">
+          <label for="campo_publicaciones">Publicaciones (separadas por coma)</label>
+          <input type="text" id="campo_publicaciones" name="campo_publicaciones" placeholder="Artículo 1, Boletín 2...">
         </div>
-
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
-          <button type="submit" class="btn">Guardar</button>
+          <button type="submit" class="btn" id="btnGuardar">Guardar</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- jQuery -->
+  <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <!-- DataTables -->
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Config DB -->
   <script src="supabase-config.js"></script>
 
   <script>
-    var tablaEnsayos;
+    var tablaEnsayos = null;
     var editandoId = null;
+    var ensayosData = [];
 
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
       cargarEnsayos();
+
+      // ====== GUARDAR ENSAYO (crear o editar) ======
+      document.getElementById('formEnsayo').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var btn = document.getElementById('btnGuardar');
+        btn.disabled = true;
+        btn.textContent = 'Guardando...';
+
+        var pubsTexto = document.getElementById('campo_publicaciones').value.trim();
+        var publicaciones = pubsTexto ? pubsTexto.split(',').map(function(s) { return s.trim(); }) : [];
+
+        var datos = {
+          area: document.getElementById('campo_area').value.trim(),
+          reportado_por: document.getElementById('campo_reportadoPor').value.trim(),
+          fecha_inicio: document.getElementById('campo_fechaInicio').value || null,
+          fecha_fin_estimado: document.getElementById('campo_fechaFinEstimado').value || null,
+          fecha_final_real: document.getElementById('campo_fechaFinalReal').value || null,
+          prioridad: document.getElementById('campo_prioridad').value,
+          responsable_id: document.getElementById('campo_responsableId').value.trim(),
+          validador_campo: document.getElementById('campo_validadorCampo').value.trim(),
+          metrica_objetivo: document.getElementById('campo_metricaObjetivo').value.trim(),
+          estado: document.getElementById('campo_estado').value,
+          roi_estimado: parseFloat(document.getElementById('campo_roiEstimado').value) || 0,
+          porcentaje_avance: parseInt(document.getElementById('campo_porcentajeAvance').value) || 0,
+          exito: document.getElementById('campo_exito').checked,
+          publicaciones: publicaciones
+        };
+
+        var resultado;
+
+        if (editandoId) {
+          resultado = await DB.ensayos.actualizar(editandoId, datos);
+        } else {
+          datos.id = 'ens_' + Date.now();
+          resultado = await DB.ensayos.crear(datos);
+        }
+
+        if (resultado.error) {
+          alert('Error al guardar: ' + resultado.error.message);
+        } else {
+          cerrarModal();
+          recargarTabla();
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Guardar';
+      });
     });
 
     async function cargarEnsayos() {
-      var { data: ensayos, error } = await DB.ensayos.listar();
+      var { data, error } = await DB.ensayos.listar();
       if (error) {
         alert('Error al cargar ensayos: ' + error.message);
         return;
       }
+      ensayosData = data || [];
+      inicializarTabla(ensayosData);
+      actualizarFiltroAreas(ensayosData);
+    }
+
+    function inicializarTabla(datos) {
+      if (tablaEnsayos) {
+        tablaEnsayos.destroy();
+        $('#ensayosTable').empty();
+      }
 
       tablaEnsayos = $('#ensayosTable').DataTable({
-        data: ensayos || [],
+        data: datos,
         columns: [
-          { data: 'id' },
-          { data: 'area' },
-          { data: 'reportado_por' },
-          { data: 'prioridad' },
-          { data: 'responsable_id' },
-          { data: 'metrica_objetivo' },
-          { data: 'fecha_inicio', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
-          { data: 'fecha_fin_estimado', render: function(data) { return data ? new Date(data).toLocaleDateString('es-DO') : ''; } },
-          { data: 'porcentaje_avance', render: function(data) { return (data || 0) + '%'; } },
-          { 
-            data: 'estado',
-            render: function(data) {
-              var clases = {
-                'activo': 'status-activo',
-                'finalizado': 'status-finalizado',
-                'suspendido': 'status-suspendido',
-                'fallido': 'status-fallido'
-              };
-              return '<span class="status-badge ' + (clases[data] || '') + '">' + data + '</span>';
+          { data: 'area', defaultContent: '' },
+          { data: 'reportado_por', defaultContent: '' },
+          { data: 'prioridad', defaultContent: '' },
+          { data: 'responsable_id', defaultContent: '' },
+          { data: 'metrica_objetivo', defaultContent: '', render: function(d) { return d ? (d.length > 50 ? d.substring(0,50) + '...' : d) : ''; } },
+          { data: 'fecha_inicio', defaultContent: '', render: function(d) { return d ? new Date(d).toLocaleDateString('es-DO') : ''; } },
+          { data: 'fecha_fin_estimado', defaultContent: '', render: function(d) { return d ? new Date(d).toLocaleDateString('es-DO') : ''; } },
+          { data: 'porcentaje_avance', defaultContent: '0', render: function(d) { return (d || 0) + '%'; } },
+          {
+            data: 'estado', defaultContent: '',
+            render: function(d) {
+              var cls = { activo:'status-activo', finalizado:'status-finalizado', suspendido:'status-suspendido', fallido:'status-fallido' };
+              return '<span class="status-badge ' + (cls[d] || '') + '">' + (d || '') + '</span>';
             }
           },
-          { data: 'roi_estimado', render: function(data) { return (data || 0) + '%'; } },
+          { data: 'roi_estimado', defaultContent: '0', render: function(d) { return (d || 0) + '%'; } },
           {
-            data: null,
-            orderable: false,
+            data: null, orderable: false,
             render: function(data, type, row) {
-              return `
-                <button onclick="verEnsayo('${row.id}')" class="btn"
-                        style="padding:6px 12px;font-size:0.8rem;">Ver</button>
-                <button onclick="editarEnsayo('${row.id}')" class="btn btn-secondary"
-                        style="padding:6px 12px;font-size:0.8rem;">Editar</button>
-                <button onclick="eliminarEnsayo('${row.id}')" class="btn btn-danger"
-                        style="padding:6px 12px;font-size:0.8rem;">Eliminar</button>
-              `;
+              return '<button onclick="verEnsayo(\'' + row.id + '\')" class="btn btn-info" style="padding:5px 10px;font-size:0.78rem;">Ver</button> ' +
+                     '<button onclick="editarEnsayo(\'' + row.id + '\')" class="btn btn-secondary" style="padding:5px 10px;font-size:0.78rem;">Editar</button> ' +
+                     '<button onclick="eliminarEnsayo(\'' + row.id + '\')" class="btn btn-danger" style="padding:5px 10px;font-size:0.78rem;">Eliminar</button>';
             }
           }
         ],
         pageLength: 25,
+        responsive: true,
         language: {
           url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
         }
       });
+    }
 
-      actualizarFiltros(ensayos);
+    async function recargarTabla() {
+      var { data } = await DB.ensayos.listar();
+      ensayosData = data || [];
+      inicializarTabla(ensayosData);
+      actualizarFiltroAreas(ensayosData);
     }
 
     function abrirModal() {
@@ -423,40 +375,42 @@
     }
 
     async function editarEnsayo(id) {
-      var { data: ensayos } = await DB.ensayos.listar();
-      var ensayo = ensayos.find(function(e) { return e.id === id; });
+      var ensayo = ensayosData.find(function(e) { return e.id === id; });
       if (!ensayo) return;
 
       editandoId = id;
       document.getElementById('modalTitulo').textContent = 'Editar Ensayo';
-      document.getElementById('area').value = ensayo.area || '';
-      document.getElementById('reportadoPor').value = ensayo.reportado_por || '';
-      document.getElementById('fechaInicio').value = ensayo.fecha_inicio || '';
-      document.getElementById('fechaFinEstimado').value = ensayo.fecha_fin_estimado || '';
-      document.getElementById('fechaFinalReal').value = ensayo.fecha_final_real || '';
-      document.getElementById('prioridad').value = ensayo.prioridad || 'Media';
-      document.getElementById('responsableId').value = ensayo.responsable_id || '';
-      document.getElementById('metricaObjetivo').value = ensayo.metrica_objetivo || '';
-      document.getElementById('estado').value = ensayo.estado || 'activo';
-      document.getElementById('roiEstimado').value = ensayo.roi_estimado || '';
-      document.getElementById('validadorCampo').value = ensayo.validador_campo || '';
-      document.getElementById('porcentajeAvance').value = ensayo.porcentaje_avance || '';
-      document.getElementById('exito').checked = !!ensayo.exito;
-      document.getElementById('publicaciones').value =
+      document.getElementById('campo_area').value = ensayo.area || '';
+      document.getElementById('campo_reportadoPor').value = ensayo.reportado_por || '';
+      document.getElementById('campo_fechaInicio').value = ensayo.fecha_inicio || '';
+      document.getElementById('campo_fechaFinEstimado').value = ensayo.fecha_fin_estimado || '';
+      document.getElementById('campo_fechaFinalReal').value = ensayo.fecha_final_real || '';
+      document.getElementById('campo_prioridad').value = ensayo.prioridad || 'Media';
+      document.getElementById('campo_responsableId').value = ensayo.responsable_id || '';
+      document.getElementById('campo_validadorCampo').value = ensayo.validador_campo || '';
+      document.getElementById('campo_metricaObjetivo').value = ensayo.metrica_objetivo || '';
+      document.getElementById('campo_estado').value = ensayo.estado || 'activo';
+      document.getElementById('campo_roiEstimado').value = ensayo.roi_estimado || '';
+      document.getElementById('campo_porcentajeAvance').value = ensayo.porcentaje_avance || '';
+      document.getElementById('campo_exito').checked = !!ensayo.exito;
+      document.getElementById('campo_publicaciones').value =
         Array.isArray(ensayo.publicaciones) ? ensayo.publicaciones.join(', ') : '';
 
       document.getElementById('modalEnsayo').style.display = 'block';
     }
 
     async function eliminarEnsayo(id) {
-      if (confirm('¿Eliminar este ensayo?')) {
-        var { error } = await DB.ensayos.eliminar(id);
-        if (error) {
-          alert('Error: ' + error.message);
-        } else {
-          window.location.reload();
-        }
+      if (!confirm('¿Eliminar este ensayo?')) return;
+      var { error } = await DB.ensayos.eliminar(id);
+      if (error) {
+        alert('Error: ' + error.message);
+      } else {
+        recargarTabla();
       }
+    }
+
+    function verEnsayo(id) {
+      window.location.href = 'ensayo-detalle.html?id=' + encodeURIComponent(id);
     }
 
     function cerrarModal() {
@@ -464,18 +418,18 @@
       editandoId = null;
     }
 
-    function actualizarFiltros(ensayos) {
+    function actualizarFiltroAreas(datos) {
       var areas = [];
-      ensayos.forEach(function(e) {
+      datos.forEach(function(e) {
         if (e.area && areas.indexOf(e.area) === -1) areas.push(e.area);
       });
-      var selectArea = document.getElementById('filtroArea');
-      selectArea.innerHTML = '<option value="">Todas</option>';
-      areas.forEach(function(area) {
-        var option = document.createElement('option');
-        option.value = area;
-        option.textContent = area;
-        selectArea.appendChild(option);
+      var select = document.getElementById('filtroArea');
+      select.innerHTML = '<option value="">Todas</option>';
+      areas.forEach(function(a) {
+        var opt = document.createElement('option');
+        opt.value = a;
+        opt.textContent = a;
+        select.appendChild(opt);
       });
     }
 
@@ -484,22 +438,20 @@
       var estado = document.getElementById('filtroEstado').value;
       var prioridad = document.getElementById('filtroPrioridad').value;
 
-      tablaEnsayos.column(1).search(area).draw();
-      tablaEnsayos.column(9).search(estado).draw();
-      tablaEnsayos.column(3).search(prioridad).draw();
-    }
-
-    function verEnsayo(id) {
-      window.location.href = 'ensayo-detalle.html?id=' + encodeURIComponent(id);
+      var filtrados = ensayosData.filter(function(e) {
+        var okArea = !area || e.area === area;
+        var okEstado = !estado || e.estado === estado;
+        var okPrioridad = !prioridad || e.prioridad === prioridad;
+        return okArea && okEstado && okPrioridad;
+      });
+      inicializarTabla(filtrados);
     }
 
     window.onclick = function(event) {
-      var modal = document.getElementById('modalEnsayo');
-      if (event.target === modal) cerrarModal();
+      if (event.target === document.getElementById('modalEnsayo')) cerrarModal();
     };
   </script>
 
-  <!-- Auth guard -->
   <script src="auth-guard.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -514,6 +466,5 @@
   </script>
 </body>
 </html>
-
 
 
