@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Proveedores · Plantaciones del Norte</title>
+  <style>
+    :root {
+      --color-cream-50: rgba(252,252,249,1);
+      --color-cream-100: rgba(255,255,253,1);
+      --color-gray-200: rgba(245,245,245,1);
+      --color-gray-300: rgba(167,169,169,1);
+      --color-gray-400: rgba(119,124,124,1);
+      --color-slate-500: rgba(98,108,113,1);
+      --color-brown-600: rgba(94,82,64,1);
+      --color-charcoal-700: rgba(31,33,33,1);
+      --color-charcoal-800: rgba(38,40,40,1);
+      --color-slate-900: rgba(19,52,59,1);
+      --color-teal-300: rgba(50,184,198,1);
+      --color-teal-400: rgba(45,166,178,1);
+      --color-teal-500: rgba(33,128,141,1);
+      --color-teal-600: rgba(29,116,128,1);
+      --color-teal-700: rgba(26,104,115,1);
+      --color-red-400: rgba(255,84,89,1);
+      --color-red-500: rgba(192,21,47,1);
+      --color-orange-400: rgba(230,129,97,1);
+      --color-orange-500: rgba(168,75,47,1);
+      --color-brown-600-rgb: 94,82,64;
+      --color-teal-500-rgb: 33,128,141;
+      --color-slate-900-rgb: 19,52,59;
+      --color-error-rgb: 192,21,47;
+      --color-warning-rgb: 168,75,47;
+      --color-success-rgb: 33,128,141;
+      --color-info-rgb: 98,108,113;
+      --color-background: var(--color-cream-50);
+      --color-surface: var(--color-cream-100);
+      --color-text: var(--color-slate-900);
+      --color-text-secondary: var(--color-slate-500);
+      --color-primary: var(--color-teal-500);
+      --color-primary-hover: var(--color-teal-600);
+      --color-btn-primary-text: var(--color-cream-50);
+      --color-secondary: rgba(var(--color-brown-600-rgb),0.12);
+      --color-secondary-hover: rgba(var(--color-brown-600-rgb),0.2);
+      --color-border: rgba(var(--color-brown-600-rgb),0.2);
+      --color-card-border: rgba(var(--color-brown-600-rgb),0.12);
+      --color-error: var(--color-red-500);
+      --color-success: var(--color-teal-500);
+      --color-warning: var(--color-orange-500);
+      --color-info: var(--color-slate-500);
+      --font-family-base: "FKGroteskNeue","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --font-size-xs:11px;--font-size-sm:12px;--font-size-base:14px;--font-size-lg:16px;--font-size-xl:18px;--font-size-2xl:20px;--font-size-3xl:24px;
+      --font-weight-medium:500;--font-weight-semibold:550;--font-weight-bold:600;
+      --space-4:4px;--space-6:6px;--space-8:8px;--space-10:10px;--space-12:12px;--space-16:16px;--space-20:20px;--space-24:24px;--space-32:32px;
+      --radius-sm:6px;--radius-base:8px;--radius-md:10px;--radius-lg:12px;--radius-full:9999px;
+      --shadow-sm:0 1px 3px rgba(0,0,0,0.04);--shadow-md:0 4px 6px -1px rgba(0,0,0,0.04);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.04);
+      --duration-fast:150ms;--duration-normal:250ms;--ease-standard:cubic-bezier(0.16,1,0.3,1);
+    }
+    @media(prefers-color-scheme:dark){:root{
+      --color-gray-400-rgb:119,124,124;--color-teal-300-rgb:50,184,198;--color-gray-300-rgb:167,169,169;--color-gray-200-rgb:245,245,245;
+      --color-background:var(--color-charcoal-700);--color-surface:var(--color-charcoal-800);
+      --color-text:var(--color-gray-200);--color-text-secondary:rgba(var(--color-gray-300-rgb),0.7);
+      --color-primary:var(--color-teal-300);--color-primary-hover:var(--color-teal-400);
+      --color-secondary:rgba(var(--color-gray-400-rgb),0.15);
+      --color-secondary-hover:rgba(var(--color-gray-400-rgb),0.25);
+      --color-border:rgba(var(--color-gray-400-rgb),0.3);
+      --color-error:var(--color-red-400);--color-success:var(--color-teal-300);
+      --color-warning:var(--color-orange-400);--color-info:var(--color-gray-300);
+      --color-btn-primary-text:var(--color-slate-900);
+      --color-card-border:rgba(var(--color-gray-400-rgb),0.2);
+      --color-success-rgb:50,184,198;--color-error-rgb:255,84,89;--color-warning-rgb:230,129,97;--color-info-rgb:167,169,169;
+    }}
+    *,*::before,*::after{box-sizing:border-box}
+    html{font-size:var(--font-size-base);font-family:var(--font-family-base);color:var(--color-text);background:var(--color-background);-webkit-font-smoothing:antialiased}
+    body{margin:0;padding:0}
+    h1,h2,h3,h4{margin:0;font-weight:var(--font-weight-semibold);color:var(--color-text)}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:var(--space-8) var(--space-16);
+      border-radius:var(--radius-base);font-size:var(--font-size-base);font-weight:500;cursor:pointer;
+      border:none;transition:all var(--duration-normal);text-decoration:none;gap:var(--space-6)}
+    .btn--primary{background:var(--color-primary);color:var(--color-btn-primary-text)}
+    .btn--primary:hover{background:var(--color-primary-hover)}
+    .btn--secondary{background:var(--color-secondary);color:var(--color-text)}
+    .btn--secondary:hover{background:var(--color-secondary-hover)}
+    .btn--sm{padding:var(--space-4) var(--space-12);font-size:var(--font-size-sm);border-radius:var(--radius-sm)}
+    .btn--full{width:100%}
+
+    .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:var(--space-24)}
+    .login-card{background:var(--color-surface);border:1px solid var(--color-card-border);border-radius:var(--radius-lg);
+      padding:var(--space-32);max-width:440px;width:100%;box-shadow:var(--shadow-lg);text-align:center}
+    .login-card h1{font-size:var(--font-size-2xl);margin-bottom:var(--space-8)}
+    .login-card p{color:var(--color-text-secondary);font-size:var(--font-size-sm);margin-bottom:var(--space-24)}
+    .login-card .logo{font-size:48px;margin-bottom:var(--space-16)}
+
+    .portal{display:none}
+    .portal.active{display:block}
+    .portal-header{padding:var(--space-16) var(--space-24);display:flex;align-items:center;justify-content:space-between;
+      border-bottom:1px solid var(--color-border);flex-wrap:wrap;gap:var(--space-12)}
+    .portal-header h1{font-size:var(--font-size-xl);display:flex;align-items:center;gap:var(--space-8)}
+    .portal-header .empresa-name{font-size:var(--font-size-sm);color:var(--color-text-secondary)}
+
+    .portal-content{max-width:900px;margin:0 auto;padding:var(--space-24)}
+    .portal-stats{display:flex;gap:var(--space-12);margin-bottom:var(--space-24);flex-wrap:wrap}
+    .stat-card{background:var(--color-surface);border:1px solid var(--color-card-border);border-radius:var(--radius-lg);
+      padding:var(--space-16);flex:1;min-width:120px;text-align:center}
+    .stat-card .stat-num{font-size:var(--font-size-3xl);font-weight:var(--font-weight-bold);color:var(--color-primary)}
+    .stat-card .stat-label{font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-top:var(--space-4)}
+
+    .product-list{display:flex;flex-direction:column;gap:var(--space-12)}
+    .product-item{background:var(--color-surface);border:1px solid var(--color-card-border);border-radius:var(--radius-lg);
+      padding:var(--space-16) var(--space-20);display:flex;justify-content:space-between;align-items:center;
+      flex-wrap:wrap;gap:var(--space-12);transition:box-shadow var(--duration-fast);cursor:pointer}
+    .product-item:hover{box-shadow:var(--shadow-md)}
+    .product-item-info h3{font-size:var(--font-size-lg);margin-bottom:var(--space-4)}
+    .product-item-info p{margin:0;font-size:var(--font-size-sm);color:var(--color-text-secondary)}
+    .product-item-status{text-align:right}
+    .status-badge{display:inline-flex;align-items:center;gap:var(--space-4);padding:var(--space-6) var(--space-12);
+      border-radius:var(--radius-full);font-size:var(--font-size-sm);font-weight:var(--font-weight-medium}
+    .status-recibido{background:rgba(var(--color-info-rgb),0.12);color:var(--color-info)}
+    .status-evaluacion{background:rgba(59,130,246,0.1);color:rgb(59,130,246)}
+    .status-reunion{background:rgba(var(--color-success-rgb),0.12);color:var(--color-success)}
+    .status-ensayo{background:rgba(var(--color-success-rgb),0.18);color:var(--color-success)}
+    .status-rechazado{background:rgba(var(--color-error-rgb),0.12);color:var(--color-error)}
+    .status-cerrado{background:rgba(var(--color-success-rgb),0.15);color:var(--color-success)}
+    .status-pendiente{background:rgba(var(--color-warning-rgb),0.12);color:var(--color-warning)}
+    .status-date{font-size:var(--font-size-xs);color:var(--color-text-secondary);margin-top:var(--space-4)}
+
+    .form-section{background:var(--color-surface);border:1px solid var(--color-card-border);border-radius:var(--radius-lg);
+      padding:var(--space-24);margin-top:var(--space-24)}
+    .form-section h2{font-size:var(--font-size-xl);margin-bottom:var(--space-16)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-12)}
+    .form-group{margin-bottom:var(--space-12)}
+    .form-group label{display:block;font-size:var(--font-size-sm);font-weight:var(--font-weight-medium);
+      color:var(--color-text-secondary);margin-bottom:var(--space-4)}
+    .form-group input,.form-group select,.form-group textarea{width:100%;padding:var(--space-8) var(--space-12);
+      border-radius:var(--radius-base);border:1px solid var(--color-border);background:var(--color-background);
+      color:var(--color-text);font-size:var(--font-size-base);font-family:inherit}
+    .form-group textarea{min-height:80px;resize:vertical}
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:2px solid var(--color-primary);border-color:var(--color-primary)}
+    .required::after{content:' *';color:var(--color-error)}
+
+    .message-box{padding:var(--space-12) var(--space-16);border-radius:var(--radius-md);margin-bottom:var(--space-16);font-size:var(--font-size-sm)}
+    .message-box.info{background:rgba(var(--color-info-rgb),0.08);color:var(--color-info);border:1px solid rgba(var(--color-info-rgb),0.2)}
+    .message-box.success{background:rgba(var(--color-success-rgb),0.08);color:var(--color-success);border:1px solid rgba(var(--color-success-rgb),0.2)}
+    .message-box.warning{background:rgba(var(--color-warning-rgb),0.08);color:var(--color-warning);border:1px solid rgba(var(--color-warning-rgb),0.2)}
+
+    .empty-state{text-align:center;padding:var(--space-32);color:var(--color-text-secondary);font-size:var(--font-size-sm)}
+
+    .detail-panel{display:none;background:var(--color-surface);border:1px solid var(--color-card-border);border-radius:var(--radius-lg);
+      padding:var(--space-20);margin-top:var(--space-16)}
+    .detail-panel.active{display:block}
+    .detail-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-12);margin-bottom:var(--space-12)}
+    .detail-field label{font-size:var(--font-size-xs);text-transform:uppercase;color:var(--color-text-secondary);letter-spacing:0.05em}
+    .detail-field .val{font-size:var(--font-size-base);margin-top:var(--space-4)}
+
+    .timeline{position:relative;padding-left:24px;margin-top:var(--space-16)}
+    .timeline::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--color-border)}
+    .timeline-item{position:relative;margin-bottom:var(--space-12);padding-left:var(--space-12)}
+    .timeline-item::before{content:'';position:absolute;left:-20px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--color-primary);border:2px solid var(--color-surface)}
+    .timeline-date{font-size:var(--font-size-xs);color:var(--color-text-secondary)}
+    .timeline-text{font-size:var(--font-size-sm);margin-top:2px}
+
+    @media(max-width:600px){
+      .form-row{grid-template-columns:1fr}
+      .detail-row{grid-template-columns:1fr}
+    }
+    @font-face{font-family:'FKGroteskNeue';src:url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2')}
+  </style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="logo">🌱</div>
+    <h1>Portal de Proveedores</h1>
+    <p>Plantaciones del Norte — Departamento de I+D</p>
+    <p style="color:var(--color-text);font-size:var(--font-size-sm);margin-bottom:var(--space-16)">
+      Seleccione su empresa para acceder al portal.
+    </p>
+    <div class="form-group">
+      <select id="loginEmpresa" style="width:100%;padding:var(--space-10) var(--space-12);border-radius:var(--radius-base);border:1px solid var(--color-border);font-size:var(--font-size-base);background:var(--color-background);color:var(--color-text)">
+        <option value="">Seleccionar empresa...</option>
+      </select>
+    </div>
+    <button class="btn btn--primary btn--full" onclick="loginProveedor()" style="margin-top:var(--space-12)">Acceder al portal</button>
+    <p style="margin-top:var(--space-16);font-size:var(--font-size-xs);color:var(--color-text-secondary)">
+      ¿Primera vez? Contacte al Departamento de I+D para registrar su empresa.
+    </p>
+  </div>
+</div>
+
+<div class="portal" id="portalScreen">
+  <header class="portal-header">
+    <div>
+      <h1>🌱 Portal de Proveedores</h1>
+      <span class="empresa-name" id="portalEmpresaNombre"></span>
+    </div>
+    <div style="display:flex;gap:var(--space-8);align-items:center">
+      <button class="btn btn--primary btn--sm" onclick="showNewProductForm()">+ Registrar Producto</button>
+      <button class="btn btn--secondary btn--sm" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="portal-content">
+    <div class="portal-stats" id="portalStats"></div>
+
+    <div class="message-box info" id="infoBox">
+      ℹ️ Los productos que registre serán evaluados por nuestro equipo de I+D.
+      Recibirá actualizaciones sobre el estado de cada producto.
+      <strong>No se muestran puntuaciones ni notas internas.</strong>
+    </div>
+
+    <h2 style="font-size:var(--font-size-lg);margin-bottom:var(--space-12)">Mis productos registrados</h2>
+    <div class="product-list" id="productList"></div>
+
+    <div class="detail-panel" id="detailPanel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-16)">
+        <h3 id="detailTitle">Detalle del producto</h3>
+        <button class="btn btn--secondary btn--sm" onclick="closeDetail()">✕ Cerrar</button>
+      </div>
+      <div class="detail-row">
+        <div class="detail-field"><label>Nombre comercial</label><div class="val" id="det_nombre"></div></div>
+        <div class="detail-field"><label>Ingrediente activo</label><div class="val" id="det_ia"></div></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-field"><label>Tipo</label><div class="val" id="det_tipo"></div></div>
+        <div class="detail-field"><label>Modo de acción</label><div class="val" id="det_modo"></div></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-field"><label>Cultivo objetivo</label><div class="val" id="det_cultivo"></div></div>
+        <div class="detail-field"><label>Problema</label><div class="val" id="det_problema"></div></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-field"><label>País</label><div class="val" id="det_pais"></div></div>
+        <div class="detail-field"><label>Registro RD</label><div class="val" id="det_registro"></div></div>
+      </div>
+      <div class="detail-row">
+        <div class="detail-field"><label>Fecha de ingreso</label><div class="val" id="det_fecha"></div></div>
+        <div class="detail-field"><label>Estado actual</label><div class="val" id="det_estado"></div></div>
+      </div>
+      <div id="det_mensaje" style="margin-top:var(--space-12)"></div>
+      <h4 style="margin-top:var(--space-16);font-size:var(--font-size-sm)">Historial de seguimiento</h4>
+      <div class="timeline" id="det_timeline"></div>
+    </div>
+
+    <div class="form-section" id="newProductForm" style="display:none">
+      <h2>Registrar nuevo producto</h2>
+      <div class="message-box warning">
+        ⚠️ Complete todos los campos obligatorios (*). Productos con información incompleta pueden demorar más en ser evaluados.
+      </div>
+      <form id="proveedorForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="required">Nombre comercial</label>
+            <input type="text" id="pf_nombre" required>
+          </div>
+          <div class="form-group">
+            <label class="required">Ingrediente activo</label>
+            <input type="text" id="pf_ia" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="required">Tipo de producto</label>
+            <select id="pf_tipo">
+              <option value="fungicida">Fungicida</option>
+              <option value="insecticida">Insecticida</option>
+              <option value="bioestimulante">Bioestimulante</option>
+              <option value="poscosecha">Poscosecha</option>
+              <option value="fertilizante">Fertilizante</option>
+              <option value="biologico">Biológico</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Modo de acción</label>
+            <input type="text" id="pf_modo">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="required">Cultivo objetivo</label>
+            <select id="pf_cultivo">
+              <option value="banano">Banano</option>
+              <option value="citricos">Cítricos</option>
+              <option value="ambos">Ambos</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="required">Problema que resuelve</label>
+            <input type="text" id="pf_problema" placeholder="Ej: Sigatoka negra, pudrición corona..." required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>País de origen</label>
+            <input type="text" id="pf_pais">
+          </div>
+          <div class="form-group">
+            <label>¿Registrado en RD?</label>
+            <select id="pf_registro">
+              <option value="no">No</option>
+              <option value="si">Sí</option>
+              <option value="tramite">En trámite</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Información adicional / resultados previos</label>
+          <textarea id="pf_adicional" placeholder="Describa brevemente resultados de ensayos previos, certificaciones, referencias..."></textarea>
+        </div>
+        <div style="display:flex;gap:var(--space-8);justify-content:flex-end;margin-top:var(--space-16)">
+          <button type="button" class="btn btn--secondary" onclick="hideNewProductForm()">Cancelar</button>
+          <button type="submit" class="btn btn--primary">Enviar solicitud</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="db-helpers-productos.js"></script>
+
+<script>
+let currentEmpresaId = null;
+let empresas = [];
+let productosProveedor = [];
+let historialPublico = [];
+
+function escapeHtml(t){const d=document.createElement('div');d.textContent=t||'-';return d.innerHTML}
+
+function getStatusBadge(estado){
+  const map = {
+    recibido:{cls:'status-recibido',icon:'📥',label:'Solicitud recibida'},
+    info_incompleta:{cls:'status-pendiente',icon:'⚠️',label:'Pendiente info'},
+    en_evaluacion:{cls:'status-evaluacion',icon:'🔍',label:'En evaluación'},
+    aprobado_reunion:{cls:'status-reunion',icon:'🤝',label:'Reunión realizada'},
+    propuesto_ensayo:{cls:'status-ensayo',icon:'📋',label:'Seleccionado ensayo'},
+    ensayo_campo:{cls:'status-ensayo',icon:'🌱',label:'En ensayo de campo'},
+    cerrado:{cls:'status-cerrado',icon:'✅',label:'Proceso finalizado'},
+    rechazado:{cls:'status-rechazado',icon:'—',label:'No seleccionado'}
+  };
+  const s = map[estado] || {cls:'',icon:'',label:estado};
+  return `<span class="status-badge ${s.cls}">${s.icon} ${s.label}</span>`;
+}
+
+async function loadEmpresas(){
+  try{
+    const { data, error } = await DB.empresas.listar();
+    if(error) throw error;
+    empresas = data || [];
+    const sel = document.getElementById('loginEmpresa');
+    sel.innerHTML = '<option value="">Seleccionar empresa...</option>';
+    empresas.forEach(e=>{
+      sel.innerHTML += `<option value="${e.id}">${escapeHtml(e.nombre)}</option>`;
+    });
+  }catch(err){
+    console.error(err);
+    alert('Error cargando empresas: ' + (err.message || err));
+  }
+}
+
+async function loginProveedor(){
+  const empId = document.getElementById('loginEmpresa').value;
+  if(!empId){alert('Seleccione una empresa');return}
+  currentEmpresaId = empId;
+  const emp = empresas.find(e=>e.id===empId);
+  document.getElementById('portalEmpresaNombre').textContent = emp ? emp.nombre : '';
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('portalScreen').classList.add('active');
+  await loadProductosProveedor();
+}
+
+async function loadProductosProveedor(){
+  try{
+    const { data, error } = await DB.productos_externos.listar({ empresa_id: currentEmpresaId });
+    if(error) throw error;
+    productosProveedor = data || [];
+
+    const { data: hist, error: histErr } = await DB.historial_producto.listarPorProducto(currentEmpresaId);
+    if(histErr){
+      console.warn('Historial no crítico:', histErr.message);
+      historialPublico = [];
+    }else{
+      historialPublico = hist || [];
+    }
+    renderPortal();
+  }catch(err){
+    console.error(err);
+    alert('Error cargando productos: ' + (err.message || err));
+  }
+}
+
+function logout(){
+  currentEmpresaId = null;
+  document.getElementById('portalScreen').classList.remove('active');
+  document.getElementById('loginScreen').style.display = 'flex';
+  closeDetail();
+  hideNewProductForm();
+}
+
+function renderPortal(){
+  const prods = productosProveedor;
+  const activos = prods.filter(p=>!['rechazado','cerrado'].includes(p.estado)).length;
+  const enEnsayo = prods.filter(p=>['ensayo_campo','propuesto_ensayo'].includes(p.estado)).length;
+
+  document.getElementById('portalStats').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${prods.length}</div><div class="stat-label">Productos registrados</div></div>
+    <div class="stat-card"><div class="stat-num">${activos}</div><div class="stat-label">En proceso activo</div></div>
+    <div class="stat-card"><div class="stat-num">${enEnsayo}</div><div class="stat-label">En/para ensayo</div></div>
+  `;
+
+  if(prods.length === 0){
+    document.getElementById('productList').innerHTML = '<div class="empty-state">No tiene productos registrados aún. Haga clic en "Registrar Producto" para comenzar.</div>';
+    return;
+  }
+
+  let html = '';
+  prods.forEach(p=>{
+    html += `<div class="product-item" onclick="showDetail('${p.id}')">
+      <div class="product-item-info">
+        <h3>${escapeHtml(p.nombre_comercial)}</h3>
+        <p>${escapeHtml(p.tipo_producto)} · ${escapeHtml(p.cultivos_objetivo)} · ${escapeHtml(p.problema_objetivo)}</p>
+      </div>
+      <div class="product-item-status">
+        ${getStatusBadge(p.estado)}
+        <div class="status-date">Registrado: ${(p.creado_en||'').substring(0,10)}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('productList').innerHTML = html;
+}
+
+async function showDetail(id){
+  const p = productosProveedor.find(pr=>pr.id===id);
+  if(!p) return;
+  document.getElementById('detailTitle').textContent = p.nombre_comercial;
+  document.getElementById('det_nombre').textContent = p.nombre_comercial;
+  document.getElementById('det_ia').textContent = p.ingrediente_activo||'-';
+  document.getElementById('det_tipo').textContent = p.tipo_producto;
+  document.getElementById('det_modo').textContent = p.modo_accion||'-';
+  document.getElementById('det_cultivo').textContent = p.cultivos_objetivo;
+  document.getElementById('det_problema').textContent = p.problema_objetivo;
+  document.getElementById('det_pais').textContent = p.pais_origen||'-';
+  document.getElementById('det_registro').textContent = {si:'Sí',no:'No',tramite:'En trámite'}[p.registro_rd]||'-';
+  document.getElementById('det_fecha').textContent = (p.creado_en||'').substring(0,10);
+  document.getElementById('det_estado').innerHTML = getStatusBadge(p.estado);
+
+  const msgClass = p.estado==='rechazado'?'warning':p.estado==='info_incompleta'?'warning':'info';
+  document.getElementById('det_mensaje').innerHTML = p.mensaje_publico
+    ? `<div class="message-box ${msgClass}">${escapeHtml(p.mensaje_publico)}</div>` : '';
+
+  try{
+    const { data: hist, error } = await DB.historial_producto.listarPorProducto(p.id);
+    if(error) throw error;
+    const items = hist || [];
+    let tl = '';
+    items.forEach(h=>{
+      tl += `<div class="timeline-item"><div class="timeline-date">${(h.fecha||'').substring(0,10)}</div><div class="timeline-text">${escapeHtml(h.accion||h.detalle||'')}</div></div>`;
+    });
+    document.getElementById('det_timeline').innerHTML = tl || '<p style="font-size:var(--font-size-sm);color:var(--color-text-secondary)">Sin historial disponible</p>';
+  }catch(err){
+    console.error(err);
+    document.getElementById('det_timeline').innerHTML = '<p style="font-size:var(--font-size-sm);color:var(--color-text-secondary)">No se pudo cargar el historial</p>';
+  }
+
+  document.getElementById('detailPanel').classList.add('active');
+  document.getElementById('detailPanel').scrollIntoView({behavior:'smooth'});
+}
+
+function closeDetail(){
+  document.getElementById('detailPanel').classList.remove('active');
+}
+
+function showNewProductForm(){
+  document.getElementById('newProductForm').style.display = 'block';
+  document.getElementById('newProductForm').scrollIntoView({behavior:'smooth'});
+  closeDetail();
+}
+function hideNewProductForm(){
+  document.getElementById('newProductForm').style.display = 'none';
+  document.getElementById('proveedorForm').reset();
+}
+
+document.getElementById('proveedorForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const nombre = document.getElementById('pf_nombre').value.trim();
+  const ia = document.getElementById('pf_ia').value.trim();
+  const problema = document.getElementById('pf_problema').value.trim();
+  if(!nombre||!ia||!problema){alert('Complete todos los campos obligatorios');return}
+
+  const datos = {
+    empresa_id: currentEmpresaId,
+    nombre_comercial: nombre,
+    ingrediente_activo: ia,
+    tipo_producto: document.getElementById('pf_tipo').value,
+    modo_accion: document.getElementById('pf_modo').value.trim() || null,
+    cultivos_objetivo: document.getElementById('pf_cultivo').value,
+    problema_objetivo: problema,
+    pais_origen: document.getElementById('pf_pais').value.trim() || null,
+    registro_rd: document.getElementById('pf_registro').value,
+    estado: 'recibido',
+    estado_publico: 'Solicitud recibida',
+    mensaje_publico: 'Su producto ha sido registrado exitosamente. Será evaluado por nuestro equipo de I+D próximamente.',
+    notas_internas: document.getElementById('pf_adicional').value.trim() || null,
+    creado_por: 'PORTAL_PROVEEDOR'
+  };
+
+  try{
+    const { data: nuevo, error } = await DB.productos_externos.crear(datos);
+    if(error) throw error;
+    productosProveedor.push(nuevo);
+    await DB.historial_producto.registrar(nuevo.id,'Producto registrado desde portal','Solicitud recibida desde portal de proveedores');
+    hideNewProductForm();
+    renderPortal();
+    alert('✅ Producto registrado exitosamente. Será evaluado por el equipo de I+D.');
+  }catch(err){
+    console.error(err);
+    alert('Error registrando producto: ' + (err.message || err));
+  }
+});
+
+loadEmpresas();
+</script>
+</body>
+</html>
