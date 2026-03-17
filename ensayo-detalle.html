@@ -282,10 +282,10 @@
     // Helper Storage basado en _sb.storage
     const Storage = {
       subir: function (path, file) {
-        return _sb.storage.from('ensayos_archivos').upload(path, file);
+        return _sb.storage.from('productos_docs').upload(path, file);
       },
       obtenerUrl: function (path) {
-        const { data } = _sb.storage.from('ensayos_archivos').getPublicUrl(path);
+        const { data } = _sb.storage.from('productos_docs').getPublicUrl(path);
         return data.publicUrl;
       }
     };
