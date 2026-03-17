@@ -268,10 +268,28 @@
 
   <!-- LIBRERÍAS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
+  <script src="supabase-config.js"></script> <!-- aquí está tu objeto DB/_sb -->
   <script src="auth-guard.js"></script>
 
   <script>
+    // Extender DB.ensayos con método obtener (usa tu cliente _sb)
+    if (!DB.ensayos.obtener) {
+      DB.ensayos.obtener = function (id) {
+        return _sb.from('ensayos').select('*').eq('id', id).single();
+      };
+    }
+
+    // Helper Storage basado en _sb.storage
+    const Storage = {
+      subir: function (path, file) {
+        return _sb.storage.from('ensayos_archivos').upload(path, file);
+      },
+      obtenerUrl: function (path) {
+        const { data } = _sb.storage.from('ensayos_archivos').getPublicUrl(path);
+        return data.publicUrl;
+      }
+    };
+
     let ensayoId = null;
 
     document.addEventListener('DOMContentLoaded', async function () {
@@ -288,21 +306,17 @@
         return;
       }
 
-      document.getElementById('formSubirArchivo')
+      document
+        .getElementById('formSubirArchivo')
         .addEventListener('submit', subirArchivo);
 
       await cargarEnsayo();
       await cargarArchivos();
     });
 
-    // ========== CARGAR DATOS DEL ENSAYO (tabla ensayos) ==========
+    // Cargar datos del ensayo
     async function cargarEnsayo() {
-      const { data, error } = await supabase
-        .from('ensayos')
-        .select('*')
-        .eq('id', ensayoId)
-        .single();  // [web:35][web:40]
-
+      const { data, error } = await DB.ensayos.obtener(ensayoId);
       if (error) {
         console.error(error);
         alert('Error al cargar el ensayo');
@@ -344,12 +358,12 @@
         data.notas || '(sin notas)';
     }
 
-    // ========== SUBIR ARCHIVO (Storage + tabla ensayos_archivos) ==========
+    // Subir archivo (protocolo o base de datos)
     async function subirArchivo(event) {
       event.preventDefault();
 
       const form = event.target;
-      const tipo = form.tipo.value; // 'protocolo' | 'base_datos'
+      const tipo = form.tipo.value;
       const fileInput = form.archivo;
       const file = fileInput.files[0];
 
@@ -361,17 +375,15 @@
       try {
         const originalName = file.name;
         const sanitizedName = originalName
-          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
           .replace(/[^\w.\- ]+/g, '')
           .replace(/\s+/g, '_');
 
         const timestamp = Date.now();
         const storagePath = `ens_${ensayoId}/${tipo}/${timestamp}_${sanitizedName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('ensayos_archivos')   // nombre del bucket
-          .upload(storagePath, file); // [web:11][web:42]
-
+        const { error: uploadError } = await Storage.subir(storagePath, file);
         if (uploadError) {
           console.error(uploadError);
           alert('Error al subir archivo: ' + uploadError.message);
@@ -384,13 +396,9 @@
           nombre: originalName,
           path: storagePath,
           creado_por: window.SESION ? (SESION.email || SESION.nombre) : null
-          // creado_el se llena solo con default now()
         };
 
-        const { error: dbError } = await supabase
-          .from('ensayos_archivos')
-          .insert([registro]);       // [web:11][web:42]
-
+        const { error: dbError } = await DB.ensayos_archivos.crear(registro);
         if (dbError) {
           console.error(dbError);
           alert('Archivo subido pero error en registro: ' + dbError.message);
@@ -407,19 +415,13 @@
       }
     }
 
-    // ========== LISTAR ARCHIVOS ==========
+    // Listar archivos del ensayo
     async function cargarArchivos() {
-      const { data, error } = await supabase
-        .from('ensayos_archivos')
-        .select('*')
-        .eq('ensayo_id', ensayoId)
-        .order('creado_el', { ascending: false }); // usar tu campo creado_el
-
+      const { data, error } = await DB.ensayos_archivos.listarPorEnsayo(ensayoId);
       if (error) {
         console.error(error);
         return;
       }
-
       renderArchivos(data || []);
     }
 
@@ -431,11 +433,7 @@
       contBD.innerHTML = '';
 
       archivos.forEach(archivo => {
-        const { data: urlData } = supabase.storage
-          .from('ensayos_archivos')
-          .getPublicUrl(archivo.path); // [web:11][web:42]
-
-        const url = urlData.publicUrl;
+        const url = Storage.obtenerUrl(archivo.path);
 
         const li = document.createElement('li');
         li.innerHTML = `
